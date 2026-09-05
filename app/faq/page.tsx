@@ -18,11 +18,11 @@ export default function FAQPage() {
     },
     {
       q: 'How are NGOs and childcare organizations verified?',
-      a: 'Our administrative compliance team verifies valid trust/society registrations, 80G/12A tax exemption certificates, audited financials, and conducts physical checks to ensure safe classroom environments and designated child protection officers.'
+      a: 'Our administrative compliance team verifies valid trust/society registrations, 12A tax exemption certificates, audited financials, and conducts physical checks to ensure safe classroom environments and designated child protection officers.'
     },
     {
       q: 'How are monetary contributions handled?',
-      a: 'Contributions on TechForKids are structured around tangible, itemized project milestones (like laptop batteries or internet lines). Pledges are routed directly through verified partner accounts with full 80G tax receipts issued. We do not store raw credit card numbers or banking credentials.'
+      a: 'Contributions on TechForKids are structured around tangible, itemized project milestones (like laptop batteries or internet lines). Pledges are routed directly through verified partner accounts. We do not store raw credit card numbers or banking credentials.'
     },
     {
       q: 'Can I volunteer remotely as a coding mentor?',

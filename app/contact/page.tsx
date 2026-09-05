@@ -24,7 +24,7 @@ export default function ContactPage() {
           Get in Touch
         </span>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Contact TechForKids
+          Contact DesiLearCode
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
           Have questions regarding device donation logistics, NGO onboarding verification, or corporate CSR partnerships? We&apos;re here to help.
@@ -43,7 +43,7 @@ export default function ContactPage() {
                 <Mail className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-slate-900 block font-semibold">Email Enquiries</strong>
-                  <span>support@techforkids.org</span>
+                  <span>DesiLearCode@gmail.com</span>
                 </div>
               </div>
 
@@ -51,7 +51,7 @@ export default function ContactPage() {
                 <Phone className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-slate-900 block font-semibold">Helpdesk Hotline</strong>
-                  <span>+91 80 4000 8820 (Mon–Fri, 9am–6pm IST)</span>
+                  <span>+91 8828095997 (Mon–Fri, 9am–6pm IST)</span>
                 </div>
               </div>
 
@@ -59,7 +59,7 @@ export default function ContactPage() {
                 <MapPin className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-slate-900 block font-semibold">Hub Logistics Facility</strong>
-                  <span>TechForKids Refurbishment Center, Tech Hub, Bengaluru 560100</span>
+                  <span>DesiLearCode@gmail.com</span>
                 </div>
               </div>
             </div>
@@ -68,7 +68,7 @@ export default function ContactPage() {
           <div className="bg-indigo-50/70 rounded-3xl p-6 border border-indigo-100 text-xs text-indigo-950 space-y-2">
             <strong className="block font-bold">Child Safeguarding Hotline</strong>
             <p className="leading-relaxed">
-              To immediately report any child safety, consent, or privacy concerns regarding any listed initiative, please email <strong>safeguarding@techforkids.org</strong> for priority review within 2 hours.
+              To immediately report any child safety, consent, or privacy concerns regarding any listed initiative, please email <strong>DesiLearCode@gmail.com</strong> for priority review within 2 hours.
             </p>
           </div>
         </div>

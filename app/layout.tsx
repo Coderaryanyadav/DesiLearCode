@@ -12,11 +12,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TechForKids — Technology. Education. Opportunity.",
-  description: "A transparent, privacy-first platform connecting donors, mentors, and verified child-care organizations to provide technology access, digital education, and refurbished hardware.",
+  title: "DesiLearCode — Technology. Education. Opportunity.",
+  description: "A secure, transparent platform connecting people with verified child-care organizations to provide digital education, refurbished devices, and technology access.",
   keywords: ["tech education for kids", "device donation", "volunteer coding mentor", "verified ngo tech support", "child digital literacy"],
   openGraph: {
-    title: "TechForKids — Technology. Education. Opportunity.",
+    title: "DesiLearCode — Technology. Education. Opportunity.",
     description: "Bridging the digital divide for vulnerable children through verified organizations, hardware donations, and coding mentorship.",
     type: "website",
   },

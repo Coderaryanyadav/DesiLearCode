@@ -15,10 +15,10 @@ export const Footer: React.FC = () => {
           {/* Col 1: Brand & Safeguarding */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-600/30">
-                <Laptop className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-md shadow-indigo-600/30">
+                <img src="/logo.jpg" alt="DesiLearCode" className="w-full h-full object-cover" />
               </div>
-              <span className="font-extrabold text-xl text-white tracking-tight">TechForKids</span>
+              <span className="font-extrabold text-xl text-white tracking-tight">DesiLearCode</span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
               Connecting people, volunteers, and verified child-care organizations to provide technology, digital education, robotics, and measurable opportunity.
@@ -107,7 +107,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Disclaimer & Copyright */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div>
-            © 2026 TechForKids Platform. Built for transparent, project-based education assistance. Fictional sample data clearly labeled.
+            © 2026 DesiLearCode Platform. Built for transparent, project-based education assistance. Fictional sample data clearly labeled.
           </div>
           <div className="flex items-center gap-4 text-slate-400">
             <span className="flex items-center gap-1">

@@ -51,12 +51,12 @@ export const Navbar: React.FC = () => {
           
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition">
-              <Laptop className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center overflow-hidden shadow-md shadow-indigo-500/20 group-hover:scale-105 transition">
+              <img src="/logo.jpg" alt="DesiLearCode" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-lg text-slate-900 tracking-tight">TechForKids</span>
+                <span className="font-extrabold text-lg text-slate-900 tracking-tight">DesiLearCode</span>
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-200">
                   Trust
                 </span>
