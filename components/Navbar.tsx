@@ -13,7 +13,8 @@ import {
   Shield, 
   Laptop,
   Terminal,
-  Activity
+  Activity,
+  ArrowRight
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { logout } from '@/app/actions/auth';
@@ -35,11 +36,11 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { href: '/projects', label: 'Projects' },
-    { href: '/needs', label: 'Hardware Needs' },
-    { href: '/how-it-works', label: 'Infrastructure' },
-    { href: '/volunteer', label: 'Mentorship' },
-    { href: '/organizations', label: 'Verified Partners' },
-    { href: '/impact', label: 'Audit & Impact' },
+    { href: '/organizations', label: 'Organizations' },
+    { href: '/volunteer', label: 'Volunteer' },
+    { href: '/donate-device', label: 'Donate a Device' },
+    { href: '/impact', label: 'Impact' },
+    { href: '/how-it-works', label: 'How It Works' },
   ];
 
   const getDashboardHref = () => {
@@ -123,24 +124,67 @@ export const Navbar: React.FC = () => {
                 {userMenuOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                    <div className="absolute right-0 mt-2 w-56 bg-surface rounded-lg shadow-elevation border border-border p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="absolute right-0 mt-2 w-60 bg-surface rounded-lg shadow-elevation border border-border p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                       <div className="px-3 py-2 border-b border-border">
                         <div className="font-bold text-xs text-foreground truncate">{currentUser.name}</div>
                         <div className="text-[11px] font-mono text-muted truncate mt-0.5">{currentUser.email}</div>
                       </div>
-                      <div className="py-1">
-                        <Link
-                          href={getDashboardHref()}
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center justify-between px-3 py-1.5 rounded hover:bg-surfaceSubtle text-foreground text-xs font-medium transition-colors"
-                        >
-                          <span className="flex items-center gap-2">
-                            {currentUser.role === 'admin' ? <Shield className="w-3.5 h-3.5 text-primary-500" /> : <User className="w-3.5 h-3.5 text-primary-500" />}
-                            Control Panel
-                          </span>
-                          <ChevronRight className="w-3.5 h-3.5 text-muted" />
-                        </Link>
+
+                      <div className="py-1 text-xs">
+                        {currentUser.role === 'admin' ? (
+                          <>
+                            <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-foreground font-medium">
+                              <Shield className="w-3.5 h-3.5 text-primary-500" /> Admin Command Center
+                            </Link>
+                            <Link href="/admin/organizations" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Verification Queue
+                            </Link>
+                            <Link href="/admin/projects" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Project Moderation
+                            </Link>
+                            <Link href="/admin/devices" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Device Intake Queue
+                            </Link>
+                            <Link href="/admin/audit" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Immutable Audit Logs
+                            </Link>
+                          </>
+                        ) : currentUser.role === 'ngo' ? (
+                          <>
+                            <Link href="/ngo/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-foreground font-medium">
+                              <User className="w-3.5 h-3.5 text-primary-500" /> NGO Dashboard
+                            </Link>
+                            <Link href="/ngo/projects" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Manage Projects
+                            </Link>
+                            <Link href="/ngo/needs" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Resource Needs
+                            </Link>
+                            <Link href="/ngo/impact" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Milestone Reports
+                            </Link>
+                          </>
+                        ) : (
+                          <>
+                            <Link href="/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-foreground font-medium">
+                              <User className="w-3.5 h-3.5 text-primary-500" /> My Dashboard
+                            </Link>
+                            <Link href="/dashboard/devices" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              My Donated Devices
+                            </Link>
+                            <Link href="/dashboard/donations" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              My Contributions
+                            </Link>
+                            <Link href="/dashboard/volunteering" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              My Volunteering
+                            </Link>
+                            <Link href="/dashboard/profile" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3 py-1.5 rounded hover:bg-surfaceSubtle text-muted hover:text-foreground">
+                              Profile Settings
+                            </Link>
+                          </>
+                        )}
                       </div>
+
                       <div className="pt-1 border-t border-border">
                         <form action={logout}>
                           <button
@@ -148,7 +192,7 @@ export const Navbar: React.FC = () => {
                             className="w-full flex items-center gap-2 px-3 py-1.5 rounded text-error-600 hover:bg-error-50 text-xs font-medium transition-colors"
                           >
                             <LogOut className="w-3.5 h-3.5" />
-                            Disconnect Session
+                            Sign Out
                           </button>
                         </form>
                       </div>
@@ -165,11 +209,11 @@ export const Navbar: React.FC = () => {
                   Sign In
                 </Link>
                 <Link
-                  href="/donate-device"
-                  className="px-3.5 py-1.5 rounded-md text-xs font-medium bg-foreground text-surface hover:bg-foreground/90 transition-colors flex items-center gap-1.5"
+                  href="/projects"
+                  className="px-3.5 py-1.5 rounded-md text-xs font-medium bg-foreground text-surface hover:bg-foreground/90 transition-colors flex items-center gap-1.5 shadow-subtle"
                 >
-                  <Laptop className="w-3.5 h-3.5" />
-                  Pledge Hardware
+                  <ArrowRight className="w-3.5 h-3.5 text-primary-400" />
+                  Contribute
                 </Link>
               </div>
             ) : null}
@@ -221,12 +265,20 @@ export const Navbar: React.FC = () => {
                     Sign In
                   </Link>
                   <Link
+                    href="/projects"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-2 text-center text-xs font-medium rounded bg-foreground text-surface flex items-center justify-center gap-1.5 shadow-subtle"
+                  >
+                    <ArrowRight className="w-3.5 h-3.5 text-primary-400" />
+                    Contribute to Projects
+                  </Link>
+                  <Link
                     href="/donate-device"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2 text-center text-xs font-medium rounded bg-foreground text-surface flex items-center justify-center gap-1.5"
+                    className="w-full py-2 text-center text-xs font-medium rounded bg-surfaceSubtle border border-border text-foreground flex items-center justify-center gap-1.5"
                   >
-                    <Laptop className="w-3.5 h-3.5" />
-                    Pledge Hardware
+                    <Laptop className="w-3.5 h-3.5 text-primary-600" />
+                    Donate a Device
                   </Link>
                 </>
               ) : (

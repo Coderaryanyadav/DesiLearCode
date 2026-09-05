@@ -122,17 +122,43 @@ export default function DonateDevicePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
-      {/* Page Header */}
-      <div className="max-w-3xl space-y-2">
-        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
+      {/* Page Header: The Device Story */}
+      <div className="max-w-3xl space-y-3">
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
           <span>HARDWARE INTAKE & LOGISTICS PIPELINE</span>
         </div>
-        <h1 className="font-display font-extrabold text-2xl sm:text-4xl text-foreground tracking-tight">
-          Pledge Hardware. Track Lab Allocation.
+        <h1 className="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-foreground tracking-tight">
+          Your old laptop can become someone&apos;s classroom.
         </h1>
         <p className="text-xs sm:text-sm text-muted leading-relaxed">
-          Pre-owned computers undergo multi-pass cryptographic disk sanitization, diagnostics, and educational OS deployment before routing to verified community learning labs.
+          Tell us about the device, we inspect and sanitize it under NIST SP 800-88 guidance, match it with an eligible verified project, and deliver it to an active learning center with complete public traceability.
         </p>
+      </div>
+
+      {/* 9-Stage Verifiable Device Lifecycle */}
+      <div className="bg-surface rounded-xl p-5 border border-border space-y-3 shadow-subtle">
+        <div className="flex items-center justify-between text-xs font-mono">
+          <span className="font-bold text-foreground uppercase tracking-wider">Verifiable Hardware Lifecycle</span>
+          <span className="text-muted">Standard Operating Procedure</span>
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 text-center font-mono text-[11px]">
+          {[
+            { label: '1. DONATED', desc: 'Logged' },
+            { label: '2. REVIEWED', desc: 'Specs Checked' },
+            { label: '3. RECEIVED', desc: 'Transit Hub' },
+            { label: '4. INSPECTED', desc: 'Diagnostic' },
+            { label: '5. SANITIZED', desc: 'NIST SP 800-88' },
+            { label: '6. READY', desc: 'Linux Imaged' },
+            { label: '7. MATCHED', desc: 'Project Paired' },
+            { label: '8. DELIVERED', desc: 'Lab Receipt' },
+            { label: '9. IN USE', desc: 'Active Lab' },
+          ].map((s, idx) => (
+            <div key={idx} className="p-2 rounded bg-surfaceSubtle border border-border flex flex-col justify-between">
+              <span className="font-bold text-foreground text-[10px]">{s.label}</span>
+              <span className="text-[9px] text-muted mt-1">{s.desc}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* TRACKING LOOKUP CONSOLE */}
