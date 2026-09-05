@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
         <section className="space-y-2">
           <h2 className="text-base font-bold text-slate-900">1. Strict Child Protection & Zero-PII Policy</h2>
           <p>
-            TechForKids does not collect, store, or display Personally Identifiable Information (PII) of minor children. No child profiles, facial biometric captures, school locations, or foster shelter maps are published. All metrics regarding learning progress are strictly reported in aggregated cohort counts.
+            DesiLearCode does not collect, store, or display Personally Identifiable Information (PII) of minor children. No child profiles, facial biometric captures, school locations, or foster shelter maps are published. All metrics regarding learning progress are strictly reported in aggregated cohort counts.
           </p>
         </section>
 

@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Platform Administration — TechForKids',
+  title: 'Platform Administration — DesiLearCode',
 };
 
 export default async function AdminDashboardPage() {

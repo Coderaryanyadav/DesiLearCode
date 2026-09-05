@@ -66,7 +66,7 @@ export default function SafeguardingPage() {
           </div>
           <h3 className="font-bold text-slate-900 text-base">1. Strict Zero-PII Data Policy</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            TechForKids strictly prohibits individual public profiles of children. We never disclose full names, birth dates, phone numbers, private emails, medical records, government ID numbers, or exact shelter addresses. All outcomes are communicated via aggregated statistical cohorts (e.g. &ldquo;30 Middle School Students&rdquo;).
+            DesiLearCode strictly prohibits individual public profiles of children. We never disclose full names, birth dates, phone numbers, private emails, medical records, government ID numbers, or exact shelter addresses. All outcomes are communicated via aggregated statistical cohorts (e.g. &ldquo;30 Middle School Students&rdquo;).
           </p>
         </div>
 

@@ -39,7 +39,7 @@ export const SafeguardingBanner: React.FC<{ compact?: boolean }> = ({ compact = 
               </span>
             </div>
             <p className="text-xs md:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
-              TechForKids adheres to stringent digital protection frameworks. We never publish child names, sensitive case files, exact shelter addresses, or unconsented media. Contributions directly fund verified non-profit partners with physical and legal vetting.
+              DesiLearCode adheres to stringent digital protection frameworks. We never publish child names, sensitive case files, exact shelter addresses, or unconsented media. Contributions directly fund verified non-profit partners with physical and legal vetting.
             </p>
           </div>
         </div>

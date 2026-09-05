@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'NGO Partner Hub — TechForKids',
+  title: 'NGO Partner Hub — DesiLearCode',
 };
 
 export default async function NgoDashboardPage() {

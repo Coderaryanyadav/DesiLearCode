@@ -28,7 +28,7 @@ export default function HowItWorksPage() {
           Transparent Operations
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-          How TechForKids Connects Technology to Real Opportunity
+          How DesiLearCode Connects Technology to Real Opportunity
         </h1>
         <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
           A modern non-profit platform designed to replace vague fundraising with verifiable, itemized assistance, device refurbishments, and mentored digital education.

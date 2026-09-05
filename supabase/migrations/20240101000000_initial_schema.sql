@@ -1,5 +1,5 @@
 -- ====================================================================
--- TechForKids - Production PostgreSQL Database Schema & RLS Policies
+-- DesiLearCode - Production PostgreSQL Database Schema & RLS Policies
 -- Zero-Trust Architecture: Role-based security, tenant isolation, child safeguarding
 -- ====================================================================
 

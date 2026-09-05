@@ -32,7 +32,7 @@ export default function RegisterPage() {
           <Laptop className="w-6 h-6" />
         </div>
         <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-          Create TechForKids Account
+          Create DesiLearCode Account
         </h1>
         <p className="text-xs text-slate-500">
           Join our network of donors, volunteer mentors, and verified child-care institutions.

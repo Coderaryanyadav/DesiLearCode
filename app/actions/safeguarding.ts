@@ -34,7 +34,7 @@ export async function submitSafeguardingReport(formData: FormData) {
     .single();
 
   if (error || !data) {
-    return { error: error?.message || 'Failed to submit report. Please email safeguarding@techforkids.org directly.' };
+    return { error: error?.message || 'Failed to submit report. Please email safeguarding@desilearncode.org directly.' };
   }
 
   await logAuditEvent({

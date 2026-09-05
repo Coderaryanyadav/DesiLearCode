@@ -7,7 +7,7 @@ import { AdminDevicesManager } from '@/components/AdminDevicesManager';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Admin Devices Pipeline — TechForKids',
+  title: 'Admin Devices Pipeline — DesiLearCode',
 };
 
 export default async function AdminDevicesPage() {

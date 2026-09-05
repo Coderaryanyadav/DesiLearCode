@@ -1,6 +1,6 @@
-# TechForKids — Technology. Education. Opportunity.
+# DesiLearCode — Technology. Education. Opportunity.
 
-**TechForKids** is a production-quality, privacy-first, transparent nonprofit technology platform designed to bridge the digital divide for vulnerable and orphaned children. It connects donors, software mentors, and companies with verified child-care institutions, providing refurbished hardware, coding education, robotics kits, and educational supplies.
+**DesiLearCode** is a production-quality, privacy-first, transparent nonprofit technology platform designed to bridge the digital divide for vulnerable and orphaned children. It connects donors, software mentors, and companies with verified child-care institutions, providing refurbished hardware, coding education, robotics kits, and educational supplies.
 
 ---
 

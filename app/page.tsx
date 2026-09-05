@@ -4,7 +4,7 @@ import { getPlatformImpactMetrics } from '@/lib/db/impact';
 import { HomeView } from '@/components/HomeView';
 
 export const metadata = {
-  title: 'TechForKids — Technology. Education. Opportunity.',
+  title: 'DesiLearCode — Technology. Education. Opportunity.',
   description: 'A transparent, privacy-first platform connecting donors, mentors, and verified child-care organizations to provide technology access and coding education.',
 };
 

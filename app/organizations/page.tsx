@@ -5,7 +5,7 @@ import { SafeguardingBanner } from '@/components/SafeguardingBanner';
 import { FileCheck, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Verified Non-Profit Partners — TechForKids',
+  title: 'Verified Non-Profit Partners — DesiLearCode',
   description: 'Explore verified NGOs and child-care institutions providing technology access and digital education.',
 };
 
@@ -24,7 +24,7 @@ export default async function OrganizationsPage() {
           Verified Partner Organizations & NGOs
         </h1>
         <p className="text-sm text-slate-600 max-w-3xl leading-relaxed">
-          Every organization on TechForKids undergoes statutory validation (Registration Deeds, statutory compliance, physical infrastructure audit, and Child Safeguarding commitment) before publishing initiatives.
+          Every organization on DesiLearCode undergoes statutory validation (Registration Deeds, statutory compliance, physical infrastructure audit, and Child Safeguarding commitment) before publishing initiatives.
         </p>
       </div>
 

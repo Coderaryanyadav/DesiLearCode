@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Transparency & Impact Dashboard — TechForKids',
+  title: 'Transparency & Impact Dashboard — DesiLearCode',
   description: 'Real-time verified platform statistics and impact reports across child learning centers.',
 };
 

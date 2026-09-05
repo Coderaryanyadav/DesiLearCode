@@ -6,7 +6,7 @@ import { getDonationsForDonor } from '@/lib/db/donations';
 import { FileText, Download, ShieldCheck, CheckCircle2, ArrowLeft, HeartHandshake } from 'lucide-react';
 
 export const metadata = {
-  title: 'Donation History & Receipts — TechForKids',
+  title: 'Donation History & Receipts — DesiLearCode',
 };
 
 export default async function DashboardDonationsPage() {

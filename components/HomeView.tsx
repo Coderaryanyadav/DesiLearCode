@@ -56,7 +56,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-foreground tracking-tight leading-[1.05]">
               Technology access for <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-info-500">
-                every child's future.
+                every child&apos;s future.
               </span>
             </h1>
 
@@ -198,7 +198,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
               </div>
               <h3 className="text-lg font-bold text-foreground mb-2">No active projects yet</h3>
               <p className="text-muted max-w-md mb-6">
-                We're currently onboarding new verified NGOs and setting up their initial projects. Check back soon!
+                We&apos;re currently onboarding new verified NGOs and setting up their initial projects. Check back soon!
               </p>
               <Link
                 href="/organizations"

@@ -1,4 +1,4 @@
-# TechForKids — Zero-Trust Production Audit & Security Assessment
+# DesiLearCode — Zero-Trust Production Audit & Security Assessment
 
 **Audit Date**: September 2026  
 **Auditor**: Independent Senior Engineering & Application Security Team  
@@ -27,7 +27,7 @@ All previous mock state (`lib/store.tsx`, `lib/mock-data.ts`, `components/RoleSw
 - **Severity**: CRITICAL
 - **File**: `lib/store.tsx`, `lib/mock-data.ts`, `components/RoleSwitcher.tsx`
 - **Problem**: Client-side state in `localStorage` with arbitrary role-switching dropdown allowing any browser visitor to simulate admin privileges or modify records.
-- **Exploit Scenario**: Attacker opens DevTools, sets `localStorage.setItem('techforkids_user', JSON.stringify({ role: 'admin' }))`, bypassing all UI guards.
+- **Exploit Scenario**: Attacker opens DevTools, sets `localStorage.setItem('desilearncode_user', JSON.stringify({ role: 'admin' }))`, bypassing all UI guards.
 - **Impact**: Full administrative and organizational takeover in client state.
 - **Fix**: Deleted `lib/store.tsx`, `lib/mock-data.ts`, and `RoleSwitcher.tsx`. Replaced with Supabase SSR cookie-based session validation (`app/actions/auth.ts`, `lib/supabase/server.ts`) where user identity and roles are fetched server-side from `public.profiles`.
 - **Verification**: `npm test` + `tests/lifecycle.test.ts` verifying server role enforcement; deleted files verified absent.

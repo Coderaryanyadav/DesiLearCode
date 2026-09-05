@@ -6,7 +6,7 @@ import { getAllDonationsForAdmin } from '@/lib/db/donations';
 import { ArrowLeft, HeartHandshake } from 'lucide-react';
 
 export const metadata = {
-  title: 'Donations Oversight — TechForKids Admin',
+  title: 'Donations Oversight — DesiLearCode Admin',
 };
 
 export default async function AdminDonationsPage() {

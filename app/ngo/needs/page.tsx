@@ -7,7 +7,7 @@ import { NeedCard } from '@/components/NeedCard';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 
 export const metadata = {
-  title: 'Manage Needs — TechForKids NGO',
+  title: 'Manage Needs — DesiLearCode NGO',
 };
 
 export default async function NgoNeedsPage() {

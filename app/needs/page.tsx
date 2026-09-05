@@ -4,7 +4,7 @@ import { getPublicProjects } from '@/lib/db/projects';
 import { NeedsList } from '@/components/NeedsList';
 
 export const metadata = {
-  title: 'Needs Marketplace — TechForKids',
+  title: 'Needs Marketplace — DesiLearCode',
   description: 'Tangible technology, laptop, and mentorship needs requested by verified educational centers.',
 };
 

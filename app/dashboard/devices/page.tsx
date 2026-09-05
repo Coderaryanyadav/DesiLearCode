@@ -7,7 +7,7 @@ import { DeviceTimeline } from '@/components/DeviceTimeline';
 import { Laptop, ArrowLeft, Plus } from 'lucide-react';
 
 export const metadata = {
-  title: 'My Donated Devices — TechForKids',
+  title: 'My Donated Devices — DesiLearCode',
 };
 
 export default async function DashboardDevicesPage() {

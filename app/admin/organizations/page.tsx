@@ -7,7 +7,7 @@ import { AdminOrganizationsTable } from '@/components/AdminOrganizationsTable';
 import { ArrowLeft, Shield } from 'lucide-react';
 
 export const metadata = {
-  title: 'Admin Organizations Compliance — TechForKids',
+  title: 'Admin Organizations Compliance — DesiLearCode',
 };
 
 export default async function AdminOrganizationsPage() {

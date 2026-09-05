@@ -9,7 +9,7 @@ export default function FAQPage() {
 
   const faqs = [
     {
-      q: 'How does TechForKids ensure children’s privacy and safety?',
+      q: 'How does DesiLearCode ensure children’s privacy and safety?',
       a: 'We operate under a strict Zero-PII (Personally Identifiable Information) policy. We never publish child names, dates of birth, exact home/shelter addresses, or unconsented photographs. All reports use aggregated group metrics (e.g. "30 Middle School Students"). Volunteers only mentor in supervised group classrooms.'
     },
     {
@@ -22,7 +22,7 @@ export default function FAQPage() {
     },
     {
       q: 'How are monetary contributions handled?',
-      a: 'Contributions on TechForKids are structured around tangible, itemized project milestones (like laptop batteries or internet lines). Pledges are routed directly through verified partner accounts. We do not store raw credit card numbers or banking credentials.'
+      a: 'Contributions on DesiLearCode are structured around tangible, itemized project milestones (like laptop batteries or internet lines). Pledges are routed directly through verified partner accounts. We do not store raw credit card numbers or banking credentials.'
     },
     {
       q: 'Can I volunteer remotely as a coding mentor?',

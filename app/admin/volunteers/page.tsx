@@ -6,7 +6,7 @@ import { getAllVolunteersForAdmin } from '@/lib/db/volunteers';
 import { ArrowLeft, UserCheck, ShieldCheck, Clock, Award } from 'lucide-react';
 
 export const metadata = {
-  title: 'Admin Volunteer Registry — TechForKids',
+  title: 'Admin Volunteer Registry — DesiLearCode',
 };
 
 export default async function AdminVolunteersPage() {

@@ -7,7 +7,7 @@ import { AdminProjectsTable } from '@/components/AdminProjectsTable';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Admin Projects Moderation — TechForKids',
+  title: 'Admin Projects Moderation — DesiLearCode',
 };
 
 export default async function AdminProjectsPage() {

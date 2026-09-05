@@ -8,7 +8,7 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { ArrowLeft, Plus, ExternalLink } from 'lucide-react';
 
 export const metadata = {
-  title: 'Manage Projects — TechForKids NGO',
+  title: 'Manage Projects — DesiLearCode NGO',
 };
 
 export default async function NgoProjectsListPage() {

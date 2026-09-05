@@ -7,7 +7,7 @@ import { AdminAuditLogsView } from '@/components/AdminAuditLogsView';
 import { ArrowLeft } from 'lucide-react';
 
 export const metadata = {
-  title: 'Audit Trail & Event Log — TechForKids Admin',
+  title: 'Audit Trail & Event Log — DesiLearCode Admin',
 };
 
 export default async function AdminAuditLogPage() {

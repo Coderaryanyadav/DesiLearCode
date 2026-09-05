@@ -6,7 +6,7 @@ import { getSafeguardingReportsForAdmin } from '@/lib/db/safeguarding';
 import { ArrowLeft, AlertTriangle, ShieldAlert } from 'lucide-react';
 
 export const metadata = {
-  title: 'Safeguarding Incident Queue — TechForKids Admin',
+  title: 'Safeguarding Incident Queue — DesiLearCode Admin',
 };
 
 export default async function AdminReportsPage() {

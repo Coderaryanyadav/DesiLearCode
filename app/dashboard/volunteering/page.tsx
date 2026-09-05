@@ -6,7 +6,7 @@ import { getVolunteerProfileForUser } from '@/lib/db/volunteers';
 import { UserCheck, Clock, Award, Users, Plus, CheckCircle2, ArrowLeft, Code } from 'lucide-react';
 
 export const metadata = {
-  title: 'Volunteer Mentorship Tracker — TechForKids',
+  title: 'Volunteer Mentorship Tracker — DesiLearCode',
 };
 
 export default async function DashboardVolunteeringPage() {

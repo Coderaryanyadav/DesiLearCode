@@ -15,7 +15,7 @@ export default function AboutPage() {
           Mission & Vision
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-          About TechForKids
+          About DesiLearCode
         </h1>
         <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
           We believe technology is the great equalizer. Our mission is to ensure every vulnerable and orphaned child has access to computing tools, digital literacy, and inspiring mentors.

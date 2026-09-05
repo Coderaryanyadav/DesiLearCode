@@ -1,6 +1,6 @@
-# TechForKids — Production Launch Requirements
+# DesiLearCode — Production Launch Requirements
 
-To officially take the TechForKids platform live to the public, the architecture
+To officially take the DesiLearCode platform live to the public, the architecture
 and security is fully ready. However, we still need a few real-world
 credentials, assets, and decisions from you.
 
@@ -24,14 +24,14 @@ we need your live payment gateway keys.
 
 - **Official Logo**: (Link to an image or upload it to the repository)
 - **Favicon**: (The small icon that appears in the browser tab)
-- **Primary Contact Email**: (e.g., `support@techforkids.org`)
+- **Primary Contact Email**: (e.g., `support@desilearncode.org`)
 - **Legal Details**: Do you have a registered entity name or physical address
   you want listed in the footer/Terms of Service?
 
 ### 3. Production Environment & Hosting
 
 - **Custom Domain Name**: What is the URL this platform will live on? (e.g.,
-  `www.techforkids.org`)
+  `www.desilearncode.org`)
 - **Hosting Platform**: Will we be deploying this to Vercel, Netlify, or AWS?
   (If Vercel, we can connect it directly to this GitHub repository).
 

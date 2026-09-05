@@ -53,7 +53,7 @@ export async function submitDeviceDonation(formData: FormData) {
     return { error: validation.error.errors[0]?.message || 'Invalid device assessment.' };
   }
 
-  const trackingCode = 'TFK-' + Math.floor(1000 + Math.random() * 9000);
+  const trackingCode = 'DLC-' + Math.floor(1000 + Math.random() * 9000);
 
   const { data: device, error } = await supabase
     .from('devices')

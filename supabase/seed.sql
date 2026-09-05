@@ -1,5 +1,5 @@
 -- ====================================================================
--- TechForKids - Development & Local Test Seed Data
+-- DesiLearCode - Development & Local Test Seed Data
 -- ISOLATED FROM PRODUCTION: Marked with is_fictional_demo = TRUE
 -- ====================================================================
 

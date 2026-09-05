@@ -6,7 +6,7 @@ import { getAllVolunteersForAdmin } from '@/lib/db/volunteers';
 import { ArrowLeft, UserCheck, Clock, CheckCircle2, Mail, Phone } from 'lucide-react';
 
 export const metadata = {
-  title: 'Assigned Mentors — TechForKids NGO',
+  title: 'Assigned Mentors — DesiLearCode NGO',
 };
 
 export default async function NgoVolunteersPage() {
