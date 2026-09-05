@@ -28,20 +28,20 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   }[size];
 
   const variantGradients = {
-    brand: 'bg-gradient-to-r from-indigo-500 to-indigo-600',
-    emerald: 'bg-gradient-to-r from-emerald-500 to-teal-600',
-    amber: 'bg-gradient-to-r from-amber-400 to-amber-500',
+    brand: 'bg-primary-500',
+    emerald: 'bg-success-500',
+    amber: 'bg-warning-500',
   }[variant];
 
   return (
-    <div className="w-full space-y-1.5">
+    <div className="w-full space-y-2">
       {(showLabel || labelLeft || labelRight) && (
-        <div className="flex justify-between items-center text-xs font-medium text-slate-600">
+        <div className="flex justify-between items-center text-xs font-semibold text-muted">
           <span>{labelLeft || 'Progress'}</span>
           <span>{labelRight || `${clamped}%`}</span>
         </div>
       )}
-      <div className={`w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/60 ${heightClasses}`}>
+      <div className={`w-full bg-surfaceHover rounded-full overflow-hidden border border-border ${heightClasses}`}>
         <div
           className={`h-full rounded-full transition-all duration-700 ease-out ${variantGradients}`}
           style={{ width: `${clamped}%` }}

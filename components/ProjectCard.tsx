@@ -15,47 +15,47 @@ export const ProjectCard: React.FC<{ project: Project; onSupportClick?: (project
   const openNeedsCount = project.needs.filter(n => !n.fulfilled).length;
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between">
+    <div className="group bg-surface rounded-3xl border border-border overflow-hidden hover:shadow-card-hover hover:border-primary-200 transition-all duration-300 flex flex-col justify-between">
       <div>
         {/* Project Image Header */}
-        <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
+        <div className="relative h-48 w-full bg-surfaceHover overflow-hidden border-b border-border">
           <img
             src={project.heroImageUrl}
             alt={project.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
           
-          <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/90 text-slate-900 backdrop-blur-md shadow-sm">
+          <div className="absolute top-4 left-4 flex items-center gap-2 flex-wrap">
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-surface/90 text-foreground backdrop-blur-md shadow-card border border-border">
               {project.category}
             </span>
             {project.urgency === 'critical' && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500 text-white shadow-sm flex items-center gap-1">
-                <Clock className="w-3 h-3" /> Urgent Need
+              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-error-500 text-white shadow-card flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" /> Urgent
               </span>
             )}
           </div>
 
-          <div className="absolute bottom-3 left-3 right-3 text-white flex justify-between items-end">
-            <div className="flex items-center gap-1 text-xs text-slate-200">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span className="truncate max-w-[200px]">{project.region}</span>
+          <div className="absolute bottom-4 left-4 right-4 text-foreground flex justify-between items-end">
+            <div className="flex items-center gap-1.5 text-xs text-muted font-medium bg-surface/90 px-2.5 py-1 rounded-lg backdrop-blur-md border border-border">
+              <MapPin className="w-3.5 h-3.5 text-primary-500 shrink-0" />
+              <span className="truncate max-w-[150px]">{project.region}</span>
             </div>
-            <div className="flex items-center gap-1 text-xs font-semibold bg-slate-900/80 px-2 py-0.5 rounded backdrop-blur-sm">
-              <Users className="w-3 h-3 text-indigo-400" />
+            <div className="flex items-center gap-1.5 text-xs font-semibold bg-surface/90 px-2.5 py-1 rounded-lg backdrop-blur-md border border-border">
+              <Users className="w-3.5 h-3.5 text-info-500" />
               <span>{project.targetStudents} Students</span>
             </div>
           </div>
         </div>
 
         {/* Card Body */}
-        <div className="p-5 space-y-3.5">
+        <div className="p-6 space-y-4">
           {/* Organization & Verification */}
           <div className="flex items-center justify-between gap-2">
             <Link 
               href={`/organizations`} 
-              className="text-xs font-medium text-slate-600 hover:text-indigo-600 truncate flex items-center gap-1"
+              className="text-xs font-semibold text-muted hover:text-primary-600 truncate flex items-center gap-1.5 transition-colors"
             >
               <span>{project.organizationName}</span>
             </Link>
@@ -66,37 +66,37 @@ export const ProjectCard: React.FC<{ project: Project; onSupportClick?: (project
 
           {/* Title & Tagline */}
           <div>
-            <h3 className="font-bold text-slate-900 text-base leading-snug group-hover:text-indigo-600 transition">
+            <h3 className="font-display font-bold text-foreground text-lg leading-tight group-hover:text-primary-600 transition-colors">
               <Link href={`/projects/${project.slug}`}>
                 {project.title}
               </Link>
             </h3>
-            <p className="text-xs text-slate-600 line-clamp-2 mt-1.5 leading-relaxed">
+            <p className="text-sm text-muted line-clamp-2 mt-2 leading-relaxed">
               {project.tagline}
             </p>
           </div>
 
           {/* Needs Chips */}
-          <div className="pt-1">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-              <span>Specific Needs ({project.needs.length})</span>
-              <span className="text-indigo-600 font-bold">{openNeedsCount} unfulfilled</span>
+          <div className="pt-2">
+            <div className="text-xs font-semibold text-muted uppercase tracking-wider mb-2.5 flex items-center justify-between">
+              <span>Specific Needs</span>
+              <span className="text-primary-600 font-bold">{openNeedsCount} unfulfilled</span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {project.needs.slice(0, 3).map((need) => (
                 <span 
                   key={need.id} 
-                  className={`text-[11px] px-2 py-0.5 rounded-md font-medium border ${
+                  className={`text-xs px-2.5 py-1 rounded-lg font-medium border transition-colors ${
                     need.fulfilled 
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200 line-through opacity-70'
-                      : 'bg-slate-50 text-slate-700 border-slate-200'
+                      ? 'bg-success-50 text-success-700 border-success-200 line-through opacity-60'
+                      : 'bg-surfaceHover text-foreground border-border hover:border-primary-200'
                   }`}
                 >
                   {need.title}
                 </span>
               ))}
               {project.needs.length > 3 && (
-                <span className="text-[11px] px-1.5 py-0.5 rounded-md text-slate-500 bg-slate-100 font-medium">
+                <span className="text-xs px-2.5 py-1 rounded-lg text-muted bg-surfaceHover font-medium border border-transparent">
                   +{project.needs.length - 3} more
                 </span>
               )}
@@ -104,7 +104,7 @@ export const ProjectCard: React.FC<{ project: Project; onSupportClick?: (project
           </div>
 
           {/* Progress Bar */}
-          <div className="pt-2">
+          <div className="pt-4 border-t border-border mt-4">
             <ProgressBar
               percentage={project.progressPercentage}
               labelLeft={`₹${project.currentValue.toLocaleString()} raised`}
@@ -116,17 +116,17 @@ export const ProjectCard: React.FC<{ project: Project; onSupportClick?: (project
       </div>
 
       {/* Card Footer Actions */}
-      <div className="p-4 pt-0 bg-white border-t border-slate-100 flex items-center gap-2">
+      <div className="p-5 pt-0 bg-surface flex items-center gap-3">
         <Link
           href={`/projects/${project.slug}`}
-          className="flex-1 py-2 px-3 text-center text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition flex items-center justify-center gap-1"
+          className="flex-1 py-2.5 px-4 text-center text-sm font-semibold rounded-xl bg-surfaceHover hover:bg-border text-foreground transition-all flex items-center justify-center gap-2"
         >
           <span>View Details</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-4 h-4" />
         </Link>
         <button
           onClick={() => onSupportClick ? onSupportClick(project) : window.location.href = `/projects/${project.slug}`}
-          className="py-2 px-4 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm"
+          className="py-2.5 px-5 text-sm font-semibold rounded-xl bg-foreground hover:bg-foreground/90 text-surface transition-all shadow-card"
         >
           Support
         </button>
