@@ -64,7 +64,7 @@ export default function AboutPage() {
 
           <div className="p-3.5 rounded-md bg-[#0d1117] border border-[#21262d] space-y-1">
             <strong className="text-white text-xs font-bold font-sans block">3. Verified Non-Profits Only</strong>
-            <p className="text-[11px] text-[#8b949e] font-sans">Strict statutory audits of 80G/12A trust deeds and physical facilities prior to project publishing.</p>
+            <p className="text-[11px] text-[#8b949e] font-sans">Audits of non-profit trust deeds (12A/80G statutory filings where applicable) and physical facilities prior to project publishing.</p>
           </div>
 
           <div className="p-3.5 rounded-md bg-[#0d1117] border border-[#21262d] space-y-1">
@@ -74,12 +74,12 @@ export default function AboutPage() {
 
           <div className="p-3.5 rounded-md bg-[#0d1117] border border-[#21262d] space-y-1">
             <strong className="text-white text-xs font-bold font-sans block">5. Circular Electronics Economy</strong>
-            <p className="text-[11px] text-[#8b949e] font-sans">Extending the lifespan of working laptops through professional refurbishment and NIST data sanitization.</p>
+            <p className="text-[11px] text-[#8b949e] font-sans">Extending the lifespan of working laptops through professional refurbishment and storage sanitization aligned with NIST SP 800-88 guidance.</p>
           </div>
 
           <div className="p-3.5 rounded-md bg-[#0d1117] border border-[#21262d] space-y-1">
             <strong className="text-white text-xs font-bold font-sans block">6. Open & Auditable</strong>
-            <p className="text-[11px] text-[#8b949e] font-sans">Transparent donation intents and public immutable tracking codes (#DL-XXXX) for all hardware donations.</p>
+            <p className="text-[11px] text-[#8b949e] font-sans">Transparent donation intent logs and public tracking identifiers (#DLC-XXXX-XXXX) for all hardware donations.</p>
           </div>
         </div>
       </div>

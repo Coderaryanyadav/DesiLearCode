@@ -1,150 +1,152 @@
 # DesiLearCode — Technology. Education. Opportunity.
 
-**DesiLearCode** is a production-quality, privacy-first, transparent nonprofit technology platform designed to bridge the digital divide for vulnerable and orphaned children. It connects donors, software mentors, and companies with verified child-care institutions, providing refurbished hardware, coding education, robotics kits, and educational supplies.
+**DesiLearCode** is a production-hardened educational technology and hardware redistribution platform designed to bridge the digital divide for underserved student learning labs across India. It connects device donors, verified child-welfare/educational NGOs, and volunteer mentors through a zero-trust, privacy-first infrastructure.
 
 ---
 
-## 🌟 Core Features
+## 🌟 Core Platform Capabilities
 
 1. **Projects & Real-Time Needs Marketplace**
-   - Itemized, tangible requirements (e.g. *3 Laptops Needed*, *2 Python Mentors*, *₹8,000 Refurbishment*, *Dual-Band Wi-Fi 6 Router*).
-   - Dynamic progress bars, urgency tags, and aggregated target beneficiary metrics.
-2. **End-to-End Device Donation Workflow**
-   - Multi-step diagnostic intake (power check, RAM/SSD specs, battery health, charger).
-   - Generates unique public tracking codes (e.g. `#TFK-104`, `#TFK-108`).
-   - Visual 7-step lifecycle timeline (`Submitted` → `Approved` → `Received` → `Refurbished` → `Ready` → `Assigned` → `In Use`).
-   - DoD 5220.22-M cryptographic data wiping pledge.
+   - Verified grassroots initiatives with itemized, tangible requirements (e.g. *Refurbished Laptops*, *Python Mentors*, *Lab Connectivity*).
+   - Dynamic progress tracking, priority indicators, and cohort aggregate beneficiary metrics (zero individual child PII).
+2. **Verifiable Device Donation Logistics Flow**
+   - 5-step diagnostic intake wizard (specs, physical condition, pickup/drop-off, data sanitization pledge, confirmation).
+   - High-entropy cryptographic tracking codes (`#DLC-XXXX-XXXX`) generated via CSPRNG.
+   - Public tracking endpoint powered by a zero-PII Data Transfer Object (`PublicDeviceTracking`), completely stripping donor contact info and private technician remarks.
+   - Strict 7-step lifecycle state machine (`Submitted` ➔ `Approved` ➔ `Received` ➔ `Repair` ➔ `Ready` ➔ `Assigned` ➔ `In Use`).
+   - Data sanitization process aligned with **NIST SP 800-88** guidelines (overwriting, cryptographic erase, technician verification).
 3. **Volunteer Mentorship Portal**
-   - Onboarding form with skills taxonomy (Scratch, Python, Web Dev, Cyber Safety, Arduino).
-   - Application tracking, session scheduling, and verified service hours logging.
-4. **NGO Partner Portal**
-   - Statutory credential management (12A/80G tax exemptions, trust deeds).
-   - Project publishing wizard with admin moderation status (`pending_approval` → `active`).
-   - Field updates & quarterly verified impact report submissions.
+   - Onboarding with technical skills taxonomy (Scratch, Python, Web Dev, Cyber Safety).
+   - Mandatory child safeguarding consent and background verification agreements.
+   - Session scheduling and verified service hours tracking via auditable records.
+4. **NGO Institutional Console**
+   - Statutory credential management (12A/80G filings, registration numbers).
+   - Project drafting with platform moderation workflows (`draft` ➔ `pending_review` ➔ `published`).
+   - Field updates and verified quarterly impact reporting.
+   - Strict multi-tenant isolation preventing cross-organization access.
 5. **Platform Administrator Command Center**
-   - Non-profit statutory verification queue.
-   - Project moderation & status transitions.
-   - Hardware diagnostic review & dispatch updates.
-   - Immutable audit log trail capturing actor, role, action, target, and timestamp.
-6. **Child Safeguarding & Zero-PII Policy**
-   - No individual child profiles or sensitive private records.
-   - Strict aggregated statistical reporting (e.g. "30 Middle School Students").
-   - Dedicated `/safeguarding` reporting channel.
-7. **Transparent Financial Support**
-   - Intent-based project support vouchers with instant 80G tax receipt generation.
-   - Zero raw credit card or payment credential storage.
+   - Action-oriented operational queues: NGO Verification Queue, Hardware Intake Assessment, Volunteer Background Checks, and Safeguarding Incident Triage.
+   - Append-only `audit_logs` tracking actor identity, role, action, target, and timestamp.
+6. **Child Safeguarding & Zero-PII Guarantee**
+   - No individual child profiles, contact information, or identifying imagery.
+   - Strict aggregated cohort reporting only (`targetStudents: number`, `beneficiaryGroup: string`).
+   - Automated PII detection scanners on submitted updates.
+   - Confidential escalation queue routed exclusively to safety administrators.
+7. **Transparent Financial Intent Architecture**
+   - Support vouchers record explicit intent with status `pledged`. Pledges do NOT artificially inflate confirmed project treasury balances.
+   - Clear disclosures regarding 80G tax exemption eligibility based on recipient statutory verification.
+   - Payment provider abstraction layer (`lib/payments/`) ready for Razorpay/Stripe HMAC webhook integration; defaults safely to `NOT_CONFIGURED`.
 
 ---
 
-## 🚀 Tech Stack
+## 🚀 Architecture & Tech Stack
 
-- **Framework**: Next.js 15 (App Router, React 19)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS, CSS variables design tokens, Lucide React icons
-- **State & Data Layer**: Interactive In-Memory & LocalStorage Client Store (zero backend latency for instant testing) + Full PostgreSQL / Supabase Schema
-- **Validation**: Zod Schemas
-- **Testing**: Vitest
+- **Framework**: Next.js 15.5.25 (App Router, React 19)
+- **Language**: TypeScript 5.9 (Strict mode, zero `any` leaks in DTO boundary)
+- **Styling**: Tailwind CSS with CSS variable tokens (editorial aesthetic, zero AI templates)
+- **Database & Auth**: PostgreSQL via Supabase with Row Level Security (RLS) and HttpOnly SSR cookie sessions
+- **Validation**: Zod schema validation across all Server Actions
+- **Rate Limiting**: Sliding-window token bucket limiter (`lib/rate-limit.ts`) protecting public intake endpoints
+- **Security Headers**: HSTS (`63072000`), Content-Security-Policy, X-Frame-Options (`DENY`), X-Content-Type-Options (`nosniff`)
+- **Testing**: Vitest automated suite (38 test cases covering authorization, IDOR, device state machine, DTO sanitization)
 
 ---
 
-## 📁 Folder Structure
+## 📁 Repository Structure
 
 ```
 .
 ├── app/
-│   ├── globals.css                # Custom theme variables & design tokens
+│   ├── actions/                   # Validated Server Actions (auth, devices, donations, impact, orgs, projects, safeguarding, volunteers)
+│   ├── globals.css                # Semantic CSS tokens & typography
 │   ├── layout.tsx                 # Root layout with Safeguarding banner & Navbar
-│   ├── page.tsx                   # 9-section high-converting landing page
-│   ├── projects/
-│   │   ├── page.tsx               # Searchable project marketplace
-│   │   └── [slug]/page.tsx        # Comprehensive project detail view
-│   ├── needs/page.tsx             # Live Needs Marketplace
-│   ├── organizations/page.tsx     # Directory of verified non-profits
-│   ├── volunteer/
-│   │   ├── page.tsx               # Volunteer landing page
-│   │   └── apply/page.tsx         # Volunteer onboarding wizard
-│   ├── donate-device/page.tsx     # Hardware donation form & live tracker
-│   ├── how-it-works/page.tsx      # Operational & refurbishment explainer
-│   ├── impact/page.tsx            # Public impact dashboard & before/after reports
-│   ├── safeguarding/page.tsx      # Child protection policy & report intake
-│   ├── about/page.tsx             # Mission, vision, core principles
-│   ├── contact/page.tsx           # Helpdesk & safeguarding hotline
-│   ├── faq/page.tsx               # Frequently asked questions
-│   ├── privacy/page.tsx           # Zero-PII privacy policy
-│   ├── terms/page.tsx             # Terms & volunteer code of ethics
-│   ├── login/page.tsx             # Sign in with 1-click demo personas
-│   ├── register/page.tsx          # User registration
-│   ├── dashboard/                 # Donor & Volunteer portal
-│   ├── ngo/                       # NGO partner portal
-│   └── admin/                     # Administrative command center
-├── components/                    # Reusable, accessible UI components
+│   ├── page.tsx                   # Editorial product landing page & protocol diagram
+│   ├── projects/                  # Project discovery marketplace & project dossiers
+│   ├── donate-device/page.tsx     # 5-step hardware intake & public tracking query
+│   ├── needs/page.tsx             # Hardware & volunteer needs directory
+│   ├── organizations/page.tsx     # Directory of verified NGO partners
+│   ├── volunteer/                 # Volunteer portal & onboarding wizard
+│   ├── safeguarding/page.tsx      # Child protection policy & confidential reporting
+│   ├── how-it-works/page.tsx      # Refurbishment & deployment explainer
+│   ├── impact/page.tsx            # Aggregate verified impact metrics
+│   ├── dashboard/                 # Authenticated donor & volunteer portal
+│   ├── ngo/                       # NGO operational management portal
+│   └── admin/                     # Administrative command center & audit logs
+├── components/                    # Accessible UI components (cards, modals, timelines, nav)
 ├── lib/
-│   ├── types.ts                   # Complete TypeScript domain definitions
-│   ├── mock-data.ts               # Realistic ethical seed data
-│   ├── store.tsx                  # Interactive store with persistence & audit logging
-│   ├── auth-context.tsx           # Role switcher (Visitor, Donor, Volunteer, NGO, Admin)
-│   └── validations.ts             # Zod validation schemas
+│   ├── crypto-id.ts               # High-entropy CSPRNG identifiers
+│   ├── device-lifecycle.ts        # Validated hardware state machine
+│   ├── dtos/                      # Zero-PII public Data Transfer Objects
+│   ├── env.ts                     # Strict Zod environment validation layer
+│   ├── payments/                  # Payment gateway abstraction (Razorpay/Stripe)
+│   ├── rate-limit.ts              # Sliding-window token bucket rate limiter
+│   ├── validations.ts             # Zod input schemas
+│   ├── types.ts                   # Domain type definitions
+│   └── supabase/                  # Server and client Supabase SSR instances
 ├── supabase/
-│   └── schema.sql                 # Production PostgreSQL schema, indexes, RLS policies
-└── tests/
-    └── validation.test.ts         # Vitest unit test suite
+│   └── migrations/                # PostgreSQL schema & production hardening RLS migrations
+└── tests/                         # Vitest test suite (38/38 passing)
 ```
 
 ---
 
 ## 💻 Local Development Setup
 
-### 1. Install Dependencies
+### 1. Prerequisites
+- Node.js 18+ or 20+
+- npm 9+
+
+### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Run Development Server
+### 3. Configure Environment Variables
+Copy `.env.example` to `.env.local`:
+```bash
+cp .env.example .env.local
+```
+Fill in genuine Supabase credentials:
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+NEXT_PUBLIC_SAFEGUARDING_EMAIL=safeguarding@desilearncode.org
+```
+*Note: `lib/env.ts` actively rejects dummy `placeholder-project` values.*
+
+### 4. Run Automated Test Suite
+```bash
+npm test
+```
+
+### 5. Typecheck & Lint
+```bash
+npx tsc --noEmit
+npm run lint
+```
+
+### 6. Run Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-### 3. Run Unit Tests
-```bash
-npm run test
-```
-
-### 4. Build for Production
+### 7. Compile Production Build
 ```bash
 npm run build
 ```
 
 ---
 
-## 🎭 Interactive Demo Personas
+## 🔒 Security & Data Ethics Standard
 
-When running locally, you can switch perspectives at any moment using the **Role Switcher** in the top navigation bar or the 1-click demo buttons on `/login`:
-
-- **Visitor**: Explore initiatives, view impact metrics, look up tracking codes.
-- **Donor**: Pledge project contributions, donate devices, view 80G tax receipts.
-- **Volunteer**: View mentor applications, schedule sessions, log teaching hours.
-- **NGO Partner**: Create initiatives, publish hardware needs, post field updates.
-- **Platform Admin**: Verify non-profit registration deeds, approve projects, transition hardware statuses, and inspect immutable audit logs.
-
----
-
-## 🔒 Security & Child Safeguarding Checklist
-
-- [x] **Zero-PII Enforcement**: No children's full names, home addresses, or contact information.
-- [x] **Consent-Driven Storytelling**: Media requires authorized guardian and organizational consent.
-- [x] **DoD Data Sanitization**: Cryptographic overwriting of donated hard drives before imaging.
-- [x] **Statutory Vetting**: 80G/12A trust deeds audited before organizations can publish projects.
-- [x] **Role-Based Authorization**: Distinct boundaries for donors, volunteers, NGOs, and admins.
-- [x] **Immutable Audit Logs**: All state transitions and moderation decisions are logged with timestamps.
-- [x] **Compliant Financial Architecture**: Transparent project intent vouchers without storing raw payment credentials.
-
----
-
-## 🗺️ Future Roadmap
-
-- Payment gateway webhooks (Stripe / Razorpay) for automated settlement reconciliation.
-- Multi-lingual UI localization (Hindi, Marathi, Kannada, Tamil, Spanish).
-- Direct courier API integration for automated doorstep pickup tracking.
-- IoT telemetry for remote classroom computer lab health monitoring.
-- Corporate CSR matching portal with customized employee volunteer batching.
+- [x] **No Hardcoded Secrets**: Zero tracked secrets in repository; `.env.local.backup` removed.
+- [x] **Zero Beneficiary PII**: No minor names, contact info, or identifying imagery stored.
+- [x] **NIST SP 800-88 Guidance**: Hardware data sanitization follows NIST guidance.
+- [x] **Pledges Separated From Settled Funds**: Pledges do not increment `projects.current_value`.
+- [x] **High-Entropy Tokens**: Cryptographic random generation for tracking and receipts.
+- [x] **Immutable Audit Trails**: `audit_logs` protected against `UPDATE` and `DELETE` at the database level.
+- [x] **Tenant Isolation**: NGO users cannot mutate projects or data belonging to another NGO.
+- [x] **Sliding-Window Rate Limiting**: Abuse protection on public intake endpoints.

@@ -5,12 +5,21 @@ import { revalidatePath } from 'next/cache';
 import { OrganizationVerificationStatus } from '@/lib/types';
 import { logAuditEvent } from '@/lib/db/audit-logger';
 
+import { generateSecureSlugSuffix } from '@/lib/crypto-id';
+import { checkRateLimit } from '@/lib/rate-limit';
+
 export async function registerOrganization(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: 'Unauthorized. Please create an account or sign in first.' };
+  }
+
+  // Rate Limiting (max 3 org applications per 10 minutes)
+  const rateLimit = checkRateLimit({ identifier: `org_reg:${user.id}`, limit: 3, windowMs: 10 * 60 * 1000 });
+  if (!rateLimit.allowed) {
+    return { error: 'Application rate limit reached. Please wait before submitting another organization application.' };
   }
 
   const { data: profile } = await supabase
@@ -37,7 +46,8 @@ export async function registerOrganization(formData: FormData) {
     return { error: 'Please provide all required organization registration details.' };
   }
 
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Math.floor(100 + Math.random() * 900);
+  // Cryptographically unique slug suffix
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + generateSecureSlugSuffix();
 
   const { data: org, error } = await supabase
     .from('organizations')
@@ -61,25 +71,30 @@ export async function registerOrganization(formData: FormData) {
     return { error: error?.message || 'Failed to register organization.' };
   }
 
-  // Bind profile to organization and assign role 'ngo'
+  // Associate profile with organization without prematurely granting full privileged NGO role
+  // Full NGO authority is unlocked once an administrator validates statutory 12A/trust deed credentials
   await supabase
     .from('profiles')
-    .update({ organization_id: org.id, role: 'ngo' })
+    .update({ organization_id: org.id })
     .eq('id', profile.id);
 
   await logAuditEvent({
     actorName: profile.full_name,
     actorEmail: profile.email,
-    actorRole: 'ngo',
+    actorRole: profile.role,
     action: 'ORGANIZATION_REGISTERED',
     targetType: 'organization',
     targetId: org.id,
-    details: `Organization "${org.name}" submitted registration (Reg: ${registrationNumber}). Initial status: pending verification.`,
+    details: `Organization "${org.name}" submitted application (Reg: ${registrationNumber}). Placed in pending statutory review queue.`,
   });
 
   revalidatePath('/organizations');
   revalidatePath('/ngo/dashboard');
-  return { success: true, organization: org };
+  return { 
+    success: true, 
+    organization: org, 
+    message: 'Application received. Pending administrative statutory verification.' 
+  };
 }
 
 export async function updateOrganizationStatus(orgId: string, status: OrganizationVerificationStatus, notes?: string) {

@@ -62,10 +62,10 @@ export default function HowItWorksPage() {
           },
           {
             step: '04',
-            title: 'NIST Sanitization & Educational Provisioning',
-            subtitle: 'Cryptographic data erasure, Linux OS deployment & #DL tracking codes',
+            title: 'Storage Sanitization (NIST SP 800-88 Aligned) & Provisioning',
+            subtitle: 'Cryptographic data erasure, Linux OS deployment & #DLC tracking codes',
             icon: Wrench,
-            content: 'Hardware intake undergoes multi-pass NIST 800-88 sanitization, thermal testing, SSD upgrades, and installation of curated offline curriculum suites (Scratch 3, Python 3, Kiwix offline library).'
+            content: 'Hardware intake undergoes data sanitization aligned with NIST SP 800-88 guidance (cryptographic erase or multi-pass overwrite), thermal testing, SSD upgrades, and installation of curated offline curriculum suites (Scratch 3, Python 3, Kiwix offline library).'
           },
           {
             step: '05',
@@ -114,12 +114,12 @@ export default function HowItWorksPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
           {[
-            { title: '1. NIST 800-88 Sanitization', desc: 'Multi-pass cryptographic drive wiping guarantees zero remnant donor data.' },
+            { title: '1. NIST SP 800-88 Sanitization', desc: 'Storage drive erasure aligned with NIST SP 800-88 guidance guarantees zero remnant donor data.' },
             { title: '2. Thermals & Battery Diagnostic', desc: 'Bench-tested for battery health, cooling fans cleaned, and thermal paste renewed.' },
             { title: '3. Educational Linux Image', desc: 'Configured with Ubuntu LTS / tailored educational Linux desktop environment.' },
             { title: '4. Offline Learning Suite', desc: 'Preloaded with Scratch 3, Python 3 IDE, Kiwix encyclopedias, and typing tutors.' },
             { title: '5. Restricted Safe Profile', desc: 'Standard non-admin learner profiles with DNS-level content filtering.' },
-            { title: '6. Immutable Asset ID', desc: 'Tracked via barcode tag (#DL-XXXX) through field delivery and active lab hours.' },
+            { title: '6. High-Entropy Asset ID', desc: 'Tracked via cryptographic identifier (#DLC-XXXX-XXXX) through field delivery and active lab hours.' },
           ].map((item, idx) => (
             <div key={idx} className="p-3 rounded-md bg-[#0d1117] border border-[#21262d] space-y-1">
               <strong className="text-xs font-bold text-white block font-sans">{item.title}</strong>

@@ -2,19 +2,44 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
+  let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
   });
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('http')
-    ? process.env.NEXT_PUBLIC_SUPABASE_URL
-    : 'https://placeholder-project.supabase.co';
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+  // Apply strict HTTP security headers
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  response.headers.set(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none';"
+  );
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Verify Supabase configuration exists
+  if (!supabaseUrl || !anonKey || supabaseUrl.includes('placeholder-project')) {
+    // If not configured, check if hitting protected route
+    const isProtectedRoute = 
+      request.nextUrl.pathname.startsWith('/dashboard') || 
+      request.nextUrl.pathname.startsWith('/ngo') || 
+      request.nextUrl.pathname.startsWith('/admin');
+
+    if (isProtectedRoute) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
 
   const supabase = createServerClient(
-    url,
+    supabaseUrl,
     anonKey,
     {
       cookies: {
@@ -27,12 +52,12 @@ export async function middleware(request: NextRequest) {
             value,
             ...options,
           });
-          supabaseResponse = NextResponse.next({
+          response = NextResponse.next({
             request: {
               headers: request.headers,
             },
           });
-          supabaseResponse.cookies.set({
+          response.cookies.set({
             name,
             value,
             ...options,
@@ -44,12 +69,12 @@ export async function middleware(request: NextRequest) {
             value: '',
             ...options,
           });
-          supabaseResponse = NextResponse.next({
+          response = NextResponse.next({
             request: {
               headers: request.headers,
             },
           });
-          supabaseResponse.cookies.set({
+          response.cookies.set({
             name,
             value: '',
             ...options,
@@ -63,7 +88,7 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Basic route protection
+  // Route protection
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register');
   const isProtectedRoute = 
     request.nextUrl.pathname.startsWith('/dashboard') || 
@@ -77,14 +102,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isAuthRoute && user) {
-    // If logged in, we should ideally fetch their role and redirect appropriately,
-    // but a generic redirect to dashboard is fine for middleware.
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
     return NextResponse.redirect(url);
   }
 
-  return supabaseResponse;
+  return response;
 }
 
 export const config = {

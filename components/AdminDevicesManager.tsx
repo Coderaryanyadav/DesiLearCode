@@ -14,7 +14,7 @@ export const AdminDevicesManager: React.FC<AdminDevicesManagerProps> = ({ initia
   const [devices, setDevices] = useState<DeviceDonation[]>(initialDevices);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>(devices[0]?.id || '');
   const [newStatus, setNewStatus] = useState<DeviceStatus>('Repair');
-  const [technicianNote, setTechnicianNote] = useState('Hardware bench diagnostics passed. NIST 800-88 sanitized.');
+  const [technicianNote, setTechnicianNote] = useState('Hardware bench diagnostics passed. Storage sanitized aligned with NIST SP 800-88 guidance.');
   const [isUpdating, setIsUpdating] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -135,7 +135,7 @@ export const AdminDevicesManager: React.FC<AdminDevicesManagerProps> = ({ initia
                 required
                 value={technicianNote}
                 onChange={(e) => setTechnicianNote(e.target.value)}
-                placeholder="Record NIST wipe verification, thermal paste renewal, or lab dispatch notes..."
+                placeholder="Record disk sanitization verification (NIST SP 800-88 aligned), thermal renewal, or lab dispatch notes..."
                 className="w-full px-3 py-2 rounded-md border border-border bg-surfaceSubtle text-xs focus:outline-none focus:border-primary-500 font-medium"
               />
             </div>

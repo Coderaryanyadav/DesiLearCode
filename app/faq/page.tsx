@@ -14,7 +14,7 @@ export default function FAQPage() {
     },
     {
       q: 'What happens to my old computer after I donate it?',
-      a: 'Upon receipt at our central processing hub, the hard drive is cryptographically sanitized using DoD 5220.22-M standards to wipe all past donor data. The device is physically inspected, cleaned, upgraded with SSDs if necessary, and re-imaged with child-safe educational Linux and programming tools. You receive a unique tracking code (e.g. #TFK-104) to follow its journey.'
+      a: 'Upon receipt at our central processing hub, the storage drive undergoes data sanitization aligned with NIST SP 800-88 guidance to wipe all past donor data. The device is physically inspected, cleaned, upgraded with SSDs if necessary, and re-imaged with child-safe educational Linux and programming tools. You receive a unique tracking code (e.g. #DLC-7F3A-8C21) to follow its journey.'
     },
     {
       q: 'How are NGOs and childcare organizations verified?',

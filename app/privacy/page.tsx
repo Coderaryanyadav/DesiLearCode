@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
         <section className="space-y-2">
           <h2 className="text-base font-bold text-slate-900">2. Device Donor Data Sanitization</h2>
           <p>
-            When you donate a computer, all internal storage media are cryptographically wiped to prevent data extraction. We do not inspect donor personal files. Donor names and emails are used solely to issue tax receipts and dispatch #TFK lifecycle tracking updates.
+            When you donate a computer, all internal storage media undergo data sanitization aligned with NIST SP 800-88 guidance to prevent data extraction. We do not inspect donor personal files. Donor contact details are used solely to issue support acknowledgement documentation and dispatch #DLC lifecycle tracking updates.
           </p>
         </section>
 

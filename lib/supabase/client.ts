@@ -1,13 +1,11 @@
 import { createBrowserClient } from '@supabase/ssr';
+import { getValidatedEnv } from '@/lib/env';
 
 export const createClient = () => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('http')
-    ? process.env.NEXT_PUBLIC_SUPABASE_URL
-    : 'https://placeholder-project.supabase.co';
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+  const env = getValidatedEnv();
 
   return createBrowserClient(
-    url,
-    anonKey
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
 };

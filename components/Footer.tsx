@@ -109,7 +109,7 @@ export const Footer: React.FC = () => {
         {/* Technical Footer Baseline */}
         <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-[#576071]">
           <div>
-            © 2026 DesiLearCode • Verifiable Open Infrastructure • ISO / NIST 800-88 Data Sanitized
+            © 2026 DesiLearCode • Verifiable Open Infrastructure • NIST SP 800-88 Aligned Sanitization
           </div>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 text-[#8b949e]">

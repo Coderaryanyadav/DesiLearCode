@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { DeviceDonation, DeviceType } from '@/lib/types';
+import { PublicDeviceTracking } from '@/lib/dtos';
 import { DeviceTimeline } from '@/components/DeviceTimeline';
 import { submitDeviceDonation, trackDeviceCode } from '@/app/actions/devices';
 import { 
@@ -55,7 +56,7 @@ export default function DonateDevicePage() {
 
   // Search Tracking
   const [searchTrackingCode, setSearchTrackingCode] = useState('');
-  const [trackedDevice, setTrackedDevice] = useState<DeviceDonation | null>(null);
+  const [trackedDevice, setTrackedDevice] = useState<PublicDeviceTracking | null>(null);
   const [trackingError, setTrackingError] = useState<string | null>(null);
   const [isTracking, setIsTracking] = useState(false);
 
@@ -142,7 +143,7 @@ export default function DonateDevicePage() {
               <Search className="w-4 h-4 text-indigo-400" />
               <span>Chain of Custody Tracking</span>
             </div>
-            <span className="text-[11px] text-[#576071]">FORMAT: DL-XXXX OR DLC-XXXX</span>
+            <span className="text-[11px] text-[#576071]">FORMAT: DLC-XXXX-XXXX</span>
           </div>
 
           <form onSubmit={handleTrackSearch} className="flex flex-col sm:flex-row gap-2">
@@ -150,7 +151,7 @@ export default function DonateDevicePage() {
               type="text"
               value={searchTrackingCode}
               onChange={(e) => setSearchTrackingCode(e.target.value.toUpperCase())}
-              placeholder="Enter Hardware Tracking Code (e.g. DL-1049)"
+              placeholder="Enter Hardware Tracking Code (e.g. DLC-7F3A-8C21)"
               className="flex-1 px-4 py-2.5 rounded bg-[#0d1117] border border-[#30363d] text-white placeholder:text-[#576071] focus:outline-none focus:border-indigo-500 text-xs font-mono"
             />
             <button
@@ -187,8 +188,8 @@ export default function DonateDevicePage() {
                   <div className="text-white font-bold">{trackedDevice.manufacturer} {trackedDevice.model}</div>
                 </div>
                 <div className="p-2 bg-[#161b22] rounded">
-                  <div className="text-[10px] text-[#576071]">SPECS</div>
-                  <div className="text-white font-bold">{trackedDevice.ram} / {trackedDevice.storage}</div>
+                  <div className="text-[10px] text-[#576071]">CONDITION & AGE</div>
+                  <div className="text-white font-bold capitalize">{trackedDevice.condition} • {trackedDevice.approximateAgeYears} yr</div>
                 </div>
                 <div className="p-2 bg-[#161b22] rounded">
                   <div className="text-[10px] text-[#576071]">DESTINATION</div>
@@ -543,10 +544,10 @@ export default function DonateDevicePage() {
                   <div className="p-4 bg-surfaceSubtle rounded-md border border-border space-y-3">
                     <div className="flex items-center gap-2 text-xs font-bold text-foreground">
                       <Lock className="w-4 h-4 text-primary-500" />
-                      <span>NIST 800-88 Data Sanitization Protocol</span>
+                      <span>NIST SP 800-88 Data Sanitization Guidance</span>
                     </div>
                     <p className="text-xs text-muted leading-relaxed">
-                      All donated hardware drives are reformatted using a multi-pass cryptographic overwrite before OS provisioning. By submitting, you acknowledge that existing data will be permanently wiped.
+                      All donated hardware drives undergo data sanitization aligned with NIST SP 800-88 guidance (multi-pass cryptographic overwrite) before OS provisioning. By submitting, you acknowledge that existing data will be permanently cleared.
                     </p>
                     <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer font-medium pt-1">
                       <input
@@ -600,7 +601,7 @@ export default function DonateDevicePage() {
                 Hardware assigned strictly to audited grassroots NGO learning centers. Zero-PII child safeguarding rules enforced.
               </p>
               <div className="space-y-1.5 pt-2 border-t border-[#21262d] text-[11px]">
-                <div className="flex items-center gap-2 text-white">✓ Drive wiped to NIST standards</div>
+                <div className="flex items-center gap-2 text-white">✓ Drive wiped aligned with NIST SP 800-88 guidance</div>
                 <div className="flex items-center gap-2 text-white">✓ Offline STEM bundle installed</div>
                 <div className="flex items-center gap-2 text-white">✓ Tamper-evident barcode asset tag</div>
               </div>

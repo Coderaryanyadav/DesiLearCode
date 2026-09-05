@@ -176,7 +176,7 @@ export interface Project {
 
 export interface DeviceDonation {
   id: string;
-  trackingCode: string; // e.g. TFK-104
+  trackingCode: string; // e.g. DLC-7F3A-8C21
   donorName: string;
   donorEmail: string;
   donorPhone?: string;
@@ -251,7 +251,7 @@ export interface VolunteerProfile {
 
 export interface DonationIntent {
   id: string;
-  receiptNumber: string; // e.g. TFK-DON-8842
+  receiptNumber: string; // e.g. DLC-REC-20260905-A1B2
   donorName: string;
   donorEmail: string;
   isAnonymous: boolean;

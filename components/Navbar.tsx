@@ -100,10 +100,10 @@ export const Navbar: React.FC = () => {
           {/* Right Controls */}
           <div className="flex items-center gap-3">
             
-            {/* Live Operational Beacon */}
+            {/* Verified Open Platform Badge */}
             <div className="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
-              <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
-              <span>NODES: LIVE</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-500" />
+              <span>COMMUNITY INFRASTRUCTURE</span>
             </div>
 
             {/* Authenticated State */}

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { DeviceDonation, DeviceStatus } from '@/lib/types';
+import { PublicDeviceTracking } from '@/lib/dtos';
 import { CheckCircle2, Clock, AlertCircle, Laptop, Truck, Wrench, Sparkles, Building, UserCheck } from 'lucide-react';
 
 const STAGES: { status: DeviceStatus; label: string; icon: any }[] = [
@@ -14,9 +15,21 @@ const STAGES: { status: DeviceStatus; label: string; icon: any }[] = [
   { status: 'In Use', label: 'Active Classroom', icon: UserCheck },
 ];
 
-export const DeviceTimeline: React.FC<{ device: DeviceDonation }> = ({ device }) => {
+export const DeviceTimeline: React.FC<{ device: DeviceDonation | PublicDeviceTracking }> = ({ device }) => {
   const currentStageIndex = STAGES.findIndex(s => s.status === device.status);
   const activeIndex = currentStageIndex !== -1 ? currentStageIndex : 0;
+
+  const historyItems = 'statusHistory' in device && Array.isArray(device.statusHistory)
+    ? device.statusHistory.map(h => ({ status: h.status, timestamp: h.timestamp, note: h.note }))
+    : 'timeline' in device && Array.isArray(device.timeline)
+    ? device.timeline.map(t => ({ status: t.status, timestamp: t.timestamp, note: t.publicSummary }))
+    : [];
+
+  const intakeDate = 'createdAt' in device && device.createdAt 
+    ? new Date(device.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : 'lastUpdated' in device && device.lastUpdated
+    ? new Date(device.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : 'Recently Logged';
 
   return (
     <div className="bg-surface rounded-xl border border-border p-6 space-y-6">
@@ -35,7 +48,7 @@ export const DeviceTimeline: React.FC<{ device: DeviceDonation }> = ({ device })
             {device.manufacturer} {device.model} <span className="font-normal text-muted">({device.deviceType})</span>
           </h3>
           <p className="text-xs font-mono text-muted mt-0.5">
-            Intake Date: {new Date(device.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} • Donor ID: Encrypted
+            Intake Date: {intakeDate} • Donor ID: Cryptographically Protected
           </p>
         </div>
 
@@ -132,7 +145,7 @@ export const DeviceTimeline: React.FC<{ device: DeviceDonation }> = ({ device })
         </h4>
 
         <div className="space-y-2">
-          {device.statusHistory.map((item, idx) => (
+          {historyItems.map((item, idx) => (
             <div key={idx} className="flex items-start gap-2.5 text-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-1.5 shrink-0" />
               <div className="flex-1">
@@ -152,7 +165,7 @@ export const DeviceTimeline: React.FC<{ device: DeviceDonation }> = ({ device })
       {/* Safeguarding note */}
       <div className="text-[11px] text-muted flex items-center gap-1.5 pt-1">
         <span className="w-1.5 h-1.5 rounded-full bg-success-500"></span>
-        <span>All donor personal data wiped under NIST 800-88 sanitization standards before lab deployment.</span>
+        <span>All donor personal data wiped following data sanitization aligned with NIST SP 800-88 guidance before lab deployment.</span>
       </div>
     </div>
   );

@@ -53,8 +53,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
             <div className="lg:col-span-7 space-y-6">
               
               <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
-                <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse"></span>
-                <span>OPEN LOGISTICS & EDUCATION INFRASTRUCTURE</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                <span>OPEN HARDWARE LOGISTICS & EDUCATION INFRASTRUCTURE</span>
               </div>
 
               <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-foreground tracking-tight leading-[1.08]">
@@ -93,7 +93,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
                 </div>
                 <div className="flex items-center gap-2">
                   <Lock className="w-4 h-4 text-primary-500 shrink-0" />
-                  <span className="text-muted font-medium">NIST 800-88 Data Sanitized</span>
+                  <span className="text-muted font-medium">NIST SP 800-88 Aligned</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-accent-500 shrink-0" />
@@ -103,72 +103,71 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
 
             </div>
 
-            {/* Right Column: Interactive Hardware Routing Composition (Technical terminal/diagram) */}
+            {/* Right Column: Truthful Hardware Lifecycle & Routing Architecture */}
             <div className="lg:col-span-5">
-              <div className="bg-[#090c10] rounded-xl border border-[#30363d] shadow-elevation overflow-hidden text-[#8b949e] font-mono text-xs">
+              <div className="bg-surfaceSubtle rounded-xl border border-border shadow-subtle overflow-hidden text-foreground text-xs">
                 
-                {/* Window Bar */}
-                <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-[#30363d]">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+                {/* Header Bar */}
+                <div className="flex items-center justify-between px-4 py-3 bg-surface border-b border-border">
+                  <div className="flex items-center gap-2">
+                    <Workflow className="w-4 h-4 text-primary-600" />
+                    <span className="font-semibold text-xs tracking-tight">Hardware Verification Protocol</span>
                   </div>
-                  <div className="text-[11px] text-[#8b949e]">desilearcode-node-pipeline.log</div>
-                  <div className="text-[10px] text-emerald-400">STATUS: ACTIVE</div>
+                  <div className="text-[10px] font-mono text-muted uppercase">Documented Flow</div>
                 </div>
 
-                {/* Pipeline Inspection Content */}
-                <div className="p-4 space-y-3.5">
-                  <div className="text-slate-400">
-                    <span className="text-indigo-400">$</span> dl-routing-daemon --track-stream
+                {/* Architecture Steps */}
+                <div className="p-4 space-y-3">
+                  
+                  {/* Phase 1 */}
+                  <div className="p-3 rounded bg-surface border border-border space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-bold text-primary-600">01 / INTAKE & INVENTORY</span>
+                      <span className="text-[10px] font-mono text-muted">Intake Logging</span>
+                    </div>
+                    <p className="text-xs text-muted">
+                      Hardware assessment submitted. A high-entropy tracking identifier (<code className="text-foreground font-mono text-[11px]">#DLC-XXXX-XXXX</code>) is assigned for transparent public tracking.
+                    </p>
                   </div>
 
-                  {/* Flow Steps */}
-                  <div className="space-y-2 pt-1 border-t border-[#21262d]">
-                    <div className="flex items-center justify-between p-2 rounded bg-[#0d1117] border border-[#21262d]">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        <span className="text-white font-bold">#DL-4820</span>
-                        <span className="text-[#8b949e]">ThinkPad T480 (16GB)</span>
-                      </div>
-                      <span className="text-emerald-400 text-[10px]">WIPED / READY</span>
+                  {/* Phase 2 */}
+                  <div className="p-3 rounded bg-surface border border-border space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-bold text-success-600">02 / STORAGE SANITIZATION</span>
+                      <span className="text-[10px] font-mono text-muted">Guidance: NIST SP 800-88</span>
                     </div>
-
-                    <div className="flex items-center justify-between p-2 rounded bg-[#0d1117] border border-[#21262d]">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                        <span className="text-white font-bold">#DL-4821</span>
-                        <span className="text-[#8b949e]">Dell Latitude (8GB)</span>
-                      </div>
-                      <span className="text-amber-400 text-[10px]">INSPECTION</span>
-                    </div>
-
-                    <div className="flex items-center justify-between p-2 rounded bg-[#0d1117] border border-[#21262d]">
-                      <div className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                        <span className="text-white font-bold">#DEST-NGO</span>
-                        <span className="text-white">Navodaya Vidya Kendra</span>
-                      </div>
-                      <span className="text-cyan-400 text-[10px]">VERIFIED LAB</span>
-                    </div>
+                    <p className="text-xs text-muted">
+                      Technicians perform cryptographic erase or multi-pass disk wipe. Zero donor personal data is preserved.
+                    </p>
                   </div>
 
-                  {/* Tech Specs Summary */}
-                  <div className="p-2.5 rounded bg-[#161b22] border border-[#30363d] space-y-1 text-[11px]">
-                    <div className="text-white font-semibold flex items-center gap-1.5">
-                      <Cpu className="w-3.5 h-3.5 text-indigo-400" />
-                      <span>Curriculum Bundle Pre-installed:</span>
+                  {/* Phase 3 */}
+                  <div className="p-3 rounded bg-surface border border-border space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-bold text-accent-600">03 / CURRICULUM PROVISIONING</span>
+                      <span className="text-[10px] font-mono text-muted">Offline Suite</span>
                     </div>
-                    <div className="text-[#8b949e] pl-5">
-                      • Scratch 3.0 Offline • Python 3.12 • VS Code OSS • FreeCodeCamp Offline
-                    </div>
+                    <p className="text-xs text-muted">
+                      Installation of lightweight Linux, Scratch 3.0 Offline, Python 3.12, VS Code OSS, and offline Kiwix encyclopedias.
+                    </p>
                   </div>
 
-                  <div className="text-[10px] text-[#576071] pt-1 flex justify-between">
-                    <span>Target Cohort: 40 Students</span>
-                    <span>Disbursement: Milestone-Gated</span>
+                  {/* Phase 4 */}
+                  <div className="p-3 rounded bg-surface border border-border space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-bold text-foreground">04 / DISBURSEMENT TO VETTED LABS</span>
+                      <span className="text-[10px] font-mono text-muted">Milestone-Gated</span>
+                    </div>
+                    <p className="text-xs text-muted">
+                      Direct delivery to verified grassroots classrooms with safety officers and active student cohorts.
+                    </p>
                   </div>
+
+                  <div className="text-[10px] text-muted pt-1 flex justify-between font-mono">
+                    <span>Audit Model: Immutable Log</span>
+                    <span>Safety: Zero Student PII</span>
+                  </div>
+
                 </div>
 
               </div>
@@ -205,7 +204,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
                   Hardware Intake & Sanitization
                 </h3>
                 <p className="text-xs text-muted leading-relaxed">
-                  Every donated device undergoes NIST 800-88 cryptographic sanitization, thermal testing, Linux OS deployment, and offline coding tool installation before field allocation.
+                  Every donated device undergoes data sanitization aligned with NIST SP 800-88 guidance, thermal testing, Linux OS deployment, and offline coding tool installation before field allocation.
                 </p>
               </div>
               <Link href="/donate-device" className="text-xs font-semibold text-foreground hover:text-primary-600 flex items-center gap-1">
@@ -279,9 +278,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
 
             <div className="p-4 rounded-lg bg-surfaceSubtle border border-border space-y-2 relative">
               <div className="font-mono text-xs font-bold text-muted">STEP 02</div>
-              <h4 className="font-bold text-sm text-foreground">NIST Sanitization</h4>
-              <p className="text-xs text-muted">Storage drive wiped with cryptographic overwrite; battery health logged.</p>
-              <div className="text-[10px] font-mono text-success-600 pt-1">Status: Certified Wipe</div>
+              <h4 className="font-bold text-sm text-foreground">Storage Sanitization</h4>
+              <p className="text-xs text-muted">Storage drive wiped with cryptographic overwrite aligned with NIST SP 800-88 guidance.</p>
+              <div className="text-[10px] font-mono text-success-600 pt-1">Status: Verified Wipe</div>
             </div>
 
             <div className="p-4 rounded-lg bg-surfaceSubtle border border-border space-y-2 relative">

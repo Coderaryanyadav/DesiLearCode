@@ -1,5 +1,34 @@
 import { createClient } from '@/lib/supabase/server';
 import { DeviceDonation } from '@/lib/types';
+import { PublicDeviceTracking, toPublicDeviceTracking } from '@/lib/dtos';
+
+export async function getPublicDeviceByTrackingCode(trackingCode: string): Promise<PublicDeviceTracking | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('devices')
+    .select(`
+      tracking_code,
+      device_type,
+      manufacturer,
+      model,
+      approximate_age_years,
+      condition,
+      status,
+      created_at,
+      updated_at,
+      assigned_organization:assigned_organization_id (name),
+      assigned_project:assigned_project_id (title),
+      device_updates (status, technician_note, created_at)
+    `)
+    .eq('tracking_code', trackingCode.toUpperCase())
+    .single();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return toPublicDeviceTracking(data);
+}
 
 export async function getDeviceByTrackingCode(trackingCode: string): Promise<DeviceDonation | null> {
   const supabase = await createClient();

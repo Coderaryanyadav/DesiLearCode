@@ -1,17 +1,14 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { getValidatedEnv } from '@/lib/env';
 
 export const createClient = async () => {
   const cookieStore = await cookies();
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('http')
-    ? process.env.NEXT_PUBLIC_SUPABASE_URL
-    : 'https://placeholder-project.supabase.co';
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+  const env = getValidatedEnv();
 
   return createServerClient(
-    url,
-    anonKey,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         get(name: string) {

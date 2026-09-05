@@ -5,11 +5,21 @@ import { revalidatePath } from 'next/cache';
 import { DeviceStatus, DeviceType } from '@/lib/types';
 import { DeviceDonationSchema } from '@/lib/validations';
 import { logAuditEvent } from '@/lib/db/audit-logger';
-import { getDeviceByTrackingCode } from '@/lib/db/devices';
+import { getPublicDeviceByTrackingCode } from '@/lib/db/devices';
+import { generateDeviceTrackingCode } from '@/lib/crypto-id';
+import { isValidDeviceTransition } from '@/lib/device-lifecycle';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function submitDeviceDonation(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Rate limiting (max 5 submissions per minute)
+  const rateLimitKey = user ? `device:${user.id}` : `device:anon:${formData.get('donorEmail') || 'unknown'}`;
+  const rateLimit = checkRateLimit({ identifier: rateLimitKey, limit: 5, windowMs: 60 * 1000 });
+  if (!rateLimit.allowed) {
+    return { error: 'Submission rate limit exceeded. Please wait a minute before submitting another device.' };
+  }
 
   let donorProfileId: string | null = null;
   let actorName = (formData.get('donorName') as string)?.trim() || 'Anonymous Donor';
@@ -53,7 +63,8 @@ export async function submitDeviceDonation(formData: FormData) {
     return { error: validation.error.errors[0]?.message || 'Invalid device assessment.' };
   }
 
-  const trackingCode = 'DLC-' + Math.floor(1000 + Math.random() * 9000);
+  // Cryptographically secure tracking code with 4.29 billion combinations
+  const trackingCode = generateDeviceTrackingCode();
 
   const { data: device, error } = await supabase
     .from('devices')
@@ -104,7 +115,7 @@ export async function submitDeviceDonation(formData: FormData) {
 
   revalidatePath('/dashboard/devices');
   revalidatePath('/donate-device');
-  return { success: true, trackingCode, device };
+  return { success: true, trackingCode, deviceId: device.id };
 }
 
 export async function updateDeviceStatus(deviceId: string, status: DeviceStatus, technicianNote: string) {
@@ -120,7 +131,30 @@ export async function updateDeviceStatus(deviceId: string, status: DeviceStatus,
     .single();
 
   if (!profile || (profile.role !== 'admin' && profile.role !== 'ngo')) {
-    return { error: 'Forbidden. Technicians or administrators only.' };
+    return { error: 'Forbidden. Authorized technicians or administrators only.' };
+  }
+
+  // Fetch current device to enforce tenant isolation and valid state machine transition
+  const { data: existingDevice, error: fetchErr } = await supabase
+    .from('devices')
+    .select('id, status, assigned_organization_id')
+    .eq('id', deviceId)
+    .single();
+
+  if (fetchErr || !existingDevice) {
+    return { error: 'Device record not found.' };
+  }
+
+  // Tenant Isolation: NGO can only update devices assigned to their own organization
+  if (profile.role === 'ngo' && existingDevice.assigned_organization_id !== profile.organization_id) {
+    return { error: 'Forbidden. You do not have permission to manage hardware assigned to other organizations.' };
+  }
+
+  // Lifecycle State Machine validation
+  if (!isValidDeviceTransition(existingDevice.status as DeviceStatus, status)) {
+    return { 
+      error: `Invalid transition: cannot change status from "${existingDevice.status}" directly to "${status}".` 
+    };
   }
 
   const { error: updateErr } = await supabase
@@ -144,7 +178,7 @@ export async function updateDeviceStatus(deviceId: string, status: DeviceStatus,
     action: 'DEVICE_STATUS_UPDATED',
     targetType: 'device',
     targetId: deviceId,
-    details: `Device status moved to ${status}. Note: ${technicianNote}`,
+    details: `Device status moved from ${existingDevice.status} to ${status}. Note: ${technicianNote || 'None'}`,
   });
 
   revalidatePath('/admin/devices');
@@ -153,8 +187,16 @@ export async function updateDeviceStatus(deviceId: string, status: DeviceStatus,
 }
 
 export async function trackDeviceCode(trackingCode: string) {
-  if (!trackingCode) return { error: 'Please enter a tracking code.' };
-  const device = await getDeviceByTrackingCode(trackingCode.trim().toUpperCase());
-  if (!device) return { error: 'Device not found with that tracking code.' };
-  return { success: true, device };
+  if (!trackingCode || trackingCode.trim().length === 0) {
+    return { error: 'Please enter a hardware tracking code.' };
+  }
+
+  const cleanCode = trackingCode.trim().toUpperCase();
+  // Return privacy-preserving PublicDeviceTracking DTO
+  const publicDevice = await getPublicDeviceByTrackingCode(cleanCode);
+  if (!publicDevice) {
+    return { error: 'No hardware records found for tracking identifier ' + cleanCode };
+  }
+
+  return { success: true, device: publicDevice };
 }

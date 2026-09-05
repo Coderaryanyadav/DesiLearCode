@@ -4,10 +4,19 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { DonationIntentSchema } from '@/lib/validations';
 import { logAuditEvent } from '@/lib/db/audit-logger';
+import { generateDonationReceiptNumber } from '@/lib/crypto-id';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function submitDonationIntent(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Rate Limiting Protection (5 pledges per minute per user/client)
+  const rateLimitKey = user ? `pledge:${user.id}` : `pledge:anon:${formData.get('donorEmail') || 'unknown'}`;
+  const rateLimit = checkRateLimit({ identifier: rateLimitKey, limit: 5, windowMs: 60 * 1000 });
+  if (!rateLimit.allowed) {
+    return { error: 'Rate limit exceeded. Please wait a moment before submitting another pledge.' };
+  }
 
   let donorProfileId: string | null = null;
   let donorName = (formData.get('donorName') as string)?.trim();
@@ -42,8 +51,12 @@ export async function submitDonationIntent(formData: FormData) {
     return { error: validation.error.errors[0]?.message || 'Invalid pledge details.' };
   }
 
-  const receiptNumber = 'TFK-DON-' + Math.floor(1000 + Math.random() * 9000);
+  // Cryptographically collision-resistant receipt identifier
+  const receiptNumber = generateDonationReceiptNumber();
 
+  // Record donation intent with status 'pledged'
+  // CRITICAL: We do NOT increment projects.current_value here.
+  // A pledge represents intent, not settled treasury funding.
   const { data: donation, error } = await supabase
     .from('donation_intents')
     .insert({
@@ -57,27 +70,15 @@ export async function submitDonationIntent(formData: FormData) {
       currency: 'INR',
       allocated_need_type: rawPayload.allocatedNeedType,
       message: rawPayload.message,
-      status: 'initiated',
-      compliance_notice: 'Direct transparent allocation pledge for educational hardware & supplies.',
+      status: 'pledged',
+      tax_exempt_eligible: false, // Default false until recipient NGO 12A/80G status is verified for this transaction
+      compliance_notice: 'Support intent recorded. Actual tax exemption documentation depends on recipient NGO statutory registration and regulatory guidelines upon funding settlement.',
     })
     .select()
     .single();
 
   if (error || !donation) {
     return { error: error?.message || 'Failed to record donation pledge.' };
-  }
-
-  // Update project current_value
-  const { data: proj } = await supabase.from('projects').select('current_value, goal_value').eq('id', rawPayload.projectId).single();
-  if (proj) {
-    const newCurrent = Number(proj.current_value || 0) + rawPayload.amount;
-    const progress = proj.goal_value > 0 ? Math.min(100, Math.round((newCurrent / proj.goal_value) * 100)) : 0;
-    await supabase.from('projects').update({
-      current_value: newCurrent,
-      progress_percentage: progress,
-      status: progress >= 100 ? 'almost_funded' : 'active',
-      updated_at: new Date().toISOString(),
-    }).eq('id', rawPayload.projectId);
   }
 
   await logAuditEvent({
@@ -87,10 +88,16 @@ export async function submitDonationIntent(formData: FormData) {
     action: 'DONATION_INTENT_RECORDED',
     targetType: 'donation',
     targetId: donation.id,
-    details: `Pledged ₹${rawPayload.amount.toLocaleString()} for project (Receipt: ${receiptNumber}).`,
+    details: `Pledge intent of ₹${rawPayload.amount.toLocaleString()} recorded for project (Receipt: ${receiptNumber}). Pending settlement.`,
   });
 
   revalidatePath(`/projects`);
   revalidatePath('/dashboard/donations');
-  return { success: true, receiptNumber, donation };
+  return { 
+    success: true, 
+    receiptNumber, 
+    donation,
+    isPledgeOnly: true,
+    message: 'Support intent successfully recorded. Thank you for pledging!'
+  };
 }

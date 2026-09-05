@@ -6,12 +6,21 @@ import { ProjectStatus } from '@/lib/types';
 import { ProjectCreationSchema } from '@/lib/validations';
 import { logAuditEvent } from '@/lib/db/audit-logger';
 
+import { generateSecureSlugSuffix } from '@/lib/crypto-id';
+import { checkRateLimit } from '@/lib/rate-limit';
+
 export async function createProject(formData: FormData) {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return { error: 'Unauthorized. Please sign in.' };
+  }
+
+  // Rate Limiting (max 5 projects created per 10 minutes)
+  const rateLimit = checkRateLimit({ identifier: `create_proj:${user.id}`, limit: 5, windowMs: 10 * 60 * 1000 });
+  if (!rateLimit.allowed) {
+    return { error: 'Project creation rate limit reached. Please wait a few minutes before submitting another project.' };
   }
 
   // Look up user profile & org
@@ -48,10 +57,11 @@ export async function createProject(formData: FormData) {
     return { error: validation.error.errors[0]?.message || 'Validation failed.' };
   }
 
+  // Cryptographically unique slug
   const slug = payload.title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '') + '-' + Math.floor(1000 + Math.random() * 9000);
+    .replace(/(^-|-$)+/g, '') + '-' + generateSecureSlugSuffix();
 
   const { data: project, error } = await supabase
     .from('projects')
@@ -148,6 +158,21 @@ export async function addProjectMilestone(projectId: string, title: string, desc
 
   if (!profile) return { error: 'Profile not found.' };
 
+  // Tenant Isolation: Verify project belongs to user's organization
+  const { data: targetProject, error: projErr } = await supabase
+    .from('projects')
+    .select('id, organization_id')
+    .eq('id', projectId)
+    .single();
+
+  if (projErr || !targetProject) {
+    return { error: 'Target project does not exist.' };
+  }
+
+  if (profile.role !== 'admin' && profile.organization_id !== targetProject.organization_id) {
+    return { error: 'Forbidden: You do not have permission to manage milestones for this project.' };
+  }
+
   const { error } = await supabase
     .from('project_milestones')
     .insert({
@@ -181,11 +206,26 @@ export async function addProjectUpdate(projectId: string, title: string, content
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, full_name, email, role')
+    .select('id, full_name, email, role, organization_id')
     .eq('user_id', user.id)
     .single();
 
   if (!profile) return { error: 'Profile not found.' };
+
+  // Tenant Isolation: Verify project belongs to user's organization
+  const { data: targetProject, error: projErr } = await supabase
+    .from('projects')
+    .select('id, organization_id')
+    .eq('id', projectId)
+    .single();
+
+  if (projErr || !targetProject) {
+    return { error: 'Target project does not exist.' };
+  }
+
+  if (profile.role !== 'admin' && profile.organization_id !== targetProject.organization_id) {
+    return { error: 'Forbidden: You do not have permission to publish updates for this project.' };
+  }
 
   // Child Safeguarding Check on update text
   const lower = (title + ' ' + content).toLowerCase();

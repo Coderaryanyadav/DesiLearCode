@@ -165,7 +165,7 @@ function mapProjectRow(row: any): Project {
       studentsReached: Number(row.target_students || 0),
       computersInstalled: needs.filter(n => n.type === 'laptop' || n.type === 'desktop').reduce((acc, curr) => acc + curr.quantityFulfilled, 0),
       volunteerHoursLogged: 0,
-      workshopsConducted: milestones.filter(m => m.completed).length * 4,
+      workshopsConducted: milestones.filter(m => m.completed).length,
     },
     createdAt: row.created_at,
     updatedAt: row.updated_at,

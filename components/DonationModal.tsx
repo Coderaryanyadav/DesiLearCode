@@ -109,14 +109,14 @@ export const DonationModal: React.FC<DonationModalProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <span className="text-xs font-mono font-bold bg-success-50 text-success-700 px-2.5 py-0.5 rounded border border-success-200">
-                PLEDGE #{generatedReceipt}
+              <span className="text-xs font-mono font-bold bg-amber-50 text-amber-700 px-2.5 py-0.5 rounded border border-amber-200">
+                PLEDGE INTENT #{generatedReceipt}
               </span>
               <h3 className="text-xl font-display font-bold text-foreground">
-                Support Pledge Recorded
+                Support Intent Recorded
               </h3>
               <p className="text-xs text-muted max-w-sm mx-auto leading-relaxed">
-                Your support pledge of <strong className="text-foreground">₹{amount.toLocaleString()}</strong> for <strong>{project.title}</strong> has been logged in the milestone registry.
+                Your pledge intent of <strong className="text-foreground">₹{amount.toLocaleString()}</strong> for <strong>{project.title}</strong> has been recorded in the public registry. Direct online payment gateway will open once statutory banking clearance is finalized.
               </p>
             </div>
 
@@ -131,16 +131,20 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               </div>
               <div className="flex justify-between items-center pt-2 border-t border-border">
                 <span>STATUS:</span>
-                <span className="text-success-700 font-bold">CONFIRMED ALLOCATION</span>
+                <span className="text-amber-700 font-bold">PLEDGED (UNSETTLED INTENT)</span>
               </div>
             </div>
+
+            <p className="text-[11px] text-muted text-left border-l-2 border-amber-400 pl-2">
+              Note: Tax exemption (80G) documentation depends on the recipient organization&apos;s statutory legal status and applicable transaction rules upon final settlement.
+            </p>
 
             <div className="pt-2">
               <button
                 onClick={resetAndClose}
                 className="w-full py-2.5 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors"
               >
-                Close & View Initiative
+                Close & Return to Initiative
               </button>
             </div>
           </div>
@@ -270,9 +274,9 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               </label>
 
               {/* Transparency Notice */}
-              <div className="p-3 bg-surfaceSubtle rounded-md border border-border text-[11px] text-muted flex items-center gap-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-success-600 shrink-0" />
-                <span>100% of pledges are milestone-gated and auditable by platform administrators.</span>
+              <div className="p-3 bg-surfaceSubtle rounded-md border border-border text-[11px] text-muted flex items-start gap-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-primary-600 shrink-0 mt-0.5" />
+                <span>Pledge commitments are logged for transparent capacity planning. Payment gateway integration will activate upon completion of regulatory trust vetting.</span>
               </div>
 
               {/* Submit CTA */}
