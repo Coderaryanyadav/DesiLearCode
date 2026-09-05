@@ -3,14 +3,14 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { ArrowLeft, User, ShieldCheck, Lock, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export default function DashboardProfilePage() {
   const { currentUser } = useAuth();
 
-  const [name, setName] = useState(currentUser.name);
-  const [email, setEmail] = useState(currentUser.email);
-  const [phone, setPhone] = useState(currentUser.phone || '+91 98765 43210');
+  const [name, setName] = useState(currentUser?.name || 'Supporter');
+  const [email, setEmail] = useState(currentUser?.email || '');
+  const [phone, setPhone] = useState(currentUser?.phone || '+91 98765 43210');
   const [saved, setSaved] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
@@ -37,7 +37,7 @@ export default function DashboardProfilePage() {
         </h1>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xs">
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-sm">
         {saved && (
           <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 font-medium flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
