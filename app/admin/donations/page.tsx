@@ -1,13 +1,26 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { ArrowLeft, HeartHandshake, FileText, CheckCircle2 } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getAllDonationsForAdmin } from '@/lib/db/donations';
+import { ArrowLeft, HeartHandshake } from 'lucide-react';
 
-export default function AdminDonationsPage() {
-  const { donations } = useStore();
+export const metadata = {
+  title: 'Donations Oversight — TechForKids Admin',
+};
 
+export default async function AdminDonationsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect('/login');
+
+  const { data: profile } = await supabase.from('profiles').select('role').eq('user_id', user.id).single();
+  if (profile?.role !== 'admin') {
+    redirect('/dashboard');
+  }
+
+  const donations = await getAllDonationsForAdmin();
   const total = donations.reduce((sum, d) => sum + d.amount, 0);
 
   return (
@@ -33,44 +46,50 @@ export default function AdminDonationsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
-              <tr>
-                <th className="p-3.5 rounded-l-xl">Receipt #</th>
-                <th className="p-3.5">Donor Name</th>
-                <th className="p-3.5">Project Target</th>
-                <th className="p-3.5">Partner NGO</th>
-                <th className="p-3.5">Amount</th>
-                <th className="p-3.5">Tax Status</th>
-                <th className="p-3.5 rounded-r-xl">Timestamp</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {donations.map((don) => (
-                <tr key={don.id} className="hover:bg-slate-50/60 transition">
-                  <td className="p-3.5 font-mono font-bold text-indigo-600">{don.receiptNumber}</td>
-                  <td className="p-3.5">
-                    <span className="font-bold text-slate-900">{don.donorName}</span>
-                    <span className="text-[11px] text-slate-500 block font-normal">{don.donorEmail}</span>
-                  </td>
-                  <td className="p-3.5 font-semibold text-slate-800">{don.projectTitle}</td>
-                  <td className="p-3.5 text-slate-600">{don.organizationName}</td>
-                  <td className="p-3.5 font-extrabold text-slate-900">₹{don.amount.toLocaleString()}</td>
-                  <td className="p-3.5">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      80G Valid
-                    </span>
-                  </td>
-                  <td className="p-3.5 text-slate-500 font-mono text-[11px]">
-                    {new Date(don.createdAt).toLocaleString()}
-                  </td>
+      <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm overflow-hidden">
+        {donations.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th className="p-3.5 rounded-l-xl">Receipt #</th>
+                  <th className="p-3.5">Donor Name</th>
+                  <th className="p-3.5">Project Target</th>
+                  <th className="p-3.5">Partner NGO</th>
+                  <th className="p-3.5">Amount</th>
+                  <th className="p-3.5">Tax Status</th>
+                  <th className="p-3.5 rounded-r-xl">Timestamp</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {donations.map((don) => (
+                  <tr key={don.id} className="hover:bg-slate-50/60 transition">
+                    <td className="p-3.5 font-mono font-bold text-indigo-600">{don.receiptNumber}</td>
+                    <td className="p-3.5">
+                      <span className="font-bold text-slate-900">{don.donorName}</span>
+                      <span className="text-[11px] text-slate-500 block font-normal">{don.donorEmail}</span>
+                    </td>
+                    <td className="p-3.5 font-semibold text-slate-800">{don.projectTitle}</td>
+                    <td className="p-3.5 text-slate-600">{don.organizationName}</td>
+                    <td className="p-3.5 font-extrabold text-slate-900">₹{don.amount.toLocaleString()}</td>
+                    <td className="p-3.5">
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                        {don.status}
+                      </span>
+                    </td>
+                    <td className="p-3.5 font-mono text-slate-400 text-[11px]">
+                      {new Date(don.createdAt).toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="p-10 text-center text-xs text-slate-500">
+            No donation pledges recorded yet in database.
+          </div>
+        )}
       </div>
 
     </div>
