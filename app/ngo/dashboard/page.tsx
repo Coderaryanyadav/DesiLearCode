@@ -4,25 +4,25 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getProjectsForOrg } from '@/lib/db/projects';
 import { getDevicesForOrg } from '@/lib/db/devices';
-import { VerificationBadge } from '@/components/VerificationBadge';
-import { StatusBadge } from '@/components/StatusBadge';
+import { VerificationBadge, StatusBadge } from '@/components/VerificationBadge';
 import { ProgressBar } from '@/components/ProgressBar';
 import { 
   Building2, 
   Layers, 
-  Sparkles, 
   Laptop, 
   UserCheck, 
   Plus, 
   ArrowRight, 
   CheckCircle2, 
   Clock, 
-  FileText,
-  AlertCircle
+  AlertCircle,
+  HardDrive,
+  FileCheck2,
+  Calendar
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'NGO Partner Hub — DesiLearCode',
+  title: 'NGO Operator Console — DesiLearCode',
 };
 
 export default async function NgoDashboardPage() {
@@ -43,34 +43,38 @@ export default async function NgoDashboardPage() {
   const orgProjects = org ? await getProjectsForOrg(org.id) : [];
   const orgDevices = org ? await getDevicesForOrg(org.id) : [];
 
+  const pendingApprovalProjects = orgProjects.filter(p => p.status === 'pending_approval');
+  const activeProjects = orgProjects.filter(p => p.status === 'active');
+  const devicesInRepair = orgDevices.filter(d => d.status === 'Repair' || d.status === 'Inspection');
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+      {/* Operator Title Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
-              NGO Partner Command Center
+            <span className="text-[10px] font-mono font-bold bg-primary-50 text-primary-700 px-2 py-0.5 rounded border border-primary-200">
+              OPERATOR HUB
             </span>
-            {org && <VerificationBadge status={org.verification_status} />}
+            {org && <VerificationBadge status={org.verification_status} size="sm" />}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-            {org ? org.name : 'Organization Portal'}
+          <h1 className="text-xl font-display font-bold text-foreground">
+            {org ? org.name : 'Organization Workspace'}
           </h1>
-          <p className="text-xs text-slate-500">
-            {org ? `Registration: ${org.registration_number} • ${org.location}` : 'Manage your education projects and hardware needs'}
+          <p className="text-xs font-mono text-muted">
+            {org ? `REG: ${org.registration_number || 'PENDING'} • REGION: ${org.location}` : 'Initiative and hardware allocation console'}
           </p>
         </div>
 
         {org && (
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <Link
               href="/ngo/projects/new"
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center gap-1.5 shadow-sm"
+              className="px-3.5 py-2 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors flex items-center gap-1.5"
             >
-              <Plus className="w-4 h-4" />
-              <span>Create New Project</span>
+              <Plus className="w-3.5 h-3.5" />
+              <span>Create Initiative</span>
             </Link>
           </div>
         )}
@@ -78,106 +82,117 @@ export default async function NgoDashboardPage() {
 
       {org ? (
         <>
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                <Layers className="w-5 h-5" />
-              </div>
-              <div className="text-2xl font-extrabold text-slate-900">{orgProjects.length}</div>
-              <div className="text-xs font-bold text-slate-700">Managed Projects</div>
-              <p className="text-[11px] text-slate-500">Active & pending approval</p>
+          {/* OPERATOR ACTION QUEUE */}
+          <div className="p-4 bg-surface rounded-xl border border-border space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono font-bold uppercase text-foreground">
+                Daily Operator Queue
+              </span>
+              <span className="text-[11px] font-mono text-muted">LIVE STATUS</span>
             </div>
 
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <Laptop className="w-5 h-5" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-3 bg-surfaceSubtle rounded-lg border border-border flex items-start gap-2.5 text-xs">
+                <Layers className="w-4 h-4 text-primary-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-foreground block">{activeProjects.length} Active Initiatives</strong>
+                  <span className="text-muted text-[11px]">
+                    {pendingApprovalProjects.length > 0 
+                      ? `${pendingApprovalProjects.length} proposals awaiting admin audit` 
+                      : 'All proposals reviewed'}
+                  </span>
+                </div>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">{orgDevices.length}</div>
-              <div className="text-xs font-bold text-slate-700">Assigned Hardware</div>
-              <p className="text-[11px] text-slate-500">In center computer lab</p>
-            </div>
 
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                <UserCheck className="w-5 h-5" />
+              <div className="p-3 bg-surfaceSubtle rounded-lg border border-border flex items-start gap-2.5 text-xs">
+                <Laptop className="w-4 h-4 text-success-600 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-foreground block">{orgDevices.length} Hardware Assets</strong>
+                  <span className="text-muted text-[11px]">
+                    {devicesInRepair.length > 0 
+                      ? `${devicesInRepair.length} in hub preparation` 
+                      : 'All assigned devices operational'}
+                  </span>
+                </div>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">
-                {orgProjects.reduce((acc, curr) => acc + curr.targetStudents, 0)}
-              </div>
-              <div className="text-xs font-bold text-slate-700">Target Students</div>
-              <p className="text-[11px] text-slate-500">Beneficiary cohort sum</p>
-            </div>
 
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5" />
+              <div className="p-3 bg-surfaceSubtle rounded-lg border border-border flex items-start gap-2.5 text-xs">
+                <FileCheck2 className="w-4 h-4 text-accent-600 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-foreground block">Milestone Ledger</strong>
+                  <span className="text-muted text-[11px]">Next disbursement report check in 14 days</span>
+                </div>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900 capitalize">
-                {org.verification_status}
-              </div>
-              <div className="text-xs font-bold text-slate-700">Verification Status</div>
-              <p className="text-[11px] text-slate-500">Statutory audit standing</p>
             </div>
           </div>
 
-          {/* Managed Projects */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <div className="flex justify-between items-center">
+          {/* Managed Initiatives Stream */}
+          <div className="bg-surface rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 bg-surfaceSubtle border-b border-border flex justify-between items-center">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Your Active Initiatives</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Projects undergo admin vetting before going public.</p>
+                <h3 className="font-bold text-xs text-foreground uppercase tracking-wide font-mono">
+                  Managed Learning Initiatives
+                </h3>
               </div>
-              <Link href="/ngo/projects" className="text-xs font-bold text-indigo-600 hover:underline">
-                View all projects →
+              <Link href="/ngo/projects" className="text-xs font-mono text-muted hover:text-foreground">
+                ALL INITIATIVES &rarr;
               </Link>
             </div>
 
             {orgProjects.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="divide-y divide-border">
                 {orgProjects.map((p) => (
-                  <div key={p.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-bold text-slate-900 truncate max-w-xs">{p.title}</span>
-                      <StatusBadge status={p.status} />
-                    </div>
-                    <p className="text-xs text-slate-600 line-clamp-2">{p.tagline}</p>
-                    <div className="space-y-1 pt-1">
-                      <div className="flex justify-between text-[11px] text-slate-500 font-semibold">
-                        <span>Pledged ₹{p.currentValue.toLocaleString()} of ₹{p.goalValue.toLocaleString()}</span>
-                        <span>{p.progressPercentage}%</span>
+                  <div key={p.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-surfaceSubtle/40 transition-colors">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-foreground">{p.title}</span>
+                        <StatusBadge status={p.status} size="sm" />
                       </div>
-                      <ProgressBar percentage={p.progressPercentage} size="sm" showLabel={false} />
+                      <p className="text-xs text-muted line-clamp-1 max-w-lg">{p.tagline}</p>
+                    </div>
+
+                    <div className="flex items-center gap-6 shrink-0">
+                      <div className="w-32 text-right hidden sm:block">
+                        <div className="text-xs font-mono font-bold text-foreground">₹{p.currentValue.toLocaleString()}</div>
+                        <div className="text-[10px] font-mono text-muted">{p.progressPercentage}% funded</div>
+                      </div>
+
+                      <Link
+                        href={`/projects/${p.slug}`}
+                        className="py-1 px-3 rounded bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border font-mono text-xs transition-colors"
+                      >
+                        Public View
+                      </Link>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-10 text-center text-xs text-slate-500 space-y-3">
-                <p>No educational projects submitted yet.</p>
+              <div className="p-8 text-center text-xs font-mono text-muted space-y-2">
+                <p>No educational initiatives submitted yet.</p>
                 <Link
                   href="/ngo/projects/new"
-                  className="inline-block px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-sm"
+                  className="inline-block px-3 py-1.5 rounded bg-foreground text-surface text-xs font-medium"
                 >
-                  Create Your First Project
+                  Create First Initiative
                 </Link>
               </div>
             )}
           </div>
         </>
       ) : (
-        <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm text-center space-y-4 max-w-2xl mx-auto">
-          <Building2 className="w-12 h-12 text-slate-400 mx-auto" />
-          <h2 className="text-xl font-bold text-slate-900">Register Your Child-Care Organization</h2>
-          <p className="text-xs text-slate-600 leading-relaxed max-w-md mx-auto">
-            To create initiatives and request hardware or mentors, submit your non-profit registration details for administrative vetting.
+        <div className="bg-surface p-8 rounded-xl border border-border text-center space-y-3 max-w-lg mx-auto">
+          <Building2 className="w-8 h-8 text-muted mx-auto" />
+          <h2 className="text-base font-bold text-foreground">Institutional Onboarding Required</h2>
+          <p className="text-xs text-muted leading-relaxed">
+            To create initiatives and request hardware allocations, please register your verified child-care organization.
           </p>
-          <div className="pt-2">
+          <div className="pt-1">
             <Link
               href="/contact"
-              className="px-6 py-3 rounded-2xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition inline-block"
+              className="px-4 py-2 rounded-md bg-foreground text-surface text-xs font-medium inline-block"
             >
-              Submit NGO Onboarding Request
+              Submit Onboarding Verification
             </Link>
           </div>
         </div>

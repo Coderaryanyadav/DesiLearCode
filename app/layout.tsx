@@ -12,12 +12,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "DesiLearCode — Technology. Education. Opportunity.",
-  description: "A secure, transparent platform connecting people with verified child-care organizations to provide digital education, refurbished devices, and technology access.",
-  keywords: ["tech education for kids", "device donation", "volunteer coding mentor", "verified ngo tech support", "child digital literacy"],
+  title: "DesiLearCode — Open Technology & STEM Infrastructure",
+  description: "Nonprofit infrastructure connecting refurbished computing hardware, engineering mentors, and verified grassroots learning labs across India.",
+  keywords: ["tech education for kids", "device donation logistics", "volunteer coding mentor", "verified ngo tech support", "child digital literacy"],
   openGraph: {
-    title: "DesiLearCode — Technology. Education. Opportunity.",
-    description: "Bridging the digital divide for vulnerable children through verified organizations, hardware donations, and coding mentorship.",
+    title: "DesiLearCode — Open Technology & STEM Infrastructure",
+    description: "Refurbished hardware, structured coding curricula, and verified grassroots classrooms across India.",
     type: "website",
   },
 };
@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="min-h-screen flex flex-col bg-[#FAFAF9] text-slate-900 antialiased selection:bg-indigo-500 selection:text-white">
+      <body className="min-h-screen flex flex-col bg-background text-foreground antialiased selection:bg-primary-600 selection:text-white">
         <AuthProvider>
           <SafeguardingBanner compact />
           <Navbar />

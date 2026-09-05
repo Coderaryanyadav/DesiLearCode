@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Project, NeedItem } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
 import { submitDonationIntent } from '@/app/actions/donations';
-import { X, HeartHandshake, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, HeartHandshake, ShieldCheck, CheckCircle2, AlertCircle, Lock } from 'lucide-react';
 
 interface DonationModalProps {
   project?: Project | null;
@@ -91,107 +91,107 @@ export const DonationModal: React.FC<DonationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-foreground/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative w-full max-w-lg bg-surface rounded-[2.5rem] shadow-card border border-border overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="relative w-full max-w-md bg-surface rounded-xl shadow-overlay border border-border overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         
         {/* Close Button */}
         <button
           onClick={resetAndClose}
-          className="absolute top-5 right-5 p-2 text-muted hover:text-foreground rounded-full hover:bg-surfaceHover transition-colors z-10"
+          className="absolute top-4 right-4 p-1.5 text-muted hover:text-foreground rounded-md hover:bg-surfaceSubtle transition-colors z-10"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
         {isSubmitted ? (
-          <div className="p-10 text-center space-y-6">
-            <div className="w-20 h-20 bg-success-50 text-success-600 rounded-full flex items-center justify-center mx-auto shadow-sm border border-success-100">
-              <CheckCircle2 className="w-10 h-10" />
+          <div className="p-6 sm:p-8 text-center space-y-5">
+            <div className="w-12 h-12 bg-success-50 text-success-600 rounded-md flex items-center justify-center mx-auto border border-success-200">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
 
-            <div className="space-y-3">
-              <span className="text-xs font-mono font-bold bg-success-50 text-success-700 px-3 py-1.5 rounded-full border border-success-200 inline-block">
-                Pledge #{generatedReceipt}
+            <div className="space-y-1.5">
+              <span className="text-xs font-mono font-bold bg-success-50 text-success-700 px-2.5 py-0.5 rounded border border-success-200">
+                PLEDGE #{generatedReceipt}
               </span>
-              <h3 className="text-2xl font-display font-extrabold text-foreground tracking-tight">
-                Thank You For Your Support!
+              <h3 className="text-xl font-display font-bold text-foreground">
+                Support Pledge Recorded
               </h3>
-              <p className="text-sm text-muted max-w-sm mx-auto leading-relaxed">
-                Your support pledge of <strong className="text-foreground">₹{amount.toLocaleString()}</strong> for <strong>{project.title}</strong> has been securely recorded.
+              <p className="text-xs text-muted max-w-sm mx-auto leading-relaxed">
+                Your support pledge of <strong className="text-foreground">₹{amount.toLocaleString()}</strong> for <strong>{project.title}</strong> has been logged in the milestone registry.
               </p>
             </div>
 
-            <div className="bg-surfaceHover p-5 rounded-2xl border border-border text-left text-sm space-y-3 text-muted">
+            <div className="bg-surfaceSubtle p-4 rounded-md border border-border text-left text-xs font-mono space-y-2 text-muted">
               <div className="flex justify-between items-center">
-                <span className="font-semibold">Partner Organization:</span>
-                <span className="font-bold text-foreground text-right">{project.organizationName}</span>
+                <span>ORGANIZATION:</span>
+                <span className="font-bold text-foreground truncate max-w-[180px]">{project.organizationName}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="font-semibold">Beneficiary Target:</span>
+                <span>COHORT TARGET:</span>
                 <span className="font-bold text-foreground">{project.targetStudents} Students</span>
               </div>
               <div className="flex justify-between items-center pt-2 border-t border-border">
-                <span className="font-semibold">Allocation Status:</span>
-                <span className="text-success-600 font-bold bg-success-50 px-2 py-0.5 rounded border border-success-100">Confirmed Allocation</span>
+                <span>STATUS:</span>
+                <span className="text-success-700 font-bold">CONFIRMED ALLOCATION</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-center pt-4">
+            <div className="pt-2">
               <button
                 onClick={resetAndClose}
-                className="w-full py-4 rounded-2xl bg-foreground hover:bg-foreground/90 text-surface font-bold text-sm transition-all shadow-card"
+                className="w-full py-2.5 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors"
               >
-                Close & View Project Updates
+                Close & View Initiative
               </button>
             </div>
           </div>
         ) : (
-          <div className="p-8 sm:p-10 space-y-8">
+          <div className="p-6 sm:p-7 space-y-5">
             {/* Header */}
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 text-xs font-bold text-primary-600 uppercase tracking-wider">
-                <HeartHandshake className="w-4 h-4" />
-                <span>Project-Based Support</span>
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-primary-600 uppercase">
+                <HeartHandshake className="w-3.5 h-3.5" />
+                <span>MILESTONE-GATED PLEDGE</span>
               </div>
-              <h3 className="text-2xl font-display font-bold text-foreground">
+              <h3 className="text-lg font-display font-bold text-foreground truncate">
                 Support {project.title}
               </h3>
-              <p className="text-sm font-medium text-muted">
-                Managed securely by <strong className="text-foreground">{project.organizationName}</strong>
+              <p className="text-xs font-mono text-muted">
+                Partner: <strong className="text-foreground">{project.organizationName}</strong>
               </p>
             </div>
 
             {need && (
-              <div className="p-4 bg-primary-50 rounded-2xl border border-primary-100 text-sm text-primary-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-inner">
-                <span>Allocating towards: <strong className="font-bold">{need.title}</strong></span>
-                <span className="font-bold bg-primary-100 px-2.5 py-1 rounded-full text-xs">
-                  {need.quantityFulfilled}/{need.quantityRequired} fulfilled
+              <div className="p-3 bg-surfaceSubtle rounded-md border border-border text-xs text-foreground flex items-center justify-between gap-2">
+                <span>Item: <strong className="font-bold">{need.title}</strong></span>
+                <span className="font-mono text-[10px] text-muted">
+                  {need.quantityFulfilled}/{need.quantityRequired} units
                 </span>
               </div>
             )}
 
             {errorMessage && (
-              <div className="p-4 bg-error-50 border border-error-200 text-error-700 rounded-2xl text-sm font-medium flex items-center gap-2.5 shadow-sm">
-                <AlertCircle className="w-5 h-5 shrink-0" />
+              <div className="p-3 bg-error-50 border border-error-200 text-error-700 rounded text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Preset Amounts */}
-              <div className="space-y-3">
-                <label className="block text-sm font-semibold text-foreground">
-                  Select Contribution Amount (INR)
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-foreground">
+                  Select Contribution Tier (INR)
                 </label>
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+                <div className="grid grid-cols-5 gap-1.5">
                   {presetAmounts.map((preset) => (
                     <button
                       key={preset}
                       type="button"
                       onClick={() => handleAmountSelect(preset)}
-                      className={`py-2.5 text-sm font-bold rounded-xl border transition-all ${
+                      className={`py-1.5 text-xs font-mono font-medium rounded border transition-colors ${
                         amount === preset && !customAmount
-                          ? 'bg-primary-500 text-surface border-primary-500 shadow-md shadow-primary-500/30 transform scale-[1.02]'
-                          : 'bg-surfaceHover text-muted-foreground border-border hover:bg-surface hover:border-primary-200'
+                          ? 'bg-foreground text-surface border-foreground'
+                          : 'bg-surfaceSubtle text-muted border-border hover:bg-surfaceHover hover:text-foreground'
                       }`}
                     >
                       ₹{preset.toLocaleString()}
@@ -199,104 +199,90 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   ))}
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1">
                   <input
                     type="number"
-                    placeholder="Or enter custom amount (min ₹100)"
+                    placeholder="Custom amount (min ₹100)"
                     value={customAmount}
                     onChange={handleCustomChange}
                     min="100"
-                    className="w-full px-4 py-3.5 text-sm rounded-2xl border border-border bg-surfaceHover focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium placeholder:text-muted"
+                    className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-mono font-medium"
                   />
                 </div>
               </div>
 
               {/* Donor Details */}
-              <div className="space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-bold text-muted uppercase tracking-wider">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      required={!isAnonymous}
-                      disabled={isAnonymous}
-                      value={isAnonymous ? 'Anonymous Supporter' : donorName}
-                      onChange={(e) => setDonorName(e.target.value)}
-                      placeholder="e.g. Ananya Sharma"
-                      className="w-full px-4 py-3 text-sm rounded-2xl border border-border bg-surfaceHover focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium placeholder:text-muted"
-                    />
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block text-[11px] font-semibold text-foreground">
+                    Your Name / Handle
+                  </label>
+                  <input
+                    type="text"
+                    required={!isAnonymous}
+                    disabled={isAnonymous}
+                    value={isAnonymous ? 'Anonymous Supporter' : donorName}
+                    onChange={(e) => setDonorName(e.target.value)}
+                    placeholder="Ananya Sharma"
+                    className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 disabled:opacity-50 font-medium"
+                  />
+                </div>
 
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-bold text-muted uppercase tracking-wider">
-                      Email for Receipt
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={donorEmail}
-                      onChange={(e) => setDonorEmail(e.target.value)}
-                      placeholder="e.g. ananya@example.com"
-                      className="w-full px-4 py-3 text-sm rounded-2xl border border-border bg-surfaceHover focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium placeholder:text-muted"
-                    />
-                  </div>
+                <div className="space-y-1">
+                  <label className="block text-[11px] font-semibold text-foreground">
+                    Email for Ledger Receipt
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={donorEmail}
+                    onChange={(e) => setDonorEmail(e.target.value)}
+                    placeholder="ananya@example.com"
+                    className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                  />
                 </div>
               </div>
 
               {/* Message */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-muted uppercase tracking-wider">
-                  Words of Encouragement (Optional)
+              <div className="space-y-1">
+                <label className="block text-[11px] font-semibold text-foreground">
+                  Encouragement Note (Optional)
                 </label>
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="e.g. Keep inspiring future engineers!"
+                  placeholder="Keep building future tech leaders!"
                   maxLength={150}
-                  className="w-full px-4 py-3 text-sm rounded-2xl border border-border bg-surfaceHover focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium placeholder:text-muted"
+                  className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
                 />
               </div>
 
               {/* Anonymous Checkbox */}
-              <label className="flex items-center gap-3 cursor-pointer group select-none">
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="checkbox"
-                    checked={isAnonymous}
-                    onChange={(e) => setIsAnonymous(e.target.checked)}
-                    className="peer appearance-none w-5 h-5 border-2 border-border rounded-md bg-surface checked:bg-primary-600 checked:border-primary-600 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500/30 cursor-pointer"
-                  />
-                  <CheckCircle2 className="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
-                </div>
-                <span className="text-sm font-medium text-foreground group-hover:text-primary-600 transition-colors">
-                  Keep my contribution anonymous publicly
-                </span>
+              <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={isAnonymous}
+                  onChange={(e) => setIsAnonymous(e.target.checked)}
+                  className="w-4 h-4 rounded border-border text-primary-600 focus:ring-primary-500"
+                />
+                <span>Record pledge anonymously in public ledger</span>
               </label>
 
               {/* Transparency Notice */}
-              <div className="p-4 bg-surfaceHover rounded-2xl border border-border text-xs text-muted flex flex-col sm:flex-row items-start sm:items-center gap-3 shadow-inner">
-                <div className="w-8 h-8 rounded-full bg-success-50 text-success-600 flex items-center justify-center shrink-0 border border-success-100">
-                  <ShieldCheck className="w-4 h-4" />
-                </div>
-                <p className="leading-relaxed">
-                  <strong>Transparent Direct Pledge:</strong> 100% of pledges securely update the ledger and directly fund the verifiable hardware and internet needs.
-                </p>
+              <div className="p-3 bg-surfaceSubtle rounded-md border border-border text-[11px] text-muted flex items-center gap-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-success-600 shrink-0" />
+                <span>100% of pledges are milestone-gated and auditable by platform administrators.</span>
               </div>
 
               {/* Submit CTA */}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-base transition-all shadow-card disabled:opacity-60 flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isSubmitting ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Recording Secure Pledge...
-                  </span>
+                  <span>Recording Ledger Entry...</span>
                 ) : (
                   `Pledge ₹${amount.toLocaleString()} Support`
                 )}

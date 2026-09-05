@@ -4,21 +4,23 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Project, NeedItem } from '@/lib/types';
 import { ProgressBar } from '@/components/ProgressBar';
-import { VerificationBadge } from '@/components/VerificationBadge';
-import { StatusBadge } from '@/components/StatusBadge';
+import { VerificationBadge, StatusBadge } from '@/components/VerificationBadge';
 import { DonationModal } from '@/components/DonationModal';
 import { NeedCard } from '@/components/NeedCard';
 import { 
   MapPin, 
   Users, 
   Laptop, 
-  HeartHandshake, 
   Code, 
   ShieldCheck, 
   CheckCircle2, 
-  FileCheck2, 
-  Sparkles, 
-  ArrowLeft 
+  Layers, 
+  ArrowLeft,
+  Calendar,
+  Lock,
+  ChevronRight,
+  ExternalLink,
+  Cpu
 } from 'lucide-react';
 
 interface ProjectDetailViewProps {
@@ -34,138 +36,146 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
     setIsDonationOpen(true);
   };
 
+  const openNeeds = project.needs ? project.needs.filter(n => !n.fulfilled) : [];
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
-      {/* Back breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm font-medium text-muted">
-        <Link href="/projects" className="hover:text-foreground flex items-center gap-1.5 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to Projects
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      
+      {/* Breadcrumb Navigation */}
+      <div className="flex items-center gap-2 text-xs font-mono text-muted">
+        <Link href="/projects" className="hover:text-foreground flex items-center gap-1 transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" /> INITIATIVES
         </Link>
         <span>/</span>
-        <span className="text-foreground truncate max-w-xs">{project.title}</span>
+        <span className="text-foreground truncate max-w-md">{project.title}</span>
       </div>
 
-      {/* Main Grid: Left 8 Cols (Details), Right 4 Cols (Sidebar / Action) */}
+      {/* Main Grid: 8 Cols (Story & Specs) / 4 Cols (Pledge & Controls) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* LEFT COLUMN: HERO, ABOUT, NEEDS, MILESTONES */}
-        <div className="lg:col-span-8 space-y-8">
+        {/* LEFT COLUMN: Deep Story Architecture */}
+        <div className="lg:col-span-8 space-y-6">
           
           {/* Header Card */}
-          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-6">
+          <div className="bg-surface rounded-xl p-6 sm:p-8 border border-border space-y-6">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider bg-primary-50 text-primary-700 px-3 py-1 rounded-full border border-primary-100">
-                {project.category}
+              <span className="text-xs font-mono font-semibold bg-surfaceSubtle text-foreground px-2.5 py-0.5 rounded border border-border">
+                {project.category.toUpperCase()}
               </span>
-              <StatusBadge status={project.status} />
-              {project.organizationVerified && (
-                <VerificationBadge status="verified" size="sm" />
-              )}
+              <StatusBadge status={project.status} size="sm" />
+              <VerificationBadge status={project.organizationVerified ? 'verified' : 'under_review'} size="sm" />
             </div>
 
             <div className="space-y-3">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-extrabold text-foreground tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-extrabold text-foreground tracking-tight leading-tight">
                 {project.title}
               </h1>
-              <p className="text-base sm:text-lg text-muted leading-relaxed">
+              <p className="text-sm sm:text-base text-muted leading-relaxed">
                 {project.tagline}
               </p>
             </div>
 
-            {/* Managed by NGO card snippet */}
-            <div className="flex items-center justify-between p-4 bg-surfaceHover rounded-2xl border border-border">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-foreground text-surface flex items-center justify-center font-bold text-lg shadow-card">
+            {/* Managed Organization Banner */}
+            <div className="flex items-center justify-between p-3.5 bg-surfaceSubtle rounded-lg border border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded bg-foreground text-surface flex items-center justify-center font-mono font-bold text-sm">
                   {project.organizationName.charAt(0)}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
                     <span>{project.organizationName}</span>
-                    <VerificationBadge status="verified" size="sm" />
+                    <VerificationBadge status="verified" showText={false} size="sm" />
                   </div>
-                  <div className="text-xs text-muted flex items-center gap-1.5 mt-0.5 font-medium">
-                    <MapPin className="w-3.5 h-3.5" />
+                  <div className="text-[11px] text-muted flex items-center gap-1 mt-0.5 font-mono">
+                    <MapPin className="w-3 h-3 text-primary-500" />
                     <span>{project.region}</span>
                   </div>
                 </div>
               </div>
+              <Link 
+                href={`/organizations`}
+                className="text-xs font-medium text-muted hover:text-foreground flex items-center gap-1 hidden sm:flex"
+              >
+                <span>Partner profile</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
             </div>
 
             {/* Hero Image */}
-            <div className="rounded-2xl overflow-hidden aspect-[16/9] relative shadow-inner bg-surfaceHover border border-border">
+            <div className="rounded-lg overflow-hidden aspect-[16/9] relative bg-surfaceSubtle border border-border">
               <img
-                src={project.heroImageUrl}
+                src={project.heroImageUrl || '/images/default-project.jpg'}
                 alt={project.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-4 right-4 bg-surface/90 backdrop-blur-md text-foreground text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-card border border-border">
+              <div className="absolute bottom-3 left-3 bg-surface/95 backdrop-blur-sm text-foreground text-xs font-mono font-medium px-2.5 py-1 rounded border border-border flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-primary-500" />
-                <span>Cohort: {project.targetStudents} Students</span>
+                <span>Target Cohort: {project.targetStudents} Students</span>
               </div>
             </div>
 
-            {/* Key Metas */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center border-t border-border">
-              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
-                <div className="text-xs text-muted font-medium mb-1">Beneficiaries</div>
-                <div className="text-base font-bold text-foreground">{project.targetStudents} Students</div>
+            {/* Spec Matrix */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-border text-center">
+              <div className="p-3 bg-surfaceSubtle rounded-md">
+                <div className="text-[10px] font-mono text-muted uppercase">Students</div>
+                <div className="text-sm font-bold text-foreground mt-0.5">{project.targetStudents}</div>
               </div>
-              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
-                <div className="text-xs text-muted font-medium mb-1">Category</div>
-                <div className="text-base font-bold text-foreground">{project.category}</div>
+              <div className="p-3 bg-surfaceSubtle rounded-md">
+                <div className="text-[10px] font-mono text-muted uppercase">Hardware Needed</div>
+                <div className="text-sm font-bold text-foreground mt-0.5">{openNeeds.length} items</div>
               </div>
-              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
-                <div className="text-xs text-muted font-medium mb-1">Region</div>
-                <div className="text-base font-bold text-foreground truncate">{project.region}</div>
+              <div className="p-3 bg-surfaceSubtle rounded-md">
+                <div className="text-[10px] font-mono text-muted uppercase">Region</div>
+                <div className="text-sm font-bold text-foreground mt-0.5 truncate">{project.region}</div>
               </div>
-              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
-                <div className="text-xs text-muted font-medium mb-1">Safeguarding</div>
-                <div className="text-base font-bold text-success-600 flex items-center justify-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4" /> Vetted
+              <div className="p-3 bg-surfaceSubtle rounded-md">
+                <div className="text-[10px] font-mono text-muted uppercase">Safeguarding</div>
+                <div className="text-sm font-bold text-success-700 flex items-center justify-center gap-1 mt-0.5">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Vetted
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Section: Why it matters & Description */}
-          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-8">
+          {/* Detailed Narrative */}
+          <div className="bg-surface rounded-xl p-6 sm:p-8 border border-border space-y-6">
             <div>
-              <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2.5">
-                <Sparkles className="w-5 h-5 text-primary-500" />
-                About This Initiative
+              <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                <Layers className="w-4 h-4 text-primary-500" />
+                Problem Context & Initiative Scope
               </h2>
-              <div className="mt-4 text-sm sm:text-base text-muted leading-relaxed whitespace-pre-line">
+              <div className="mt-3 text-xs sm:text-sm text-muted leading-relaxed whitespace-pre-line">
                 {project.description}
               </div>
             </div>
 
-            <div className="pt-6 border-t border-border">
-              <h3 className="text-base font-bold text-foreground">Why This Matters For Children</h3>
-              <p className="mt-3 text-sm sm:text-base text-muted leading-relaxed">
-                {project.whyItMatters}
+            <div className="pt-5 border-t border-border">
+              <h3 className="text-sm font-bold text-foreground">Why This Opportunity Matters</h3>
+              <p className="mt-2 text-xs sm:text-sm text-muted leading-relaxed">
+                {project.whyItMatters || 'This initiative equips students with fundamental digital literacy, computational logic, and hands-on coding skills necessary for modern education.'}
               </p>
             </div>
 
-            <div className="pt-6 border-t border-border">
-              <h3 className="text-base font-bold text-foreground">What Your Support Provides</h3>
-              <p className="mt-3 text-sm sm:text-base text-muted leading-relaxed">
-                {project.whatSupportProvides}
+            <div className="pt-5 border-t border-border">
+              <h3 className="text-sm font-bold text-foreground">Resource Deployment Strategy</h3>
+              <p className="mt-2 text-xs sm:text-sm text-muted leading-relaxed">
+                {project.whatSupportProvides || 'Hardware received is wiped, installed with offline educational tooling, and allocated directly to the verified learning center under milestone oversight.'}
               </p>
             </div>
           </div>
 
-          {/* Section: Needs Breakdown */}
-          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-6">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-primary-600">Transparent Allocation</span>
-              <h2 className="text-xl font-display font-bold text-foreground mt-2">Specific Hardware & Resource Needs</h2>
-              <p className="text-sm text-muted mt-1.5">
-                Targeted requirements for this learning center. You can sponsor a specific item or make a general project contribution.
-              </p>
+          {/* Itemized Requirements Breakdown */}
+          <div className="bg-surface rounded-xl p-6 sm:p-8 border border-border space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary-600">Hardware Allocation</span>
+                <h2 className="text-base font-bold text-foreground">Itemized Equipment & Resource Needs</h2>
+              </div>
+              <span className="text-xs font-mono text-muted">{openNeeds.length} pending</span>
             </div>
 
             {project.needs && project.needs.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 {project.needs.map((need) => (
                   <NeedCard
                     key={need.id}
@@ -175,83 +185,68 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
                 ))}
               </div>
             ) : (
-              <div className="p-6 bg-surfaceHover rounded-2xl border border-border text-sm font-medium text-muted text-center mt-6">
-                General project support fund active.
+              <div className="p-4 bg-surfaceSubtle rounded-md border border-border text-xs text-muted text-center">
+                General project fund active for hardware accessories.
               </div>
             )}
           </div>
 
-          {/* Section: Milestones & Lifecycle Roadmap */}
-          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-6">
+          {/* Milestones & Verification Timeline */}
+          <div className="bg-surface rounded-xl p-6 sm:p-8 border border-border space-y-4">
             <div>
-              <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2.5">
-                <FileCheck2 className="w-5 h-5 text-primary-500" />
-                Project Milestones & Verification Timeline
-              </h2>
-              <p className="text-sm text-muted mt-1.5">
-                Independent verification checkpoints required before subsequent phase disbursement.
-              </p>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-success-600">Independent Governance</span>
+              <h2 className="text-base font-bold text-foreground">Milestone & Verification Roadmap</h2>
             </div>
 
             {project.milestones && project.milestones.length > 0 ? (
-              <div className="relative pl-7 space-y-8 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-px before:bg-border mt-6">
+              <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-border pt-2">
                 {project.milestones.map((milestone, idx) => (
                   <div key={milestone.id || idx} className="relative">
-                    <div className={`absolute -left-[34px] top-1 w-5 h-5 rounded-full border-2 border-surface flex items-center justify-center transition-colors ${
-                      milestone.completed ? 'bg-success-500 text-white' : 'bg-muted'
+                    <div className={`absolute -left-[29px] top-0.5 w-4 h-4 rounded-full border-2 border-surface flex items-center justify-center ${
+                      milestone.completed ? 'bg-success-600 text-white' : 'bg-muted'
                     }`}>
-                      {milestone.completed && <CheckCircle2 className="w-3.5 h-3.5" />}
+                      {milestone.completed && <CheckCircle2 className="w-3 h-3" />}
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-bold text-foreground">{milestone.title}</h4>
-                        <span className="text-xs text-muted font-medium bg-surfaceHover px-2 py-0.5 rounded border border-border">
+                        <h4 className="text-xs font-bold text-foreground">{milestone.title}</h4>
+                        <span className="text-[10px] font-mono text-muted bg-surfaceSubtle px-2 py-0.5 rounded border border-border">
                           {milestone.targetDate}
                         </span>
                       </div>
-                      <p className="text-sm text-muted leading-relaxed">{milestone.description}</p>
+                      <p className="text-xs text-muted leading-relaxed">{milestone.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-6 bg-surfaceHover rounded-2xl border border-border text-sm font-medium text-muted text-center mt-6">
-                Initial installation and workshop roadmap underway.
+              <div className="p-4 bg-surfaceSubtle rounded-md border border-border text-xs text-muted text-center">
+                Initial hardware deployment & workshop schedule active.
               </div>
             )}
           </div>
 
         </div>
 
-        {/* RIGHT COLUMN: DONATION BOX, STATS & SAFEGUARDING */}
-        <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-28">
+        {/* RIGHT COLUMN: Sticky Pledge Sidebar */}
+        <div className="lg:col-span-4 space-y-5 lg:sticky lg:top-24">
           
-          {/* Donation Action Card */}
-          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-float space-y-6">
-            <div>
-              <div className="flex items-center justify-between text-sm text-muted mb-2 font-semibold">
-                <span>Funded Target</span>
-                <span className="text-foreground font-bold">{project.progressPercentage}%</span>
-              </div>
-              <ProgressBar percentage={project.progressPercentage} size="lg" showLabel={false} />
-            </div>
-
-            <div className="flex justify-between items-baseline pt-2">
-              <div>
-                <div className="text-3xl font-display font-extrabold text-foreground tracking-tight">
-                  ₹{project.currentValue.toLocaleString()}
+          {/* Action Card */}
+          <div className="bg-surface rounded-xl p-6 border border-border space-y-5 shadow-panel">
+            <div className="space-y-3">
+              <div className="flex justify-between items-baseline">
+                <div>
+                  <div className="text-2xl font-display font-extrabold text-foreground">
+                    ₹{project.currentValue.toLocaleString()}
+                  </div>
+                  <div className="text-[11px] font-mono text-muted mt-0.5">Pledged of ₹{project.goalValue.toLocaleString()} target</div>
                 </div>
-                <div className="text-xs font-medium text-muted mt-1">Pledged of ₹{project.goalValue.toLocaleString()} goal</div>
-              </div>
-              <div className="text-right">
-                <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${
-                  project.status === 'active' 
-                    ? 'text-success-700 bg-success-50 border-success-200' 
-                    : 'text-warning-700 bg-warning-50 border-warning-200'
-                }`}>
-                  {project.status === 'active' ? 'Active Target' : 'Under Review'}
+                <span className="text-xs font-mono font-bold text-primary-600">
+                  {project.progressPercentage}%
                 </span>
               </div>
+
+              <ProgressBar percentage={project.progressPercentage} size="md" showLabel={false} />
             </div>
 
             <button
@@ -259,58 +254,54 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
                 setSelectedNeedForDonation(null);
                 setIsDonationOpen(true);
               }}
-              className="w-full py-4 rounded-2xl bg-foreground hover:bg-foreground/90 text-surface font-bold text-sm transition-all shadow-card flex items-center justify-center gap-2.5 mt-6"
+              className="w-full py-3 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors shadow-subtle flex items-center justify-center gap-2"
             >
-              <HeartHandshake className="w-5 h-5" />
-              <span>Support This Project</span>
+              <span>Support This Initiative</span>
             </button>
 
-            <div className="flex flex-col gap-3 mt-4">
+            <div className="flex flex-col gap-2 pt-2 border-t border-border">
               <Link
                 href="/volunteer/apply"
-                className="w-full py-3.5 rounded-2xl bg-surfaceHover hover:bg-border text-foreground font-semibold text-sm transition-colors flex items-center justify-center gap-2 text-center"
+                className="w-full py-2.5 rounded-md bg-surfaceSubtle hover:bg-surfaceHover text-foreground font-medium text-xs transition-colors flex items-center justify-center gap-2 border border-border"
               >
-                <Code className="w-4 h-4 text-primary-600" />
-                <span>Volunteer as Coding Mentor</span>
+                <Code className="w-3.5 h-3.5 text-primary-500" />
+                <span>Volunteer as Tech Mentor</span>
               </Link>
 
               <Link
                 href="/donate-device"
-                className="w-full py-3.5 rounded-2xl bg-success-50 hover:bg-success-100 text-success-800 font-semibold text-sm transition-colors flex items-center justify-center gap-2 text-center border border-success-200"
+                className="w-full py-2.5 rounded-md bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium text-xs transition-colors flex items-center justify-center gap-2 border border-primary-200"
               >
-                <Laptop className="w-4 h-4 text-success-600" />
+                <Laptop className="w-3.5 h-3.5 text-primary-600" />
                 <span>Pledge Laptop for This Lab</span>
               </Link>
             </div>
 
-            <div className="p-4 bg-surfaceHover rounded-2xl border border-border text-xs text-muted space-y-2 mt-4">
-              <div className="flex items-center gap-2 font-bold text-foreground">
-                <ShieldCheck className="w-4 h-4 text-success-600" />
-                <span>Transparency Assured</span>
+            <div className="p-3 bg-surfaceSubtle rounded-md border border-border text-[11px] text-muted space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-foreground">
+                <ShieldCheck className="w-3.5 h-3.5 text-success-600" />
+                <span>Milestone-Disbursed Fund</span>
               </div>
               <p className="leading-relaxed">
-                100% of contributions are allocated directly to verifiable technology equipment and digital curriculum.
+                100% of contributions are locked to itemized educational resources and verified partner milestones.
               </p>
             </div>
           </div>
 
-          {/* Child Safeguarding Box */}
-          <div className="bg-foreground text-surface rounded-3xl p-6 sm:p-8 shadow-card space-y-4">
-            <div className="flex items-center gap-2 text-xs font-bold text-muted uppercase tracking-wider mb-2">
-              <ShieldCheck className="w-4 h-4 text-success-500" />
-              <span>Safeguarding Standard</span>
+          {/* Child Protection Charter Card */}
+          <div className="bg-[#090c10] text-[#8b949e] rounded-xl p-5 border border-[#21262d] space-y-3 font-mono text-xs">
+            <div className="flex items-center gap-1.5 text-white font-bold">
+              <Lock className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Zero-PII Safeguarding Charter</span>
             </div>
-            <h3 className="text-base font-bold text-surface">
-              Zero-PII Child Protection Policy
-            </h3>
-            <p className="text-sm text-surface/80 leading-relaxed font-medium">
-              In accordance with our strict safeguarding charter, no individual child names, identifiable photographs, or addresses are published. All statistics reflect aggregate cohorts.
+            <p className="text-[11px] leading-relaxed">
+              No individual child names, identifiable photographs, or exact school addresses are ever published. All reports are aggregated at the verified lab level.
             </p>
             <Link
               href="/safeguarding"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-primary-400 hover:text-primary-300 transition-colors pt-2"
+              className="inline-flex items-center gap-1 text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors pt-1"
             >
-              Learn about our child protection protocols →
+              Read protection protocols &rarr;
             </Link>
           </div>
 

@@ -24,40 +24,41 @@ export const OrganizationsList: React.FC<OrganizationsListProps> = ({ initialOrg
   });
 
   return (
-    <div className="space-y-8">
-      {/* Search & Filter bar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/80 shadow-sm">
+    <div className="space-y-6">
+      
+      {/* Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-surface p-4 rounded-xl border border-border shadow-panel">
         <div className="relative w-full sm:w-96">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by NGO name, city, or focus program..."
+            placeholder="Search partner by name, region, or focus..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-9 pr-7 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           )}
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto text-xs font-mono">
           {(['All', 'verified', 'under_review'] as const).map((st) => (
             <button
               key={st}
               onClick={() => setFilterStatus(st)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold capitalize transition ${
+              className={`px-3 py-1.5 rounded-md font-medium capitalize transition-colors border ${
                 filterStatus === st
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-foreground text-surface border-foreground shadow-subtle'
+                  : 'bg-surfaceSubtle text-muted border-border hover:bg-surfaceHover hover:text-foreground'
               }`}
             >
-              {st === 'All' ? 'All Organizations' : st.replace('_', ' ')}
+              {st === 'All' ? 'All Partners' : st.replace('_', ' ')}
             </button>
           ))}
         </div>
@@ -65,19 +66,17 @@ export const OrganizationsList: React.FC<OrganizationsListProps> = ({ initialOrg
 
       {/* Grid */}
       {filtered.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map((org) => (
             <OrganizationCard key={org.id} org={org} />
           ))}
         </div>
       ) : (
-        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
-            <Building2 className="w-6 h-6" />
-          </div>
-          <h3 className="text-sm font-bold text-slate-900">No organizations found</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Try adjusting your search keywords.
+        <div className="p-10 bg-surface rounded-xl border border-border text-center space-y-2">
+          <Building2 className="w-6 h-6 text-muted mx-auto" />
+          <h3 className="text-xs font-mono font-bold text-foreground">No organizations found</h3>
+          <p className="text-xs text-muted max-w-sm mx-auto">
+            Try adjusting your search keywords or filter status.
           </p>
         </div>
       )}

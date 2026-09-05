@@ -32,66 +32,66 @@ export const AdminProjectsTable: React.FC<AdminProjectsTableProps> = ({ initialP
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm overflow-hidden">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden shadow-panel">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-xs">
-          <thead className="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+          <thead className="bg-surfaceSubtle text-muted font-mono font-bold uppercase text-[10px] border-b border-border">
             <tr>
-              <th className="p-3.5 rounded-l-xl">Initiative Title</th>
-              <th className="p-3.5">Organization</th>
-              <th className="p-3.5">Category</th>
-              <th className="p-3.5">Goal Budget</th>
-              <th className="p-3.5">Status</th>
-              <th className="p-3.5 rounded-r-xl text-right">Moderation Actions</th>
+              <th className="p-3">Initiative Proposal</th>
+              <th className="p-3">Partner Entity</th>
+              <th className="p-3">Category</th>
+              <th className="p-3">Itemized Goal</th>
+              <th className="p-3">State</th>
+              <th className="p-3 text-right">Moderation Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border">
             {projects.map((p) => (
-              <tr key={p.id} className="hover:bg-slate-50/60 transition">
-                <td className="p-3.5">
-                  <div className="font-bold text-slate-900">{p.title}</div>
-                  <span className="text-[11px] text-slate-500">{p.beneficiaryGroup}</span>
+              <tr key={p.id} className="hover:bg-surfaceSubtle/50 transition-colors">
+                <td className="p-3">
+                  <div className="font-bold text-foreground">{p.title}</div>
+                  <span className="text-[11px] text-muted font-mono">Cohort: {p.targetStudents} Students</span>
                 </td>
-                <td className="p-3.5 text-slate-600 font-medium">{p.organizationName}</td>
-                <td className="p-3.5">
-                  <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-medium">
+                <td className="p-3 text-foreground font-mono">{p.organizationName}</td>
+                <td className="p-3">
+                  <span className="px-2 py-0.5 rounded bg-surfaceSubtle text-foreground font-mono text-[11px] border border-border">
                     {p.category}
                   </span>
                 </td>
-                <td className="p-3.5 font-bold text-slate-900">
+                <td className="p-3 font-mono font-bold text-foreground">
                   ₹{p.goalValue.toLocaleString()}
                 </td>
-                <td className="p-3.5">
-                  <StatusBadge status={p.status} />
+                <td className="p-3">
+                  <StatusBadge status={p.status} size="sm" />
                 </td>
-                <td className="p-3.5 text-right space-x-1.5 whitespace-nowrap">
+                <td className="p-3 text-right space-x-1 whitespace-nowrap font-mono">
                   {updatingId === p.id ? (
-                    <span className="text-xs text-slate-400">Updating...</span>
+                    <span className="text-xs text-muted">Updating...</span>
                   ) : (
                     <>
                       {p.status !== 'active' && (
                         <button
                           onClick={() => handleStatusChange(p.id, 'active')}
-                          className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold hover:bg-emerald-100 transition inline-flex items-center gap-1"
+                          className="px-2 py-1 rounded bg-success-50 text-success-700 font-medium hover:bg-success-100 transition-colors border border-success-200 inline-flex items-center gap-1 text-[11px]"
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <CheckCircle2 className="w-3 h-3" />
                           <span>Approve & Publish</span>
                         </button>
                       )}
                       {p.status !== 'paused' && (
                         <button
                           onClick={() => handleStatusChange(p.id, 'paused')}
-                          className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-bold hover:bg-amber-100 transition inline-flex items-center gap-1"
+                          className="px-2 py-1 rounded bg-warning-50 text-warning-700 font-medium hover:bg-warning-100 transition-colors border border-warning-200 inline-flex items-center gap-1 text-[11px]"
                         >
-                          <Pause className="w-3.5 h-3.5" />
+                          <Pause className="w-3 h-3" />
                           <span>Pause</span>
                         </button>
                       )}
                       <Link
                         href={`/projects/${p.slug}`}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold inline-flex items-center gap-1"
+                        className="px-2 py-1 rounded bg-surfaceSubtle hover:bg-surfaceHover text-foreground font-medium border border-border inline-flex items-center gap-1 text-[11px]"
                       >
-                        <span>View</span>
+                        <span>Spec</span>
                         <ExternalLink className="w-3 h-3" />
                       </Link>
                     </>

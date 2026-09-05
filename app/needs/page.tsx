@@ -4,8 +4,8 @@ import { getPublicProjects } from '@/lib/db/projects';
 import { NeedsList } from '@/components/NeedsList';
 
 export const metadata = {
-  title: 'Needs Marketplace — DesiLearCode',
-  description: 'Tangible technology, laptop, and mentorship needs requested by verified educational centers.',
+  title: 'Hardware & Educational Inventory Needs — DesiLearCode',
+  description: 'Itemized computing equipment, laptop allocations, and STEM mentorship requirements requested by verified learning centers.',
 };
 
 export default async function NeedsPage() {
@@ -16,16 +16,17 @@ export default async function NeedsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Header */}
-      <div className="space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-          Transparent Needs Registry
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          Live Needs Marketplace
+      
+      {/* Editorial Header */}
+      <div className="space-y-2 max-w-3xl">
+        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
+          <span>ITEMIZED ALLOCATION REGISTRY • 2026</span>
+        </div>
+        <h1 className="text-2xl sm:text-4xl font-display font-extrabold text-foreground tracking-tight">
+          Itemized Hardware & Lab Requirements
         </h1>
-        <p className="text-sm text-slate-600 max-w-3xl leading-relaxed">
-          Explore individual tangible requirements requested by verified childcare centers. You can fulfill specific laptops, mentor hours, hardware kits, or educational guides directly.
+        <p className="text-xs sm:text-sm text-muted max-w-2xl leading-relaxed">
+          Targeted equipment needs requested by verified grassroots learning centers. Sponsor an individual device, pledge a spare laptop, or support mentor hours.
         </p>
       </div>
 

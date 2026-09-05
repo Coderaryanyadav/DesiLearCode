@@ -8,83 +8,85 @@ import { MapPin, Users, Laptop, ExternalLink, ShieldCheck, CheckCircle2 } from '
 
 export const OrganizationCard: React.FC<{ org: Organization }> = ({ org }) => {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between">
+    <div className="bg-surface rounded-xl border border-border overflow-hidden hover:border-borderMuted hover:shadow-panel transition-all flex flex-col justify-between">
       <div>
         {/* Banner */}
-        <div className="relative h-32 w-full bg-slate-100">
+        <div className="relative h-28 w-full bg-surfaceSubtle border-b border-border">
           <img
-            src={org.heroImageUrl}
+            src={org.heroImageUrl || '/images/default-org.jpg'}
             alt={org.name}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
-          <div className="absolute top-3 right-3">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute top-2.5 right-2.5">
             <VerificationBadge status={org.verificationStatus} size="sm" />
           </div>
         </div>
 
-        {/* Logo & Info */}
+        {/* Logo & Entity Meta */}
         <div className="p-5 pt-0 relative">
-          <div className="-mt-8 mb-3 flex items-end justify-between">
-            <div className="w-16 h-16 rounded-2xl bg-white p-1 shadow-md border border-slate-200 overflow-hidden">
+          <div className="-mt-6 mb-3 flex items-end justify-between">
+            <div className="w-12 h-12 rounded-lg bg-surface p-0.5 border border-border shadow-subtle overflow-hidden">
               <img
-                src={org.logoUrl}
+                src={org.logoUrl || '/logo.jpg'}
                 alt={org.name}
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-cover rounded-md"
               />
             </div>
-            <span className="text-[11px] font-mono font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-              {org.registrationNumber}
+            <span className="text-[10px] font-mono text-muted bg-surfaceSubtle px-2 py-0.5 rounded border border-border">
+              REG: {org.registrationNumber || 'VERIFIED-ENTITY'}
             </span>
           </div>
 
-          <h3 className="font-bold text-slate-900 text-base leading-snug">
+          <h3 className="font-bold text-foreground text-base leading-snug">
             {org.name}
           </h3>
-          <div className="flex items-center gap-1 text-xs text-slate-500 mt-1 mb-2">
-            <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>{org.location}</span>
+          <div className="flex items-center gap-1 text-xs text-muted mt-1 mb-2 font-mono">
+            <MapPin className="w-3 h-3 text-primary-500 shrink-0" />
+            <span className="truncate">{org.location}</span>
           </div>
 
-          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-muted line-clamp-2 leading-relaxed">
             {org.tagline}
           </p>
 
           {/* Programs */}
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {org.programs.map((prog, idx) => (
-              <span key={idx} className="text-[11px] px-2 py-0.5 rounded-md bg-slate-50 text-slate-700 border border-slate-100 font-medium">
-                {prog}
-              </span>
-            ))}
-          </div>
+          {org.programs && org.programs.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1">
+              {org.programs.slice(0, 3).map((prog, idx) => (
+                <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-surfaceSubtle text-foreground border border-border font-medium">
+                  {prog}
+                </span>
+              ))}
+            </div>
+          )}
 
-          {/* Verified Metrics */}
-          <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-100 text-center">
-            <div className="p-2 rounded-xl bg-slate-50">
-              <div className="text-xs font-bold text-slate-900">{org.studentsReached}</div>
-              <div className="text-[10px] text-slate-500 uppercase tracking-tight">Students</div>
+          {/* Institutional Metrics */}
+          <div className="grid grid-cols-3 gap-1.5 mt-4 pt-3 border-t border-border text-center">
+            <div className="p-1.5 rounded bg-surfaceSubtle">
+              <div className="text-xs font-mono font-bold text-foreground">{org.studentsReached}</div>
+              <div className="text-[10px] text-muted">Learners</div>
             </div>
-            <div className="p-2 rounded-xl bg-slate-50">
-              <div className="text-xs font-bold text-indigo-600">{org.devicesReceived}</div>
-              <div className="text-[10px] text-slate-500 uppercase tracking-tight">Devices</div>
+            <div className="p-1.5 rounded bg-surfaceSubtle">
+              <div className="text-xs font-mono font-bold text-primary-600">{org.devicesReceived}</div>
+              <div className="text-[10px] text-muted">Devices</div>
             </div>
-            <div className="p-2 rounded-xl bg-slate-50">
-              <div className="text-xs font-bold text-emerald-600">{org.activeProjectsCount}</div>
-              <div className="text-[10px] text-slate-500 uppercase tracking-tight">Projects</div>
+            <div className="p-1.5 rounded bg-surfaceSubtle">
+              <div className="text-xs font-mono font-bold text-success-600">{org.activeProjectsCount}</div>
+              <div className="text-[10px] text-muted">Labs</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="p-4 pt-0 bg-white border-t border-slate-100">
+      <div className="p-4 pt-0 bg-surface">
         <Link
           href={`/projects?org=${encodeURIComponent(org.name)}`}
-          className="w-full py-2 text-center text-xs font-semibold rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition flex items-center justify-center gap-1.5"
+          className="w-full py-2 text-center text-xs font-medium rounded-md bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border transition-colors flex items-center justify-center gap-1.5"
         >
-          <span>View Active Initiatives</span>
-          <ExternalLink className="w-3 h-3" />
+          <span>View Verified Labs</span>
+          <ExternalLink className="w-3 h-3 text-muted" />
         </Link>
       </div>
     </div>

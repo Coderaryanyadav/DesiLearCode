@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { ProjectCard } from '@/components/ProjectCard';
+import { ProjectCard, ProjectListRow } from '@/components/ProjectCard';
 import { DonationModal } from '@/components/DonationModal';
 import { Project } from '@/lib/types';
-import { Search, Filter, Layers, X, Sparkles } from 'lucide-react';
+import { Search, Filter, Layers, X, LayoutGrid, List } from 'lucide-react';
 
 interface ProjectsListProps {
   initialProjects: Project[];
@@ -16,6 +16,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({ initialProjects }) =
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedUrgency, setSelectedUrgency] = useState<string>('All');
   const [sortBy, setSortBy] = useState<'newest' | 'most_needed' | 'almost_complete' | 'recently_updated'>('most_needed');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const categories = [
     'All',
@@ -24,9 +25,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({ initialProjects }) =
     'STEM',
     'Coding',
     'Cybersecurity',
-    'AI',
-    'Internet Access',
-    'School Supplies',
+    'Hardware',
     'Infrastructure'
   ];
 
@@ -64,114 +63,137 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({ initialProjects }) =
   };
 
   return (
-    <div className="space-y-8">
-      {/* Controls / Filter Bar */}
-      <div className="bg-surface p-4 sm:p-6 rounded-3xl border border-border shadow-soft space-y-5">
+    <div className="space-y-6">
+      
+      {/* Control Console */}
+      <div className="bg-surface p-4 sm:p-5 rounded-xl border border-border space-y-4 shadow-panel">
         
-        {/* Top row: Search and Sort */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        {/* Top search & sorting toolbar */}
+        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
           <div className="relative w-full sm:max-w-md">
-            <Search className="w-4 h-4 text-muted absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by project name, NGO, or region..."
+              placeholder="Search initiatives by title, partner NGO, or region..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-10 py-3 text-sm rounded-2xl border border-border bg-surfaceHover focus:bg-surface focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all placeholder:text-muted"
+              className="w-full pl-9 pr-8 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-surface border border-border text-muted hover:text-foreground transition"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center text-muted hover:text-foreground"
               >
                 <X className="w-3 h-3" />
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end shrink-0">
-            <span className="text-sm text-muted font-medium hidden sm:inline-block">Sort by:</span>
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
             <select
               value={sortBy}
               onChange={(e: any) => setSortBy(e.target.value)}
-              aria-label="Sort projects"
-              className="px-4 py-3 text-sm font-medium rounded-2xl border border-border bg-surfaceHover focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-foreground cursor-pointer transition-all"
+              aria-label="Sort initiatives"
+              className="px-3 py-2 text-xs font-mono font-medium rounded-md border border-border bg-surfaceSubtle focus:outline-none focus:border-primary-500 text-foreground cursor-pointer"
             >
-              <option value="most_needed">Highest Need (Lowest %)</option>
-              <option value="almost_complete">Almost Funded</option>
-              <option value="newest">Recently Added</option>
-              <option value="recently_updated">Recently Updated</option>
+              <option value="most_needed">Sort: Highest Need First</option>
+              <option value="almost_complete">Sort: Almost Funded</option>
+              <option value="newest">Sort: Recently Added</option>
+              <option value="recently_updated">Sort: Recently Updated</option>
             </select>
+
+            {/* View Mode Toggle */}
+            <div className="flex items-center border border-border rounded-md overflow-hidden bg-surfaceSubtle">
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-surface text-foreground shadow-subtle' : 'text-muted hover:text-foreground'}`}
+                aria-label="Grid view"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-surface text-foreground shadow-subtle' : 'text-muted hover:text-foreground'}`}
+                aria-label="List view"
+              >
+                <List className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar">
-          <div className="flex items-center gap-1.5 text-sm font-medium text-muted mr-2 shrink-0">
-            <Filter className="w-4 h-4" /> <span>Category</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all border ${
-                  selectedCategory === cat
-                    ? 'bg-foreground text-surface border-foreground shadow-card'
-                    : 'bg-surface border-border text-foreground hover:bg-surfaceHover hover:border-muted/50'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+        {/* Category Filters */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs">
+          <span className="text-[11px] font-mono text-muted uppercase shrink-0 mr-1">Filter:</span>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-2.5 py-1 rounded text-xs font-mono font-medium whitespace-nowrap transition-colors border ${
+                selectedCategory === cat
+                  ? 'bg-foreground text-surface border-foreground'
+                  : 'bg-surfaceSubtle border-border text-muted hover:text-foreground hover:bg-surfaceHover'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Active Filter Info & Count */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-sm text-muted px-2 gap-4">
+      {/* Filter Metas */}
+      <div className="flex items-center justify-between text-xs font-mono text-muted px-1">
         <div>
-          Showing <strong className="text-foreground">{filteredProjects.length}</strong> active projects
-          {selectedCategory !== 'All' && <span> in <strong className="text-foreground">{selectedCategory}</strong></span>}
-          {searchQuery && <span> matching &ldquo;<strong className="text-foreground">{searchQuery}</strong>&rdquo;</span>}
+          Showing <strong className="text-foreground">{filteredProjects.length}</strong> active initiatives
+          {selectedCategory !== 'All' && <span> in <strong>{selectedCategory}</strong></span>}
         </div>
 
         {(selectedCategory !== 'All' || selectedUrgency !== 'All' || searchQuery) && (
           <button
             onClick={clearFilters}
-            className="text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1.5 bg-primary-50 px-3 py-1.5 rounded-lg transition-colors"
+            className="text-primary-600 hover:underline flex items-center gap-1"
           >
-            <X className="w-3.5 h-3.5" />
-            Clear all filters
+            <X className="w-3 h-3" />
+            Clear filters
           </button>
         )}
       </div>
 
-      {/* Projects Grid */}
+      {/* Projects Display */}
       {filteredProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {filteredProjects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onSupportClick={() => setSelectedProject(project)}
-            />
-          ))}
-        </div>
+        viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onSupportClick={() => setSelectedProject(project)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredProjects.map((project) => (
+              <ProjectListRow
+                key={project.id}
+                project={project}
+                onSupportClick={() => setSelectedProject(project)}
+              />
+            ))}
+          </div>
+        )
       ) : (
-        <div className="bg-surface rounded-3xl p-12 lg:p-20 text-center border border-border shadow-sm flex flex-col items-center justify-center space-y-6">
-          <div className="w-20 h-20 rounded-full bg-surfaceHover border border-border flex items-center justify-center">
-            <Layers className="w-8 h-8 text-muted" />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold text-foreground">No projects found</h3>
-            <p className="text-base text-muted max-w-md mx-auto">
-              We couldn&apos;t find any verified projects matching your selected filter criteria. Try broadening your search.
-            </p>
-          </div>
+        <div className="bg-surface rounded-xl p-12 text-center border border-border flex flex-col items-center justify-center space-y-3">
+          <Layers className="w-8 h-8 text-muted" />
+          <h3 className="font-bold text-sm text-foreground">No initiatives found</h3>
+          <p className="text-xs text-muted max-w-sm mx-auto">
+            No projects matched your active search query or filter tags.
+          </p>
           <button
             onClick={clearFilters}
-            className="px-6 py-3 rounded-xl bg-foreground text-surface font-medium hover:bg-foreground/90 transition shadow-float"
+            className="px-4 py-2 rounded-md bg-foreground text-surface text-xs font-medium hover:bg-foreground/90 transition-colors"
           >
             Clear Filters
           </button>
@@ -181,7 +203,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({ initialProjects }) =
       {/* Donation Modal */}
       <DonationModal
         project={selectedProject}
-        isOpen={!!selectedProject}
+        isOpen={Boolean(selectedProject)}
         onClose={() => setSelectedProject(null)}
       />
     </div>

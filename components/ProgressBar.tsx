@@ -23,27 +23,27 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 
   const heightClasses = {
     sm: 'h-1.5',
-    md: 'h-2.5',
-    lg: 'h-3.5',
+    md: 'h-2',
+    lg: 'h-3',
   }[size];
 
-  const variantGradients = {
+  const variantFills = {
     brand: 'bg-primary-500',
-    emerald: 'bg-success-500',
-    amber: 'bg-warning-500',
+    emerald: 'bg-success-600',
+    amber: 'bg-accent-500',
   }[variant];
 
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-1.5">
       {(showLabel || labelLeft || labelRight) && (
-        <div className="flex justify-between items-center text-xs font-semibold text-muted">
-          <span>{labelLeft || 'Progress'}</span>
-          <span>{labelRight || `${clamped}%`}</span>
+        <div className="flex justify-between items-center text-xs font-medium text-muted">
+          <span className="truncate">{labelLeft || 'Funded allocation'}</span>
+          <span className="font-mono text-foreground font-semibold shrink-0 ml-2">{labelRight || `${clamped}%`}</span>
         </div>
       )}
-      <div className={`w-full bg-surfaceHover rounded-full overflow-hidden border border-border ${heightClasses}`}>
+      <div className={`w-full bg-surfaceSubtle rounded-sm overflow-hidden border border-borderMuted ${heightClasses}`}>
         <div
-          className={`h-full rounded-full transition-all duration-700 ease-out ${variantGradients}`}
+          className={`h-full rounded-xs transition-all duration-500 ease-out ${variantFills}`}
           style={{ width: `${clamped}%` }}
         />
       </div>

@@ -15,83 +15,84 @@ import {
   Truck,
   Wrench,
   BarChart3,
-  FileText
+  Terminal,
+  Cpu
 } from 'lucide-react';
 
 export default function HowItWorksPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
-          Transparent Operations
-        </span>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-          How DesiLearCode Connects Technology to Real Opportunity
+      <div className="max-w-3xl space-y-2">
+        <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
+          <span>OPERATIONAL ARCHITECTURE & TRACEABILITY</span>
+        </div>
+        <h1 className="text-2xl sm:text-4xl font-display font-extrabold text-foreground tracking-tight">
+          How DesiLearCode Routes Technology to Grassroots Labs
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-          A modern non-profit platform designed to replace vague fundraising with verifiable, itemized assistance, device refurbishments, and mentored digital education.
+        <p className="text-xs sm:text-sm text-muted leading-relaxed">
+          Open infrastructure designed to replace vague fundraising with verifiable, itemized hardware intake, cryptographic drive sanitization, and mentored STEM education.
         </p>
       </div>
 
       {/* 5-Step Process Deep Dive */}
-      <div className="space-y-8">
+      <div className="space-y-4">
         {[
           {
             step: '01',
-            title: 'Verified Needs Assessment',
-            subtitle: 'Organizations identify tangible requirements',
+            title: 'Itemized Lab Assessment',
+            subtitle: 'Organizations specify concrete equipment & workshop counts',
             icon: Building2,
-            content: 'Child-care institutions, foster homes, and community shelter schools submit detailed requests specifying exact requirements: e.g. 5 laptops for middle school coding, 2 volunteer mentors for weekend Scratch modules, or ₹12,000 for power backups. Unspecified blanket appeals are not permitted.'
+            content: 'Grassroots learning centers and shelter schools submit itemized requirements: e.g. 8 laptops for a middle-school coding lab, 2 weekend Python mentors, or router funding. Vague, unitemized appeals are strictly rejected.'
           },
           {
             step: '02',
-            title: 'Statutory Verification & Child Safeguarding',
-            subtitle: 'Rigorous legal and physical checks before publishing',
+            title: 'Statutory Verification & Physical Lab Audit',
+            subtitle: 'Legal and facility vetting prior to public listing',
             icon: ShieldCheck,
-            content: 'Our compliance team checks government trust/society registrations, tax-exemption credentials (12A/80G in India or 501(c)(3) equivalents), and verifies that the institution has an active Child Safeguarding Officer and safe physical infrastructure.'
+            content: 'Our compliance team checks government non-profit deeds, 80G/12A tax exemption filings, surge-protected electrical safety in classrooms, and designated Child Protection Officer assignments.'
           },
           {
             step: '03',
-            title: 'Targeted Community Participation',
-            subtitle: 'Donors, volunteers, and supporters choose how to help',
+            title: 'Targeted Hardware & Skill Pledging',
+            subtitle: 'Direct hardware contributions and engineer mentorship',
             icon: Sparkles,
-            content: 'Individuals and corporate teams choose their mode of contribution: donate working electronics, volunteer 2 hours a week as a programming mentor, or pledge monetary support towards a specific itemized need (like battery replacements or internet sponsorship).'
+            content: 'Individuals and engineering teams choose their participation: pledge idle company laptops, volunteer 2 hours/week to mentor visual block programming, or sponsor specific peripheral components.'
           },
           {
             step: '04',
-            title: 'Hardware Refurbishing & Delivery Tracking',
-            subtitle: 'DoD data wiping, educational OS installation & #TFK codes',
+            title: 'NIST Sanitization & Educational Provisioning',
+            subtitle: 'Cryptographic data erasure, Linux OS deployment & #DL tracking codes',
             icon: Wrench,
-            content: 'Donated devices are collected, cryptographically wiped, upgraded with SSDs/fresh thermal paste, loaded with curated offline educational software (Scratch, Kiwix, GCompris, Python), and tracked through every stage of delivery via unique public tracking codes.'
+            content: 'Hardware intake undergoes multi-pass NIST 800-88 sanitization, thermal testing, SSD upgrades, and installation of curated offline curriculum suites (Scratch 3, Python 3, Kiwix offline library).'
           },
           {
             step: '05',
-            title: 'Verifiable Impact Reports (Zero-PII)',
+            title: 'Verifiable Milestone Ledgers (Zero-PII)',
             subtitle: 'Measurable learning outcomes without exposing vulnerable children',
             icon: BarChart3,
-            content: 'Partner organizations publish structured quarterly reports tracking workshop hours, skills acquired, and active terminals. Individual child identities and sensitive case files are never published.'
+            content: 'Partner centers publish structured milestone completion reports tracking workshop hours and active terminals. Individual child identities, faces, or shelter coordinates are never exposed.'
           }
         ].map((item, idx) => {
           const Icon = item.icon;
           return (
-            <div key={idx} className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 flex flex-col md:flex-row gap-6 items-start">
-              <div className="flex items-center gap-4 shrink-0">
-                <span className="text-3xl sm:text-4xl font-extrabold text-indigo-200 font-mono">
+            <div key={idx} className="bg-surface rounded-xl border border-border p-5 sm:p-6 flex flex-col md:flex-row gap-5 items-start">
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="text-2xl sm:text-3xl font-extrabold text-muted/30 font-mono">
                   {item.step}
                 </span>
-                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-xs">
-                  <Icon className="w-6 h-6" />
+                <div className="w-9 h-9 rounded-md bg-surfaceSubtle text-primary-600 flex items-center justify-center border border-border">
+                  <Icon className="w-4 h-4" />
                 </div>
               </div>
 
-              <div className="space-y-2 flex-1">
+              <div className="space-y-1 flex-1">
                 <div className="flex flex-wrap items-baseline gap-2">
-                  <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
-                  <span className="text-xs font-semibold text-slate-500">— {item.subtitle}</span>
+                  <h3 className="text-sm font-bold text-foreground">{item.title}</h3>
+                  <span className="text-xs text-muted font-mono">— {item.subtitle}</span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p className="text-xs text-muted leading-relaxed">
                   {item.content}
                 </p>
               </div>
@@ -100,29 +101,29 @@ export default function HowItWorksPage() {
         })}
       </div>
 
-      {/* Device Refurbishment Protocol Showcase */}
-      <div className="bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 space-y-6">
-        <div className="max-w-2xl space-y-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-800">
+      {/* Technical Refurbishment Standard Showcase */}
+      <div className="bg-[#090c10] text-[#8b949e] rounded-xl p-6 sm:p-8 border border-[#21262d] space-y-5 font-mono text-xs shadow-panel">
+        <div className="max-w-2xl space-y-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
             Hardware Lifecycle Standard
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Our 6-Point Technical Refurbishment Standard
+          <h2 className="text-base sm:text-lg font-bold text-white font-sans">
+            6-Point Technical Refurbishment Protocol
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
           {[
-            { title: '1. DoD 5220.22-M Wipe', desc: 'Complete multi-pass overwriting ensures zero remnant donor personal data.' },
-            { title: '2. Battery & Thermals', desc: 'Bench tested for >80% health, dust cleaned, and thermal paste renewed.' },
-            { title: '3. Educational OS Image', desc: 'Configured with Ubuntu LTS / tailored educational Linux environment.' },
-            { title: '4. Offline Learning Suite', desc: 'Preloaded with Kiwix encyclopedias, Scratch 3, Typing Tutor, and Python IDE.' },
-            { title: '5. Locked Child Profile', desc: 'Standard non-admin restricted profiles with DNS-level adult content blocking.' },
-            { title: '6. End-to-End Tracking', desc: 'Public lifecycle code (#TFK-XXXX) updated when active in classroom.' },
+            { title: '1. NIST 800-88 Sanitization', desc: 'Multi-pass cryptographic drive wiping guarantees zero remnant donor data.' },
+            { title: '2. Thermals & Battery Diagnostic', desc: 'Bench-tested for battery health, cooling fans cleaned, and thermal paste renewed.' },
+            { title: '3. Educational Linux Image', desc: 'Configured with Ubuntu LTS / tailored educational Linux desktop environment.' },
+            { title: '4. Offline Learning Suite', desc: 'Preloaded with Scratch 3, Python 3 IDE, Kiwix encyclopedias, and typing tutors.' },
+            { title: '5. Restricted Safe Profile', desc: 'Standard non-admin learner profiles with DNS-level content filtering.' },
+            { title: '6. Immutable Asset ID', desc: 'Tracked via barcode tag (#DL-XXXX) through field delivery and active lab hours.' },
           ].map((item, idx) => (
-            <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-              <strong className="text-sm font-bold text-white block">{item.title}</strong>
-              <p className="text-xs text-slate-300">{item.desc}</p>
+            <div key={idx} className="p-3 rounded-md bg-[#0d1117] border border-[#21262d] space-y-1">
+              <strong className="text-xs font-bold text-white block font-sans">{item.title}</strong>
+              <p className="text-[11px] text-[#8b949e] leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>

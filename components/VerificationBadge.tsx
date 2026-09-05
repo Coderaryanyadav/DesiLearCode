@@ -10,45 +10,60 @@ export const VerificationBadge: React.FC<{
   size?: 'sm' | 'md' | 'lg';
 }> = ({ status, showText = true, size = 'md' }) => {
   const sizeClasses = {
-    sm: 'text-[10px] px-2 py-0.5 gap-1',
-    md: 'text-xs px-2.5 py-1 gap-1.5',
-    lg: 'text-sm px-3 py-1.5 gap-2',
+    sm: 'text-[11px] px-1.5 py-0.5 gap-1',
+    md: 'text-xs px-2 py-0.5 gap-1.5',
+    lg: 'text-xs px-2.5 py-1 gap-2',
   }[size];
 
   switch (status) {
     case 'verified':
       return (
-        <span className={`inline-flex items-center font-semibold rounded-full bg-success-50 text-success-700 border border-success-200/80 shadow-sm ${sizeClasses}`}>
-          <CheckCircle2 className="w-3.5 h-3.5 text-success-600" />
-          {showText && <span>Verified NGO</span>}
+        <span 
+          title="Verified 501(c)(3)/Section 8 NGO with validated physical learning lab"
+          className={`inline-flex items-center font-medium rounded-md bg-success-50 text-success-700 border border-success-200 ${sizeClasses}`}
+        >
+          <CheckCircle2 className="w-3.5 h-3.5 text-success-600 shrink-0" />
+          {showText && <span className="font-mono text-[11px] tracking-tight">VERIFIED NGO</span>}
         </span>
       );
     case 'under_review':
       return (
-        <span className={`inline-flex items-center font-semibold rounded-full bg-warning-50 text-warning-700 border border-warning-200/80 shadow-sm ${sizeClasses}`}>
-          <Clock className="w-3.5 h-3.5 text-warning-600" />
-          {showText && <span>Under Review</span>}
+        <span 
+          title="Documents submitted and awaiting verification review"
+          className={`inline-flex items-center font-medium rounded-md bg-warning-50 text-warning-700 border border-warning-200 ${sizeClasses}`}
+        >
+          <Clock className="w-3.5 h-3.5 text-warning-600 shrink-0" />
+          {showText && <span className="font-mono text-[11px] tracking-tight">UNDER REVIEW</span>}
         </span>
       );
     case 'rejected':
       return (
-        <span className={`inline-flex items-center font-semibold rounded-full bg-error-50 text-error-700 border border-error-200/80 shadow-sm ${sizeClasses}`}>
-          <Ban className="w-3.5 h-3.5 text-error-600" />
-          {showText && <span>Rejected</span>}
+        <span 
+          title="Verification criteria not met"
+          className={`inline-flex items-center font-medium rounded-md bg-error-50 text-error-700 border border-error-200 ${sizeClasses}`}
+        >
+          <Ban className="w-3.5 h-3.5 text-error-600 shrink-0" />
+          {showText && <span className="font-mono text-[11px] tracking-tight">UNVERIFIED</span>}
         </span>
       );
     case 'suspended':
       return (
-        <span className={`inline-flex items-center font-semibold rounded-full bg-surfaceHover text-muted border border-border shadow-sm ${sizeClasses}`}>
-          <AlertCircle className="w-3.5 h-3.5 text-muted" />
-          {showText && <span>Suspended</span>}
+        <span 
+          title="Account suspended pending compliance review"
+          className={`inline-flex items-center font-medium rounded-md bg-surfaceSubtle text-muted border border-border ${sizeClasses}`}
+        >
+          <AlertCircle className="w-3.5 h-3.5 text-muted shrink-0" />
+          {showText && <span className="font-mono text-[11px] tracking-tight">SUSPENDED</span>}
         </span>
       );
     default:
       return (
-        <span className={`inline-flex items-center font-semibold rounded-full bg-surfaceHover text-muted border border-border shadow-sm ${sizeClasses}`}>
-          <Clock className="w-3.5 h-3.5 text-muted" />
-          {showText && <span>Pending</span>}
+        <span 
+          title="Awaiting documentation"
+          className={`inline-flex items-center font-medium rounded-md bg-surfaceSubtle text-muted border border-border ${sizeClasses}`}
+        >
+          <Clock className="w-3.5 h-3.5 text-muted shrink-0" />
+          {showText && <span className="font-mono text-[11px] tracking-tight">PENDING</span>}
         </span>
       );
   }
@@ -56,41 +71,43 @@ export const VerificationBadge: React.FC<{
 
 export const StatusBadge: React.FC<{ 
   status: ProjectStatus | DeviceStatus | string; 
-  type?: 'project' | 'device' | 'need' 
-}> = ({ status, type = 'project' }) => {
+  type?: 'project' | 'device' | 'need';
+  size?: 'sm' | 'md';
+}> = ({ status, type = 'project', size = 'md' }) => {
   const statusStr = String(status);
+  const textClass = size === 'sm' ? 'text-[11px] px-1.5 py-0.5' : 'text-xs px-2 py-0.5';
   
-  if (['active', 'In Use', 'Ready', 'Approved', 'successful'].includes(statusStr)) {
+  if (['active', 'In Use', 'Ready', 'Approved', 'successful', 'Delivered'].includes(statusStr)) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-success-50 text-success-700 border border-success-200">
+      <span className={`inline-flex items-center gap-1.5 font-mono font-medium rounded-md bg-success-50 text-success-700 border border-success-200 ${textClass}`}>
         <span className="w-1.5 h-1.5 rounded-full bg-success-500"></span>
-        {statusStr.replace('_', ' ')}
+        {statusStr.toUpperCase().replace('_', ' ')}
       </span>
     );
   }
 
   if (['pending_approval', 'Under Review', 'Submitted', 'Inspection', 'Repair'].includes(statusStr)) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-warning-50 text-warning-700 border border-warning-200">
-        <span className="w-1.5 h-1.5 rounded-full bg-warning-500"></span>
-        {statusStr.replace('_', ' ')}
+      <span className={`inline-flex items-center gap-1.5 font-mono font-medium rounded-md bg-warning-50 text-warning-700 border border-warning-200 ${textClass}`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-warning-500 animate-pulse"></span>
+        {statusStr.toUpperCase().replace('_', ' ')}
       </span>
     );
   }
 
-  if (['almost_funded', 'Pickup Scheduled', 'Assigned', 'Delivered'].includes(statusStr)) {
+  if (['almost_funded', 'Pickup Scheduled', 'Assigned'].includes(statusStr)) {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-info-50 text-info-700 border border-info-200">
-        <span className="w-1.5 h-1.5 rounded-full bg-info-500"></span>
-        {statusStr.replace('_', ' ')}
+      <span className={`inline-flex items-center gap-1.5 font-mono font-medium rounded-md bg-primary-50 text-primary-700 border border-primary-200 ${textClass}`}>
+        <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+        {statusStr.toUpperCase().replace('_', ' ')}
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold rounded-full bg-surfaceHover text-muted border border-border">
+    <span className={`inline-flex items-center gap-1.5 font-mono font-medium rounded-md bg-surfaceSubtle text-muted border border-border ${textClass}`}>
       <span className="w-1.5 h-1.5 rounded-full bg-muted"></span>
-      {statusStr.replace('_', ' ')}
+      {statusStr.toUpperCase().replace('_', ' ')}
     </span>
   );
 };

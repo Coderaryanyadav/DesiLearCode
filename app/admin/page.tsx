@@ -9,8 +9,7 @@ import { getAllDonationsForAdmin } from '@/lib/db/donations';
 import { getAllVolunteersForAdmin } from '@/lib/db/volunteers';
 import { getSafeguardingReportsForAdmin } from '@/lib/db/safeguarding';
 import { getAuditLogsForAdmin } from '@/lib/db/audit';
-import { VerificationBadge } from '@/components/VerificationBadge';
-import { StatusBadge } from '@/components/StatusBadge';
+import { VerificationBadge, StatusBadge } from '@/components/VerificationBadge';
 import { 
   Shield, 
   Building2, 
@@ -23,11 +22,15 @@ import {
   Clock, 
   CheckCircle2, 
   ArrowRight,
-  TrendingUp
+  Terminal,
+  Activity,
+  Filter,
+  Eye,
+  Sliders
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Platform Administration — DesiLearCode',
+  title: 'Operations Command Center — DesiLearCode Admin',
 };
 
 export default async function AdminDashboardPage() {
@@ -44,16 +47,16 @@ export default async function AdminDashboardPage() {
 
   if (profile?.role !== 'admin') {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center space-y-4">
-        <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto">
-          <Shield className="w-6 h-6" />
+      <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-4">
+        <div className="w-10 h-10 bg-error-50 text-error-600 rounded-md flex items-center justify-center mx-auto border border-error-200">
+          <Shield className="w-5 h-5" />
         </div>
-        <h2 className="text-xl font-bold text-slate-900">Access Restricted</h2>
-        <p className="text-xs text-slate-600">
-          This portal requires verified administrative privileges. Your current role is &ldquo;{profile?.role || 'visitor'}&rdquo;.
+        <h2 className="text-lg font-bold text-foreground">Restricted Operational Console</h2>
+        <p className="text-xs text-muted">
+          This interface requires validated internal platform administrator credentials.
         </p>
-        <Link href="/dashboard" className="inline-block px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs">
-          Return to User Dashboard
+        <Link href="/dashboard" className="inline-block px-4 py-2 rounded-md bg-foreground text-surface text-xs font-medium">
+          Return to Portal
         </Link>
       </div>
     );
@@ -79,167 +82,286 @@ export default async function AdminDashboardPage() {
 
   const pendingOrgs = organizations.filter(o => o.verificationStatus === 'under_review' || o.verificationStatus === 'pending');
   const pendingProjects = projects.filter(p => p.status === 'pending_approval');
+  const pendingDevices = devices.filter(d => d.status === 'Submitted' || d.status === 'Inspection');
+  const newReports = safeguardingReports.filter(r => r.status === 'new');
+
+  const totalActionsNeeded = pendingOrgs.length + pendingProjects.length + pendingDevices.length + newReports.length;
   const totalDonationValue = donations.reduce((sum, d) => sum + d.amount, 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+      {/* Command Center Title & Context Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
-              Administrative Command Center
+            <span className="text-[10px] font-mono font-bold bg-foreground text-surface px-2 py-0.5 rounded">
+              ADMIN OPS v2.6
             </span>
-            <span className="text-xs font-bold bg-slate-900 text-white px-2.5 py-0.5 rounded-full">
-              Server Authenticated Admin
+            <span className="text-[10px] font-mono text-muted">
+              SESSION: {profile.email} • TLS VERIFIED
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-            Platform Oversight & Verification Queue
+          <h1 className="text-xl font-display font-bold text-foreground">
+            Platform Operations & Verification Console
           </h1>
-          <p className="text-xs text-slate-500">
-            Enforce statutory compliance, verify non-profit documents, moderate projects, and review immutable audit logs.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Link
             href="/admin/audit"
-            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition"
+            className="px-3 py-1.5 rounded-md bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border font-mono text-xs transition-colors flex items-center gap-1.5"
           >
-            Audit Trail Logs ({auditLogs.length})
+            <Activity className="w-3.5 h-3.5 text-primary-500" />
+            <span>Audit Trail ({auditLogs.length})</span>
           </Link>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
-        <Link href="/admin/organizations" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
-          <div className="flex items-center justify-between">
-            <Building2 className="w-5 h-5 text-indigo-600" />
+      {/* TOP DOMINATING ACTION ALERT QUEUE */}
+      <div className={`p-4 rounded-xl border transition-colors ${
+        totalActionsNeeded > 0 
+          ? 'bg-warning-50/60 border-warning-200 text-warning-950' 
+          : 'bg-success-50/60 border-success-200 text-success-950'
+      }`}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className={`w-8 h-8 rounded-md flex items-center justify-center font-mono font-bold text-sm ${
+              totalActionsNeeded > 0 ? 'bg-warning-500 text-white' : 'bg-success-600 text-white'
+            }`}>
+              {totalActionsNeeded}
+            </div>
+            <div>
+              <h2 className="font-bold text-sm">
+                {totalActionsNeeded > 0 
+                  ? `${totalActionsNeeded} Priority Operations Require Attention Today`
+                  : 'All Operations & Verification Queues Clear'}
+              </h2>
+              <div className="text-xs text-muted flex items-center gap-3 mt-0.5 font-mono">
+                <span>{pendingOrgs.length} NGO audits</span>
+                <span>•</span>
+                <span>{pendingProjects.length} project reviews</span>
+                <span>•</span>
+                <span>{pendingDevices.length} device inspections</span>
+                <span>•</span>
+                <span>{newReports.length} safety alerts</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
             {pendingOrgs.length > 0 && (
-              <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                {pendingOrgs.length} Pending
-              </span>
+              <Link href="/admin/organizations" className="px-3 py-1.5 rounded bg-warning-600 text-white font-medium text-xs hover:bg-warning-700">
+                Review Orgs
+              </Link>
             )}
-          </div>
-          <div className="text-2xl font-extrabold text-slate-900">{organizations.length}</div>
-          <div className="text-xs font-bold text-slate-700">Organizations</div>
-        </Link>
-
-        <Link href="/admin/projects" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
-          <div className="flex items-center justify-between">
-            <Layers className="w-5 h-5 text-emerald-600" />
             {pendingProjects.length > 0 && (
-              <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                {pendingProjects.length} Pending
-              </span>
+              <Link href="/admin/projects" className="px-3 py-1.5 rounded bg-foreground text-surface font-medium text-xs hover:bg-foreground/90">
+                Review Projects
+              </Link>
             )}
           </div>
-          <div className="text-2xl font-extrabold text-slate-900">{projects.length}</div>
-          <div className="text-xs font-bold text-slate-700">Projects</div>
-        </Link>
+        </div>
+      </div>
 
-        <Link href="/admin/devices" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
-          <Laptop className="w-5 h-5 text-purple-600" />
-          <div className="text-2xl font-extrabold text-slate-900">{devices.length}</div>
-          <div className="text-xs font-bold text-slate-700">Devices Tracked</div>
-        </Link>
-
-        <Link href="/admin/donations" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
-          <HeartHandshake className="w-5 h-5 text-amber-600" />
-          <div className="text-2xl font-extrabold text-slate-900">₹{(totalDonationValue / 1000).toFixed(1)}k</div>
-          <div className="text-xs font-bold text-slate-700">Donations Logged</div>
-        </Link>
-
-        <Link href="/admin/volunteers" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
-          <UserCheck className="w-5 h-5 text-blue-600" />
-          <div className="text-2xl font-extrabold text-slate-900">{volunteers.length}</div>
-          <div className="text-xs font-bold text-slate-700">Volunteers</div>
-        </Link>
-
-        <Link href="/admin/reports" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
-          <div className="flex items-center justify-between">
-            <AlertTriangle className="w-5 h-5 text-rose-600" />
-            {safeguardingReports.filter(r => r.status === 'new').length > 0 && (
-              <span className="text-[10px] font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full">
-                {safeguardingReports.filter(r => r.status === 'new').length} New
-              </span>
-            )}
+      {/* Dense System State Ribbon */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <Link href="/admin/organizations" className="p-3.5 bg-surface rounded-lg border border-border hover:border-borderMuted transition-all space-y-1">
+          <div className="text-[10px] font-mono text-muted uppercase flex justify-between">
+            <span>NGOs</span>
+            {pendingOrgs.length > 0 && <span className="text-warning-600 font-bold">● {pendingOrgs.length}</span>}
           </div>
-          <div className="text-2xl font-extrabold text-slate-900">{safeguardingReports.length}</div>
-          <div className="text-xs font-bold text-slate-700">Safeguarding</div>
+          <div className="text-lg font-mono font-bold text-foreground">{organizations.length}</div>
+        </Link>
+
+        <Link href="/admin/projects" className="p-3.5 bg-surface rounded-lg border border-border hover:border-borderMuted transition-all space-y-1">
+          <div className="text-[10px] font-mono text-muted uppercase flex justify-between">
+            <span>Projects</span>
+            {pendingProjects.length > 0 && <span className="text-warning-600 font-bold">● {pendingProjects.length}</span>}
+          </div>
+          <div className="text-lg font-mono font-bold text-foreground">{projects.length}</div>
+        </Link>
+
+        <Link href="/admin/devices" className="p-3.5 bg-surface rounded-lg border border-border hover:border-borderMuted transition-all space-y-1">
+          <div className="text-[10px] font-mono text-muted uppercase flex justify-between">
+            <span>Hardware</span>
+            {pendingDevices.length > 0 && <span className="text-primary-600 font-bold">● {pendingDevices.length}</span>}
+          </div>
+          <div className="text-lg font-mono font-bold text-foreground">{devices.length}</div>
+        </Link>
+
+        <Link href="/admin/donations" className="p-3.5 bg-surface rounded-lg border border-border hover:border-borderMuted transition-all space-y-1">
+          <div className="text-[10px] font-mono text-muted uppercase">Ledger Value</div>
+          <div className="text-lg font-mono font-bold text-foreground">₹{(totalDonationValue / 1000).toFixed(1)}k</div>
+        </Link>
+
+        <Link href="/admin/volunteers" className="p-3.5 bg-surface rounded-lg border border-border hover:border-borderMuted transition-all space-y-1">
+          <div className="text-[10px] font-mono text-muted uppercase">Mentors</div>
+          <div className="text-lg font-mono font-bold text-foreground">{volunteers.length}</div>
+        </Link>
+
+        <Link href="/admin/reports" className="p-3.5 bg-surface rounded-lg border border-border hover:border-borderMuted transition-all space-y-1">
+          <div className="text-[10px] font-mono text-muted uppercase flex justify-between">
+            <span>Safeguarding</span>
+            {newReports.length > 0 && <span className="text-error-600 font-bold">● {newReports.length}</span>}
+          </div>
+          <div className="text-lg font-mono font-bold text-foreground">{safeguardingReports.length}</div>
         </Link>
       </div>
 
-      {/* Pending Reviews Queue */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* NGO Verification Queue */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-base font-bold text-slate-900">NGO Verification Queue</h3>
-            <Link href="/admin/organizations" className="text-xs font-bold text-indigo-600 hover:underline">
-              View all ({organizations.length}) →
-            </Link>
+      {/* Main Review Matrices (Two Dense Operational Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Left Column: NGO & Project Inspection Queue (Span 7) */}
+        <div className="lg:col-span-7 space-y-6">
+          
+          {/* NGO Queue */}
+          <div className="bg-surface rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 bg-surfaceSubtle border-b border-border flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-primary-500" />
+                <h3 className="font-bold text-xs text-foreground uppercase tracking-wide font-mono">NGO Verification Stream</h3>
+              </div>
+              <Link href="/admin/organizations" className="text-[11px] font-mono text-muted hover:text-foreground">
+                VIEW DIRECTORY ({organizations.length}) &rarr;
+              </Link>
+            </div>
+
+            {pendingOrgs.length > 0 ? (
+              <div className="divide-y divide-border">
+                {pendingOrgs.slice(0, 4).map((org) => (
+                  <div key={org.id} className="p-3.5 flex items-center justify-between hover:bg-surfaceSubtle/50 transition-colors">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-foreground">{org.name}</span>
+                        <VerificationBadge status={org.verificationStatus} size="sm" />
+                      </div>
+                      <div className="text-[11px] font-mono text-muted">
+                        REG: {org.registrationNumber || 'N/A'} • {org.location}
+                      </div>
+                    </div>
+                    <Link
+                      href="/admin/organizations"
+                      className="px-2.5 py-1 rounded bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border font-mono text-[11px]"
+                    >
+                      Audit
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 text-center text-xs font-mono text-muted">
+                No NGO verification requests currently pending.
+              </div>
+            )}
           </div>
 
-          {pendingOrgs.length > 0 ? (
-            <div className="space-y-3">
-              {pendingOrgs.map((org) => (
-                <div key={org.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center text-xs">
-                  <div>
-                    <div className="font-bold text-slate-900">{org.name}</div>
-                    <div className="text-[11px] text-slate-500">Reg: {org.registrationNumber} • {org.location}</div>
+          {/* Project Approval Queue */}
+          <div className="bg-surface rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 bg-surfaceSubtle border-b border-border flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-success-600" />
+                <h3 className="font-bold text-xs text-foreground uppercase tracking-wide font-mono">Project Moderation Stream</h3>
+              </div>
+              <Link href="/admin/projects" className="text-[11px] font-mono text-muted hover:text-foreground">
+                ALL PROJECTS ({projects.length}) &rarr;
+              </Link>
+            </div>
+
+            {pendingProjects.length > 0 ? (
+              <div className="divide-y divide-border">
+                {pendingProjects.slice(0, 4).map((proj) => (
+                  <div key={proj.id} className="p-3.5 flex items-center justify-between hover:bg-surfaceSubtle/50 transition-colors">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-foreground">{proj.title}</span>
+                        <StatusBadge status={proj.status} size="sm" />
+                      </div>
+                      <div className="text-[11px] font-mono text-muted">
+                        ORG: {proj.organizationName} • GOAL: ₹{proj.goalValue.toLocaleString()}
+                      </div>
+                    </div>
+                    <Link
+                      href="/admin/projects"
+                      className="px-2.5 py-1 rounded bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border font-mono text-[11px]"
+                    >
+                      Review
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 text-center text-xs font-mono text-muted">
+                No initiative proposals waiting in approval queue.
+              </div>
+            )}
+          </div>
+
+        </div>
+
+        {/* Right Column: Hardware Logistics & Recent Audit Trail (Span 5) */}
+        <div className="lg:col-span-5 space-y-6">
+          
+          {/* Hardware Intake Feed */}
+          <div className="bg-surface rounded-xl border border-border overflow-hidden">
+            <div className="px-4 py-3 bg-surfaceSubtle border-b border-border flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Laptop className="w-4 h-4 text-primary-500" />
+                <h3 className="font-bold text-xs text-foreground uppercase tracking-wide font-mono">Hardware Intake Queue</h3>
+              </div>
+              <Link href="/admin/devices" className="text-[11px] font-mono text-muted hover:text-foreground">
+                MANAGE ({devices.length}) &rarr;
+              </Link>
+            </div>
+
+            <div className="divide-y divide-border">
+              {devices.slice(0, 4).map((dev) => (
+                <div key={dev.id} className="p-3 flex items-center justify-between hover:bg-surfaceSubtle/50 transition-colors">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono font-bold text-xs text-foreground">#{dev.trackingCode}</span>
+                      <StatusBadge status={dev.status} size="sm" />
+                    </div>
+                    <div className="text-[11px] text-muted truncate max-w-[200px]">
+                      {dev.manufacturer} {dev.model} ({dev.deviceType})
+                    </div>
                   </div>
                   <Link
-                    href={`/admin/organizations`}
-                    className="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs"
+                    href="/admin/devices"
+                    className="text-[11px] font-mono text-primary-600 hover:underline"
                   >
-                    Review
+                    Details
                   </Link>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="p-6 text-center text-xs text-slate-500">
-              No pending organizations in verification queue.
-            </div>
-          )}
-        </div>
-
-        {/* Project Moderation Queue */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-base font-bold text-slate-900">Project Approval Queue</h3>
-            <Link href="/admin/projects" className="text-xs font-bold text-indigo-600 hover:underline">
-              View all ({projects.length}) →
-            </Link>
           </div>
 
-          {pendingProjects.length > 0 ? (
-            <div className="space-y-3">
-              {pendingProjects.map((proj) => (
-                <div key={proj.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center text-xs">
-                  <div>
-                    <div className="font-bold text-slate-900">{proj.title}</div>
-                    <div className="text-[11px] text-slate-500">{proj.organizationName} • Goal: ₹{proj.goalValue.toLocaleString()}</div>
+          {/* Audit Trail Snippet */}
+          <div className="bg-[#090c10] text-[#8b949e] rounded-xl border border-[#21262d] p-4 space-y-3 font-mono text-xs">
+            <div className="flex justify-between items-center pb-2 border-b border-[#21262d]">
+              <span className="text-white font-bold flex items-center gap-1.5">
+                <Terminal className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Security Audit Ledger</span>
+              </span>
+              <span className="text-[10px] text-emerald-400">ENFORCED</span>
+            </div>
+
+            <div className="space-y-2">
+              {auditLogs.slice(0, 4).map((log) => (
+                <div key={log.id} className="p-2 bg-[#0d1117] rounded border border-[#21262d] space-y-0.5">
+                  <div className="flex justify-between text-[10px]">
+                    <span className="text-indigo-300 font-bold">{log.action}</span>
+                    <span className="text-[#576071]">{new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
-                  <Link
-                    href={`/admin/projects`}
-                    className="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs"
-                  >
-                    Review
-                  </Link>
+                  <div className="text-[11px] text-[#8b949e] truncate">{log.details}</div>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="p-6 text-center text-xs text-slate-500">
-              No projects waiting for administrative approval.
-            </div>
-          )}
+          </div>
+
         </div>
+
       </div>
 
     </div>

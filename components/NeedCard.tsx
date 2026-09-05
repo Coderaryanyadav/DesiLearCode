@@ -26,35 +26,35 @@ export const NeedCard: React.FC<{
   const Icon = NEED_ICONS[need.type] || Laptop;
   const percentage = Math.min(100, Math.round((need.quantityFulfilled / need.quantityRequired) * 100));
 
-  const priorityColors = {
-    urgent: 'bg-error-100 text-error-800 border-error-200',
-    high: 'bg-warning-100 text-warning-800 border-warning-200',
-    medium: 'bg-info-100 text-info-800 border-info-200',
-    low: 'bg-surfaceHover text-muted border-border',
+  const priorityClasses = {
+    urgent: 'bg-error-50 text-error-700 border-error-200',
+    high: 'bg-accent-50 text-accent-700 border-accent-200',
+    medium: 'bg-primary-50 text-primary-700 border-primary-200',
+    low: 'bg-surfaceSubtle text-muted border-border',
   }[need.priority || 'medium'];
 
   return (
-    <div className={`p-5 rounded-3xl border transition-all duration-200 flex flex-col justify-between ${
+    <div className={`p-4 rounded-xl border transition-all flex flex-col justify-between ${
       need.fulfilled 
-        ? 'bg-surfaceHover border-border opacity-80' 
-        : 'bg-surface border-border hover:border-primary-200 hover:shadow-card-hover'
+        ? 'bg-surfaceSubtle border-border opacity-75' 
+        : 'bg-surface border-border hover:border-borderMuted hover:shadow-panel'
     }`}>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {/* Top Header */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${
+          <div className="flex items-center gap-2.5">
+            <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 border ${
               need.fulfilled 
-                ? 'bg-success-50 text-success-600 border-success-100' 
-                : 'bg-primary-50 text-primary-600 border-primary-100'
+                ? 'bg-success-50 text-success-600 border-success-200' 
+                : 'bg-surfaceSubtle text-primary-600 border-border'
             }`}>
-              {need.fulfilled ? <CheckCircle2 className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
+              {need.fulfilled ? <CheckCircle2 className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
             </div>
             <div>
-              <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${priorityColors}`}>
-                {need.priority.toUpperCase()} PRIORITY
+              <span className={`text-[10px] font-mono font-medium px-1.5 py-0.5 rounded border ${priorityClasses}`}>
+                {(need.priority || 'NORMAL').toUpperCase()}
               </span>
-              <h4 className="font-display font-bold text-foreground text-sm md:text-base mt-1.5 leading-snug">
+              <h4 className="font-bold text-foreground text-sm mt-1 leading-snug">
                 {need.title}
               </h4>
             </div>
@@ -62,19 +62,19 @@ export const NeedCard: React.FC<{
         </div>
 
         {/* Project Context */}
-        <div className="text-xs text-muted flex flex-col gap-1">
-          <span>Project: <strong className="text-foreground font-semibold">{need.projectTitle}</strong></span>
-          <span>By: <span className="text-primary-600 font-medium">{need.organizationName}</span></span>
+        <div className="text-xs text-muted flex flex-col gap-0.5 font-mono">
+          <span>PROJECT: <strong className="text-foreground font-sans font-medium">{need.projectTitle}</strong></span>
+          <span>ORG: <span className="text-primary-600 font-sans">{need.organizationName}</span></span>
         </div>
 
         {/* Purpose Description */}
-        <p className="text-sm text-muted leading-relaxed bg-surfaceHover p-3 rounded-xl border border-border">
-          <strong className="text-foreground font-semibold block mb-1">Purpose:</strong>
+        <p className="text-xs text-muted leading-relaxed bg-surfaceSubtle p-2.5 rounded-md border border-border">
+          <strong className="text-foreground block font-medium mb-0.5 font-sans">Required For:</strong>
           {need.purpose}
         </p>
 
         {/* Progress */}
-        <div className="pt-2">
+        <div className="pt-1">
           <ProgressBar
             percentage={percentage}
             labelLeft={`${need.quantityFulfilled} / ${need.quantityRequired} ${need.unit}`}
@@ -86,37 +86,37 @@ export const NeedCard: React.FC<{
       </div>
 
       {/* Action CTA */}
-      <div className="pt-5 mt-3 border-t border-border">
+      <div className="pt-3 mt-3 border-t border-border">
         {need.type === 'mentor' ? (
           <Link
             href="/volunteer/apply"
-            className="w-full py-2.5 text-center text-sm font-semibold rounded-xl bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2 text-center text-xs font-medium rounded-md bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors flex items-center justify-center gap-1.5 border border-primary-200"
           >
-            <Code className="w-4 h-4" />
+            <Code className="w-3.5 h-3.5" />
             Volunteer for this Need
           </Link>
         ) : need.type === 'laptop' || need.type === 'desktop' || need.type === 'tablet' ? (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Link
               href="/donate-device"
-              className="py-2.5 text-center text-sm font-semibold rounded-xl bg-success-600 hover:bg-success-700 text-white transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+              className="py-2 text-center text-xs font-medium rounded-md bg-primary-600 hover:bg-primary-700 text-white transition-colors flex items-center justify-center gap-1.5"
             >
-              <Laptop className="w-4 h-4" />
-              Donate Device
+              <Laptop className="w-3.5 h-3.5" />
+              Pledge Device
             </Link>
             <button
               onClick={() => onFulfillClick && onFulfillClick(need)}
-              className="py-2.5 text-center text-sm font-semibold rounded-xl bg-surfaceHover hover:bg-border text-foreground transition-colors border border-transparent hover:border-muted/30"
+              className="py-2 text-center text-xs font-medium rounded-md bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border transition-colors"
             >
-              Fund Refurbish
+              Sponsor Fund
             </button>
           </div>
         ) : (
           <button
             onClick={() => onFulfillClick && onFulfillClick(need)}
-            className="w-full py-2.5 text-center text-sm font-bold rounded-xl bg-foreground hover:bg-foreground/90 text-surface transition-all shadow-card"
+            className="w-full py-2 text-center text-xs font-medium rounded-md bg-foreground hover:bg-foreground/90 text-surface transition-colors"
           >
-            Help Fulfill This Need
+            Fulfill Requirement
           </button>
         )}
       </div>

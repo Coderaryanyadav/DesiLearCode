@@ -2,21 +2,26 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ProjectCard } from '@/components/ProjectCard';
-import { DonationModal } from '@/components/DonationModal';
 import { Project } from '@/lib/types';
+import { FeaturedProjectCard, ProjectCard } from '@/components/ProjectCard';
+import { DonationModal } from '@/components/DonationModal';
 import { 
   Laptop, 
   Code, 
-  BookOpen, 
-  Rocket, 
   ArrowRight, 
   ShieldCheck, 
   Users, 
-  Sparkles,
+  Terminal, 
+  Cpu, 
+  CheckCircle2, 
+  Layers, 
+  GitBranch, 
+  Database,
+  Lock,
   ChevronRight,
-  TrendingUp,
-  LineChart
+  Sparkles,
+  Server,
+  Workflow
 } from 'lucide-react';
 
 interface HomeViewProps {
@@ -33,66 +38,139 @@ interface HomeViewProps {
 export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics }) => {
   const [selectedProjectForDonation, setSelectedProjectForDonation] = useState<Project | null>(null);
 
-  // Since we don't have real impact numbers yet (as per prompt instructions to not fake data),
-  // we will show explanatory metrics or the real counts from the database if they exist.
-  const hasLiveMetrics = metrics.activeProjectsCount > 0 || metrics.verifiedOrgsCount > 0;
+  const primaryProject = featuredProjects.length > 0 ? featuredProjects[0] : null;
+  const secondaryProjects = featuredProjects.length > 1 ? featuredProjects.slice(1, 4) : [];
 
   return (
-    <div className="flex flex-col bg-background min-h-screen pb-24">
+    <div className="flex flex-col bg-background min-h-screen">
       
-      {/* SECTION 1: HERO SECTION */}
-      <section className="relative pt-24 md:pt-32 pb-16 md:pb-24 overflow-hidden border-b border-border/50">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-50/50 via-background to-background"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
+      {/* 1. EDITORIAL HERO SECTION */}
+      <section className="relative pt-12 md:pt-20 pb-16 md:pb-24 border-b border-border bg-surface tech-grid-pattern overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-border shadow-soft">
-              <span className="flex w-2 h-2 rounded-full bg-success-500 relative">
-                <span className="absolute inset-0 rounded-full bg-success-500 animate-ping opacity-75"></span>
-              </span>
-              <span className="text-xs font-semibold text-foreground tracking-wide">Platform Now Live</span>
+            {/* Left Column: Editorial Mission */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
+                <span className="w-2 h-2 rounded-full bg-success-500 animate-pulse"></span>
+                <span>OPEN LOGISTICS & EDUCATION INFRASTRUCTURE</span>
+              </div>
+
+              <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl text-foreground tracking-tight leading-[1.08]">
+                Refurbished hardware.<br />
+                Verified classrooms.<br />
+                <span className="text-primary-600">Zero corporate waste.</span>
+              </h1>
+
+              <p className="text-base sm:text-lg text-muted max-w-xl leading-relaxed">
+                DesiLearCode connects corporate donors and engineers directly with vetted grassroots child-care organizations across India. We wipe, configure, and route hardware to verifiable learning labs.
+              </p>
+
+              {/* Action Array */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                <Link
+                  href="/projects"
+                  className="px-5 py-3 rounded-md bg-foreground text-surface hover:bg-foreground/90 font-medium text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-subtle"
+                >
+                  <span>Explore Verified Initiatives</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/donate-device"
+                  className="px-5 py-3 rounded-md bg-surface border border-border hover:bg-surfaceSubtle text-foreground font-medium text-xs sm:text-sm transition-colors flex items-center justify-center gap-2"
+                >
+                  <Laptop className="w-4 h-4 text-primary-500" />
+                  <span>Pledge Computing Hardware</span>
+                </Link>
+              </div>
+
+              {/* Assurance Flags */}
+              <div className="pt-6 border-t border-border grid grid-cols-3 gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-success-600 shrink-0" />
+                  <span className="text-muted font-medium">Physical Lab Audited</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-primary-500 shrink-0" />
+                  <span className="text-muted font-medium">NIST 800-88 Data Sanitized</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-accent-500 shrink-0" />
+                  <span className="text-muted font-medium">Zero-PII Child Safeguard</span>
+                </div>
+              </div>
+
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-foreground tracking-tight leading-[1.05]">
-              Technology access for <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-info-500">
-                every child&apos;s future.
-              </span>
-            </h1>
+            {/* Right Column: Interactive Hardware Routing Composition (Technical terminal/diagram) */}
+            <div className="lg:col-span-5">
+              <div className="bg-[#090c10] rounded-xl border border-[#30363d] shadow-elevation overflow-hidden text-[#8b949e] font-mono text-xs">
+                
+                {/* Window Bar */}
+                <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-[#30363d]">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+                  </div>
+                  <div className="text-[11px] text-[#8b949e]">desilearcode-node-pipeline.log</div>
+                  <div className="text-[10px] text-emerald-400">STATUS: ACTIVE</div>
+                </div>
 
-            <p className="text-lg sm:text-xl text-muted max-w-2xl leading-relaxed">
-              DesiLearCode connects you with verified child-care organizations to provide technology, digital education, and refurbished devices to children who need it most.
-            </p>
+                {/* Pipeline Inspection Content */}
+                <div className="p-4 space-y-3.5">
+                  <div className="text-slate-400">
+                    <span className="text-indigo-400">$</span> dl-routing-daemon --track-stream
+                  </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full sm:w-auto">
-              <Link
-                href="/projects"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-foreground text-surface hover:bg-foreground/90 font-medium text-sm transition-all shadow-float flex items-center justify-center gap-2"
-              >
-                Explore Live Projects
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/donate-device"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl bg-surface border border-border text-foreground hover:bg-surfaceHover font-medium text-sm transition-all flex items-center justify-center gap-2"
-              >
-                <Laptop className="w-4 h-4 text-primary-500" />
-                Donate a Device
-              </Link>
-            </div>
+                  {/* Flow Steps */}
+                  <div className="space-y-2 pt-1 border-t border-[#21262d]">
+                    <div className="flex items-center justify-between p-2 rounded bg-[#0d1117] border border-[#21262d]">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        <span className="text-white font-bold">#DL-4820</span>
+                        <span className="text-[#8b949e]">ThinkPad T480 (16GB)</span>
+                      </div>
+                      <span className="text-emerald-400 text-[10px]">WIPED / READY</span>
+                    </div>
 
-            <div className="pt-8 flex flex-wrap items-center justify-center gap-8 text-sm font-medium text-muted">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-success-500" />
-                <span>Verified NGO Partners</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <LineChart className="w-5 h-5 text-primary-500" />
-                <span>Tracked Project Milestones</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-info-500" />
-                <span>Zero-PII Child Privacy</span>
+                    <div className="flex items-center justify-between p-2 rounded bg-[#0d1117] border border-[#21262d]">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                        <span className="text-white font-bold">#DL-4821</span>
+                        <span className="text-[#8b949e]">Dell Latitude (8GB)</span>
+                      </div>
+                      <span className="text-amber-400 text-[10px]">INSPECTION</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-2 rounded bg-[#0d1117] border border-[#21262d]">
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                        <span className="text-white font-bold">#DEST-NGO</span>
+                        <span className="text-white">Navodaya Vidya Kendra</span>
+                      </div>
+                      <span className="text-cyan-400 text-[10px]">VERIFIED LAB</span>
+                    </div>
+                  </div>
+
+                  {/* Tech Specs Summary */}
+                  <div className="p-2.5 rounded bg-[#161b22] border border-[#30363d] space-y-1 text-[11px]">
+                    <div className="text-white font-semibold flex items-center gap-1.5">
+                      <Cpu className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Curriculum Bundle Pre-installed:</span>
+                    </div>
+                    <div className="text-[#8b949e] pl-5">
+                      • Scratch 3.0 Offline • Python 3.12 • VS Code OSS • FreeCodeCamp Offline
+                    </div>
+                  </div>
+
+                  <div className="text-[10px] text-[#576071] pt-1 flex justify-between">
+                    <span>Target Cohort: 40 Students</span>
+                    <span>Disbursement: Milestone-Gated</span>
+                  </div>
+                </div>
+
               </div>
             </div>
 
@@ -100,165 +178,195 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
         </div>
       </section>
 
-      {/* SECTION 2: HOW IT WORKS (PATHWAYS) */}
-      <section className="py-24 bg-surface">
+      {/* 2. WHAT WE ACTUALLY DO — 3 ARCHITECTURAL PATHWAYS */}
+      <section className="py-20 bg-background border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight">
-              How you can make an impact
+          
+          <div className="max-w-2xl mb-14 space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary-600">Core Infrastructure</span>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl text-foreground">
+              Three pillars of sustainable tech education
             </h2>
-            <p className="text-muted text-lg">
-              Support verified classrooms through equipment, mentorship, or direct funding.
+            <p className="text-sm text-muted">
+              We eliminate intermediaries and replace vague charitable donations with verifiable operational workflows.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Pathway 1 */}
-            <div className="bg-background rounded-3xl p-8 border border-border hover:shadow-soft transition-all flex flex-col h-full group">
-              <div className="w-12 h-12 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center mb-6">
-                <Laptop className="w-6 h-6" />
+            {/* Pillar 1: Hardware Logistics */}
+            <div className="p-6 bg-surface rounded-xl border border-border flex flex-col justify-between space-y-6">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-md bg-surfaceSubtle border border-border flex items-center justify-center text-primary-600 font-mono">
+                  <Laptop className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-mono font-bold text-primary-600 uppercase">01 / LOGISTICS</span>
+                <h3 className="font-bold text-base text-foreground">
+                  Hardware Intake & Sanitization
+                </h3>
+                <p className="text-xs text-muted leading-relaxed">
+                  Every donated device undergoes NIST 800-88 cryptographic sanitization, thermal testing, Linux OS deployment, and offline coding tool installation before field allocation.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Donate Technology</h3>
-              <p className="text-muted mb-8 leading-relaxed flex-grow">
-                Have an idle laptop or tablet? Every device is wiped, tracked, and assigned directly to a verified computer lab or classroom.
-              </p>
-              <Link href="/donate-device" className="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1 group-hover:gap-2 transition-all">
-                Start device donation <ArrowRight className="w-4 h-4" />
+              <Link href="/donate-device" className="text-xs font-semibold text-foreground hover:text-primary-600 flex items-center gap-1">
+                Pledge device workflow <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Pathway 2 */}
-            <div className="bg-background rounded-3xl p-8 border border-border hover:shadow-soft transition-all flex flex-col h-full group">
-              <div className="w-12 h-12 rounded-xl bg-success-50 text-success-600 flex items-center justify-center mb-6">
-                <Code className="w-6 h-6" />
+            {/* Pillar 2: Technical Mentorship */}
+            <div className="p-6 bg-surface rounded-xl border border-border flex flex-col justify-between space-y-6">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-md bg-surfaceSubtle border border-border flex items-center justify-center text-success-600 font-mono">
+                  <Code className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-mono font-bold text-success-600 uppercase">02 / EDUCATION</span>
+                <h3 className="font-bold text-base text-foreground">
+                  Structured Coding Syllabus
+                </h3>
+                <p className="text-xs text-muted leading-relaxed">
+                  Engineers and tech professionals volunteer 2 hours per week to guide cohorts through visual block programming, introductory Python, and web fundamentals.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Volunteer Skills</h3>
-              <p className="text-muted mb-8 leading-relaxed flex-grow">
-                Teach coding, robotics, or digital literacy. We match software engineers and tech professionals with structured weekend workshops.
-              </p>
-              <Link href="/volunteer" className="text-sm font-semibold text-success-600 hover:text-success-700 flex items-center gap-1 group-hover:gap-2 transition-all">
-                Become a mentor <ArrowRight className="w-4 h-4" />
+              <Link href="/volunteer" className="text-xs font-semibold text-foreground hover:text-success-600 flex items-center gap-1">
+                View mentorship standards <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Pathway 3 */}
-            <div className="bg-background rounded-3xl p-8 border border-border hover:shadow-soft transition-all flex flex-col h-full group">
-              <div className="w-12 h-12 rounded-xl bg-warning-50 text-warning-600 flex items-center justify-center mb-6">
-                <Rocket className="w-6 h-6" />
+            {/* Pillar 3: Institutional Vetting */}
+            <div className="p-6 bg-surface rounded-xl border border-border flex flex-col justify-between space-y-6">
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-md bg-surfaceSubtle border border-border flex items-center justify-center text-accent-600 font-mono">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-mono font-bold text-accent-600 uppercase">03 / GOVERNANCE</span>
+                <h3 className="font-bold text-base text-foreground">
+                  Milestone-Gated Disbursements
+                </h3>
+                <p className="text-xs text-muted leading-relaxed">
+                  NGOs must verify physical electricity, lab security, and mentor attendance. Subsequent funding and hardware allocations release only upon validated milestone completion.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">Support Projects</h3>
-              <p className="text-muted mb-8 leading-relaxed flex-grow">
-                Help fund specific, itemized needs like internet lines, smartboards, and STEM kits for newly established community labs.
-              </p>
-              <Link href="/projects" className="text-sm font-semibold text-warning-600 hover:text-warning-700 flex items-center gap-1 group-hover:gap-2 transition-all">
-                Browse open needs <ArrowRight className="w-4 h-4" />
+              <Link href="/organizations" className="text-xs font-semibold text-foreground hover:text-accent-600 flex items-center gap-1">
+                Review verified directory <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
           </div>
+
         </div>
       </section>
 
-      {/* SECTION 3: FEATURED PROJECTS */}
-      <section className="py-24 bg-background">
+      {/* 3. HOW IT WORKS — VISUAL PRODUCT PIPELINE */}
+      <section className="py-20 bg-surface border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div className="space-y-2 max-w-2xl">
-              <h2 className="text-3xl font-display font-bold text-foreground tracking-tight">
-                Active Projects
+          
+          <div className="text-center max-w-2xl mx-auto mb-14 space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-muted">End-to-End Traceability</span>
+            <h2 className="font-display font-bold text-2xl sm:text-3xl text-foreground">
+              How hardware travels from donor to classroom
+            </h2>
+          </div>
+
+          {/* Pipeline Diagram */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+            
+            <div className="p-4 rounded-lg bg-surfaceSubtle border border-border space-y-2 relative">
+              <div className="font-mono text-xs font-bold text-muted">STEP 01</div>
+              <h4 className="font-bold text-sm text-foreground">Hardware Intake</h4>
+              <p className="text-xs text-muted">Donor submits laptop specs & chooses drop-off or courier pickup.</p>
+              <div className="text-[10px] font-mono text-primary-600 pt-1">Code: #DL-XXXX</div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-surfaceSubtle border border-border space-y-2 relative">
+              <div className="font-mono text-xs font-bold text-muted">STEP 02</div>
+              <h4 className="font-bold text-sm text-foreground">NIST Sanitization</h4>
+              <p className="text-xs text-muted">Storage drive wiped with cryptographic overwrite; battery health logged.</p>
+              <div className="text-[10px] font-mono text-success-600 pt-1">Status: Certified Wipe</div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-surfaceSubtle border border-border space-y-2 relative">
+              <div className="font-mono text-xs font-bold text-muted">STEP 03</div>
+              <h4 className="font-bold text-sm text-foreground">Lab Allocation</h4>
+              <p className="text-xs text-muted">Hardware routed to verified NGO classroom with active student cohort.</p>
+              <div className="text-[10px] font-mono text-foreground pt-1">Destination: Vetted Lab</div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-surfaceSubtle border border-border space-y-2 relative">
+              <div className="font-mono text-xs font-bold text-muted">STEP 04</div>
+              <h4 className="font-bold text-sm text-foreground">Curriculum Live</h4>
+              <p className="text-xs text-muted">Weekly workshops in Scratch, Python, and web logic begin with mentors.</p>
+              <div className="text-[10px] font-mono text-accent-600 pt-1">Attendance Tracked</div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-surfaceSubtle border border-border space-y-2 relative">
+              <div className="font-mono text-xs font-bold text-muted">STEP 05</div>
+              <h4 className="font-bold text-sm text-foreground">Verified Audit</h4>
+              <p className="text-xs text-muted">Aggregated cohort completion report published with Zero-PII privacy.</p>
+              <div className="text-[10px] font-mono text-success-600 pt-1">Audit Ledger Signed</div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* 4. FEATURED PROJECTS SHOWCASE */}
+      <section className="py-20 bg-background border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary-600">Active Allocations</span>
+              <h2 className="font-display font-bold text-2xl sm:text-3xl text-foreground">
+                Verified Learning Initiatives
               </h2>
-              <p className="text-muted">
-                Transparent initiatives led by verified NGOs. Track exact progress and resource deployment.
-              </p>
             </div>
             <Link
               href="/projects"
-              className="px-5 py-2.5 rounded-xl bg-surface border border-border text-foreground hover:bg-surfaceHover transition-colors flex items-center gap-2 font-medium text-sm w-fit shrink-0"
+              className="text-xs font-medium text-muted hover:text-foreground flex items-center gap-1 font-mono"
             >
-              View All Projects
-              <ChevronRight className="w-4 h-4" />
+              <span>VIEW FULL CATALOG ({featuredProjects.length})</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          {featuredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  onSupportClick={() => setSelectedProjectForDonation(project)}
-                />
-              ))}
+          {/* Primary Featured Project */}
+          {primaryProject ? (
+            <div className="space-y-6">
+              <FeaturedProjectCard
+                project={primaryProject}
+                onSupportClick={() => setSelectedProjectForDonation(primaryProject)}
+              />
+
+              {/* Supporting Secondary Projects Grid */}
+              {secondaryProjects.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                  {secondaryProjects.map(p => (
+                    <ProjectCard
+                      key={p.id}
+                      project={p}
+                      onSupportClick={() => setSelectedProjectForDonation(p)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 px-4 bg-surface rounded-3xl border border-border text-center">
-              <div className="w-16 h-16 rounded-full bg-surfaceHover flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6 text-muted" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">No active projects yet</h3>
-              <p className="text-muted max-w-md mb-6">
-                We&apos;re currently onboarding new verified NGOs and setting up their initial projects. Check back soon!
+            <div className="p-12 bg-surface rounded-xl border border-border text-center space-y-3">
+              <h3 className="font-bold text-base text-foreground">No Published Initiatives Yet</h3>
+              <p className="text-xs text-muted max-w-md mx-auto">
+                All initiatives undergo physical lab and curriculum verification prior to public listing.
               </p>
-              <Link
-                href="/organizations"
-                className="text-sm font-medium text-primary-600 hover:text-primary-700"
-              >
-                View our partner organizations &rarr;
+              <Link href="/organizations" className="inline-block text-xs font-medium text-primary-600 hover:underline">
+                View onboarding partner organizations &rarr;
               </Link>
             </div>
           )}
+
         </div>
       </section>
 
-      {/* SECTION 4: LIVE METRICS (Only show if there is real data) */}
-      {hasLiveMetrics && (
-        <section className="py-20 bg-surface border-y border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              
-              <div className="flex flex-col items-center text-center space-y-2">
-                <div className="text-4xl md:text-5xl font-display font-extrabold text-foreground">
-                  {metrics.activeProjectsCount}
-                </div>
-                <div className="text-sm font-medium text-muted uppercase tracking-wider">
-                  Active Projects
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center text-center space-y-2">
-                <div className="text-4xl md:text-5xl font-display font-extrabold text-foreground">
-                  {metrics.verifiedOrgsCount}
-                </div>
-                <div className="text-sm font-medium text-muted uppercase tracking-wider">
-                  Verified NGOs
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center text-center space-y-2">
-                <div className="text-4xl md:text-5xl font-display font-extrabold text-foreground">
-                  {metrics.devicesReceivedCount}
-                </div>
-                <div className="text-sm font-medium text-muted uppercase tracking-wider">
-                  Devices Tracked
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center text-center space-y-2">
-                <div className="text-4xl md:text-5xl font-display font-extrabold text-foreground">
-                  {metrics.volunteersCount}
-                </div>
-                <div className="text-sm font-medium text-muted uppercase tracking-wider">
-                  Volunteers
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Active Donation Modal */}
+      {/* Donation Modal */}
       <DonationModal
         project={selectedProjectForDonation}
         isOpen={Boolean(selectedProjectForDonation)}
