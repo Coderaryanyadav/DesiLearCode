@@ -4,42 +4,23 @@
 
 @layer base {
   :root {
-    --background: #FAFAF9;
-    --foreground: #0F172A;
-    --card: #FFFFFF;
-    --card-foreground: #0F172A;
-    --popover: #FFFFFF;
-    --popover-foreground: #0F172A;
-    --primary: #4F46E5;
-    --primary-foreground: #FFFFFF;
-    --secondary: #10B981;
-    --secondary-foreground: #FFFFFF;
-    --muted: #F1F5F9;
-    --muted-foreground: #64748B;
-    --accent: #EEF2FF;
-    --accent-foreground: #3730A3;
-    --border: #E2E8F0;
-    --ring: #6366F1;
+    --background: #fdfdfc;
+    --foreground: #111827;
+    --surface: #ffffff;
+    --surface-hover: #f9fafb;
+    --border: #e5e7eb;
+    --muted: #6b7280;
+    
     --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
   .dark {
-    --background: #090D16;
-    --foreground: #F8FAFC;
-    --card: #111827;
-    --card-foreground: #F8FAFC;
-    --popover: #111827;
-    --popover-foreground: #F8FAFC;
-    --primary: #6366F1;
-    --primary-foreground: #FFFFFF;
-    --secondary: #34D399;
-    --secondary-foreground: #064E3B;
-    --muted: #1E293B;
-    --muted-foreground: #94A3B8;
-    --accent: #1E1B4B;
-    --accent-foreground: #C7D2FE;
-    --border: #1E293B;
-    --ring: #818CF8;
+    --background: #030712;
+    --foreground: #f9fafb;
+    --surface: #111827;
+    --surface-hover: #1f2937;
+    --border: #374151;
+    --muted: #9ca3af;
   }
 }
 
