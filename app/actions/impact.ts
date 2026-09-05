@@ -76,3 +76,51 @@ export async function publishImpactReport(formData: FormData) {
   revalidatePath('/ngo/impact');
   return { success: true, report };
 }
+
+export async function verifyImpactReport(reportId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return { error: 'Unauthorized.' };
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, full_name, email, role')
+    .eq('user_id', user.id)
+    .single();
+
+  if (!profile || profile.role !== 'admin') {
+    return { error: 'Forbidden. Administrator credentials required to verify impact reports.' };
+  }
+
+  const { data: existing, error: fetchErr } = await supabase
+    .from('impact_reports')
+    .select('id, headline, period, project_id')
+    .eq('id', reportId)
+    .single();
+
+  if (fetchErr || !existing) {
+    return { error: 'Impact report record not found.' };
+  }
+
+  const { error: updateErr } = await supabase
+    .from('impact_reports')
+    .update({ verified_by_admin: true })
+    .eq('id', reportId);
+
+  if (updateErr) return { error: updateErr.message };
+
+  await logAuditEvent({
+    actorName: profile.full_name,
+    actorEmail: profile.email,
+    actorRole: profile.role,
+    action: 'IMPACT_REPORT_VERIFIED',
+    targetType: 'project',
+    targetId: existing.project_id,
+    details: `Field impact report "${existing.headline}" verified by platform administrator. Now authoritative for public telemetry.`,
+  });
+
+  revalidatePath('/impact');
+  revalidatePath('/projects');
+  return { success: true };
+}

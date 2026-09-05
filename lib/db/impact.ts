@@ -48,11 +48,24 @@ export async function getPlatformImpactMetrics() {
   const { data: projectsData } = await supabase.from('projects').select('target_students');
   const totalStudents = (projectsData || []).reduce((acc: number, curr: any) => acc + (Number(curr.target_students) || 0), 0);
 
+  // Compute verified aggregates from admin-verified impact reports
+  const { data: verifiedReports } = await supabase
+    .from('impact_reports')
+    .select('students_trained, volunteer_hours, workshops_conducted, computers_provided')
+    .eq('verified_by_admin', true);
+
+  const verifiedStudents = (verifiedReports || []).reduce((acc: number, curr: any) => acc + (Number(curr.students_trained) || 0), 0);
+  const verifiedVolunteerHours = (verifiedReports || []).reduce((acc: number, curr: any) => acc + (Number(curr.volunteer_hours) || 0), 0);
+  const verifiedWorkshops = (verifiedReports || []).reduce((acc: number, curr: any) => acc + (Number(curr.workshops_conducted) || 0), 0);
+
   return {
     verifiedOrgsCount: totalOrgs || 0,
     activeProjectsCount: totalProjects || 0,
     devicesReceivedCount: totalDevices || 0,
     volunteersCount: totalVolunteers || 0,
     studentsReachedEstimate: totalStudents || 0,
+    verifiedStudentsTrained: verifiedStudents,
+    verifiedVolunteerHours,
+    verifiedWorkshops,
   };
 }

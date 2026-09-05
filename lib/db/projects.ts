@@ -14,7 +14,8 @@ export async function getPublicProjects(): Promise<Project[]> {
       ),
       project_needs (*),
       project_milestones (*),
-      project_updates (*)
+      project_updates (*),
+      impact_reports (*)
     `)
     .in('status', ['active', 'almost_funded', 'completed'])
     .order('created_at', { ascending: false });
@@ -39,7 +40,8 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       ),
       project_needs (*),
       project_milestones (*),
-      project_updates (*)
+      project_updates (*),
+      impact_reports (*)
     `)
     .eq('slug', slug)
     .single();
@@ -64,7 +66,8 @@ export async function getProjectsForOrg(orgId: string): Promise<Project[]> {
       ),
       project_needs (*),
       project_milestones (*),
-      project_updates (*)
+      project_updates (*),
+      impact_reports (*)
     `)
     .eq('organization_id', orgId)
     .order('created_at', { ascending: false });
@@ -89,7 +92,8 @@ export async function getAllProjectsForAdmin(): Promise<Project[]> {
       ),
       project_needs (*),
       project_milestones (*),
-      project_updates (*)
+      project_updates (*),
+      impact_reports (*)
     `)
     .order('created_at', { ascending: false });
 
@@ -137,6 +141,14 @@ function mapProjectRow(row: any): Project {
     isSafeguardedChecked: u.is_safeguarded_checked,
   }));
 
+  // Calculate verified classroom impact metrics strictly from admin-verified impact_reports
+  const verifiedReports = (row.impact_reports || []).filter((r: any) => r.verified_by_admin === true);
+  const verifiedStudentsTrained = verifiedReports.reduce((sum: number, r: any) => sum + Number(r.students_trained || 0), 0);
+  const verifiedVolunteerHours = verifiedReports.reduce((sum: number, r: any) => sum + Number(r.volunteer_hours || 0), 0);
+  const verifiedWorkshops = verifiedReports.reduce((sum: number, r: any) => sum + Number(r.workshops_conducted || 0), 0);
+  const verifiedComputers = verifiedReports.reduce((sum: number, r: any) => sum + Number(r.computers_provided || 0), 0);
+  const computersFromNeeds = needs.filter(n => n.type === 'laptop' || n.type === 'desktop').reduce((acc, curr) => acc + curr.quantityFulfilled, 0);
+
   return {
     id: row.id,
     slug: row.slug,
@@ -162,10 +174,10 @@ function mapProjectRow(row: any): Project {
     milestones,
     updates,
     impactSummary: {
-      studentsReached: Number(row.target_students || 0),
-      computersInstalled: needs.filter(n => n.type === 'laptop' || n.type === 'desktop').reduce((acc, curr) => acc + curr.quantityFulfilled, 0),
-      volunteerHoursLogged: 0,
-      workshopsConducted: milestones.filter(m => m.completed).length,
+      studentsReached: verifiedStudentsTrained,
+      computersInstalled: verifiedComputers > 0 ? verifiedComputers : computersFromNeeds,
+      volunteerHoursLogged: verifiedVolunteerHours,
+      workshopsConducted: verifiedWorkshops,
     },
     createdAt: row.created_at,
     updatedAt: row.updated_at,

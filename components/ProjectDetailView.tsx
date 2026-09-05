@@ -329,8 +329,8 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center font-mono">
               <div className="p-3 bg-surfaceSubtle rounded-md border border-border">
-                <div className="text-xl font-bold text-foreground">{project.impactSummary?.studentsReached || project.targetStudents}</div>
-                <div className="text-[10px] text-muted uppercase mt-0.5">Students Trained</div>
+                <div className="text-xl font-bold text-foreground">{project.impactSummary?.studentsReached ?? 0}</div>
+                <div className="text-[10px] text-muted uppercase mt-0.5">Students Trained {project.targetStudents ? `(Goal: ${project.targetStudents})` : ''}</div>
               </div>
               <div className="p-3 bg-surfaceSubtle rounded-md border border-border">
                 <div className="text-xl font-bold text-foreground">{project.impactSummary?.computersInstalled || 0}</div>

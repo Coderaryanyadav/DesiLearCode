@@ -18,10 +18,12 @@ import {
  * - NO fake settled receipt is claimed.
  * - Transactions are clearly categorized as NOT_CONFIGURED or PLEDGED.
  */
+import { generateSecureToken } from '../crypto-id';
+
 export class UnconfiguredPaymentProvider implements PaymentProvider {
   async createPayment(params: PaymentOrderParams): Promise<PaymentOrderResult> {
     return {
-      orderId: `DLC-PENDING-${Date.now()}`,
+      orderId: `DLC-ORD-${generateSecureToken(6).toUpperCase()}`,
       amountInRupees: params.amountInRupees,
       currency: 'INR',
       status: 'NOT_CONFIGURED',

@@ -259,3 +259,153 @@ export async function addProjectUpdate(projectId: string, title: string, content
   revalidatePath(`/projects`);
   return { success: true };
 }
+
+export async function addProjectNeed(params: {
+  projectId: string;
+  title: string;
+  needType: string;
+  category: 'hardware' | 'connectivity' | 'infrastructure' | 'mentorship' | 'curriculum';
+  quantityRequired: number;
+  unit: string;
+  priority?: 'critical' | 'high' | 'medium' | 'low';
+  purpose: string;
+}) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized.' };
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, full_name, email, role, organization_id')
+    .eq('user_id', user.id)
+    .single();
+
+  if (!profile) return { error: 'Profile not found.' };
+
+  // Tenant Isolation: Verify project belongs to user's organization
+  const { data: targetProject, error: projErr } = await supabase
+    .from('projects')
+    .select('id, organization_id')
+    .eq('id', params.projectId)
+    .single();
+
+  if (projErr || !targetProject) {
+    return { error: 'Target project does not exist.' };
+  }
+
+  if (profile.role !== 'admin' && profile.organization_id !== targetProject.organization_id) {
+    return { error: 'Forbidden: You do not have permission to manage needs for this project.' };
+  }
+
+  // Server-side deterministic validation
+  if (!params.title || !params.needType || !params.category || !params.unit || !params.purpose) {
+    return { error: 'All need specification fields are required.' };
+  }
+
+  const cleanRequired = Math.floor(Number(params.quantityRequired));
+  if (isNaN(cleanRequired) || cleanRequired < 1) {
+    return { error: 'Required quantity must be a positive integer of at least 1.' };
+  }
+
+  // Enforce zero-initial fulfillment server-side (prevent client-supplied secured/fulfilled tampering)
+  const { data: need, error } = await supabase
+    .from('project_needs')
+    .insert({
+      project_id: params.projectId,
+      title: params.title.trim(),
+      need_type: params.needType.trim(),
+      category: params.category,
+      quantity_required: cleanRequired,
+      quantity_fulfilled: 0, // FORCED: Cannot be manipulated by client requests
+      unit: params.unit.trim(),
+      priority: params.priority || 'medium',
+      purpose: params.purpose.trim(),
+      is_fulfilled: false,
+    })
+    .select()
+    .single();
+
+  if (error || !need) return { error: error?.message || 'Failed to add project need.' };
+
+  await logAuditEvent({
+    actorName: profile.full_name,
+    actorEmail: profile.email,
+    actorRole: profile.role,
+    action: 'PROJECT_NEED_ADDED',
+    targetType: 'project',
+    targetId: params.projectId,
+    details: `Added need "${params.title}" (Required: ${cleanRequired} ${params.unit})`,
+  });
+
+  revalidatePath(`/projects`);
+  revalidatePath(`/ngo/projects/${params.projectId}`);
+  return { success: true, need };
+}
+
+export async function recordNeedAllocation(needId: string, quantityAllocated: number) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Unauthorized.' };
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id, full_name, email, role, organization_id')
+    .eq('user_id', user.id)
+    .single();
+
+  if (!profile || (profile.role !== 'admin' && profile.role !== 'ngo')) {
+    return { error: 'Forbidden. Administrative or NGO credentials required.' };
+  }
+
+  const { data: existingNeed, error: fetchErr } = await supabase
+    .from('project_needs')
+    .select('*, projects:project_id(organization_id)')
+    .eq('id', needId)
+    .single();
+
+  if (fetchErr || !existingNeed) {
+    return { error: 'Project need not found.' };
+  }
+
+  if (profile.role !== 'admin' && profile.organization_id !== existingNeed.projects?.organization_id) {
+    return { error: 'Forbidden: You do not have permission to manage needs for this project.' };
+  }
+
+  const cleanAllocated = Math.floor(Number(quantityAllocated));
+  if (isNaN(cleanAllocated) || cleanAllocated <= 0) {
+    return { error: 'Allocation quantity must be a positive number.' };
+  }
+
+  // Deterministic formula: remaining = max(required - secured, 0)
+  const newFulfilled = existingNeed.quantity_fulfilled + cleanAllocated;
+  if (newFulfilled > existingNeed.quantity_required) {
+    return { 
+      error: `Allocation exceeds required gap. Maximum allocatable is ${Math.max(existingNeed.quantity_required - existingNeed.quantity_fulfilled, 0)}.` 
+    };
+  }
+
+  const isFulfilled = newFulfilled >= existingNeed.quantity_required;
+
+  const { error: updateErr } = await supabase
+    .from('project_needs')
+    .update({
+      quantity_fulfilled: newFulfilled,
+      is_fulfilled: isFulfilled,
+    })
+    .eq('id', needId);
+
+  if (updateErr) return { error: updateErr.message };
+
+  await logAuditEvent({
+    actorName: profile.full_name,
+    actorEmail: profile.email,
+    actorRole: profile.role,
+    action: 'NEED_ALLOCATION_RECORDED',
+    targetType: 'project',
+    targetId: existingNeed.project_id,
+    details: `Allocated ${cleanAllocated} units to "${existingNeed.title}". New progress: ${newFulfilled}/${existingNeed.quantity_required}.`,
+  });
+
+  revalidatePath('/projects');
+  return { success: true, quantityFulfilled: newFulfilled, isFulfilled };
+}
