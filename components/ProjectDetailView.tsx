@@ -16,10 +16,6 @@ import {
   Code, 
   ShieldCheck, 
   CheckCircle2, 
-  Clock, 
-  Calendar, 
-  ChevronRight, 
-  AlertCircle, 
   FileCheck2, 
   Sparkles, 
   ArrowLeft 
@@ -41,12 +37,12 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
       {/* Back breadcrumbs */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link href="/projects" className="hover:text-indigo-600 flex items-center gap-1">
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to Projects
+      <div className="flex items-center gap-2 text-sm font-medium text-muted">
+        <Link href="/projects" className="hover:text-foreground flex items-center gap-1.5 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to Projects
         </Link>
         <span>/</span>
-        <span className="text-slate-900 truncate max-w-xs">{project.title}</span>
+        <span className="text-foreground truncate max-w-xs">{project.title}</span>
       </div>
 
       {/* Main Grid: Left 8 Cols (Details), Right 4 Cols (Sidebar / Action) */}
@@ -56,9 +52,9 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
         <div className="lg:col-span-8 space-y-8">
           
           {/* Header Card */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-6">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
+              <span className="text-xs font-bold uppercase tracking-wider bg-primary-50 text-primary-700 px-3 py-1 rounded-full border border-primary-100">
                 {project.category}
               </span>
               <StatusBadge status={project.status} />
@@ -67,28 +63,28 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
               )}
             </div>
 
-            <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            <div className="space-y-3">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-extrabold text-foreground tracking-tight leading-tight">
                 {project.title}
               </h1>
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+              <p className="text-base sm:text-lg text-muted leading-relaxed">
                 {project.tagline}
               </p>
             </div>
 
             {/* Managed by NGO card snippet */}
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            <div className="flex items-center justify-between p-4 bg-surfaceHover rounded-2xl border border-border">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-foreground text-surface flex items-center justify-center font-bold text-lg shadow-card">
                   {project.organizationName.charAt(0)}
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  <div className="text-sm font-bold text-foreground flex items-center gap-2">
                     <span>{project.organizationName}</span>
                     <VerificationBadge status="verified" size="sm" />
                   </div>
-                  <div className="text-[11px] text-slate-500 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-slate-400" />
+                  <div className="text-xs text-muted flex items-center gap-1.5 mt-0.5 font-medium">
+                    <MapPin className="w-3.5 h-3.5" />
                     <span>{project.region}</span>
                   </div>
                 </div>
@@ -96,80 +92,80 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
             </div>
 
             {/* Hero Image */}
-            <div className="rounded-2xl overflow-hidden aspect-[16/9] relative shadow-inner bg-slate-900">
+            <div className="rounded-2xl overflow-hidden aspect-[16/9] relative shadow-inner bg-surfaceHover border border-border">
               <img
                 src={project.heroImageUrl}
                 alt={project.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="absolute top-4 right-4 bg-surface/90 backdrop-blur-md text-foreground text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-card border border-border">
+                <Users className="w-3.5 h-3.5 text-primary-500" />
                 <span>Cohort: {project.targetStudents} Students</span>
               </div>
             </div>
 
             {/* Key Metas */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 text-center border-t border-slate-100">
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <div className="text-[11px] text-slate-500 font-medium">Beneficiaries</div>
-                <div className="text-sm font-bold text-slate-900 mt-0.5">{project.targetStudents} Students</div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center border-t border-border">
+              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
+                <div className="text-xs text-muted font-medium mb-1">Beneficiaries</div>
+                <div className="text-base font-bold text-foreground">{project.targetStudents} Students</div>
               </div>
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <div className="text-[11px] text-slate-500 font-medium">Category</div>
-                <div className="text-sm font-bold text-slate-900 mt-0.5">{project.category}</div>
+              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
+                <div className="text-xs text-muted font-medium mb-1">Category</div>
+                <div className="text-base font-bold text-foreground">{project.category}</div>
               </div>
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <div className="text-[11px] text-slate-500 font-medium">Region</div>
-                <div className="text-sm font-bold text-slate-900 mt-0.5 truncate">{project.region}</div>
+              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
+                <div className="text-xs text-muted font-medium mb-1">Region</div>
+                <div className="text-base font-bold text-foreground truncate">{project.region}</div>
               </div>
-              <div className="p-3 bg-slate-50 rounded-xl">
-                <div className="text-[11px] text-slate-500 font-medium">Safeguarding</div>
-                <div className="text-sm font-bold text-emerald-600 mt-0.5 flex items-center justify-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> Vetted
+              <div className="p-4 bg-surfaceHover rounded-2xl border border-transparent">
+                <div className="text-xs text-muted font-medium mb-1">Safeguarding</div>
+                <div className="text-base font-bold text-success-600 flex items-center justify-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4" /> Vetted
                 </div>
               </div>
             </div>
           </div>
 
           {/* Section: Why it matters & Description */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-8">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-600" />
+              <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2.5">
+                <Sparkles className="w-5 h-5 text-primary-500" />
                 About This Initiative
               </h2>
-              <div className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+              <div className="mt-4 text-sm sm:text-base text-muted leading-relaxed whitespace-pre-line">
                 {project.description}
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              <h3 className="text-sm font-bold text-slate-900">Why This Matters For Children</h3>
-              <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <div className="pt-6 border-t border-border">
+              <h3 className="text-base font-bold text-foreground">Why This Matters For Children</h3>
+              <p className="mt-3 text-sm sm:text-base text-muted leading-relaxed">
                 {project.whyItMatters}
               </p>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              <h3 className="text-sm font-bold text-slate-900">What Your Support Provides</h3>
-              <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <div className="pt-6 border-t border-border">
+              <h3 className="text-base font-bold text-foreground">What Your Support Provides</h3>
+              <p className="mt-3 text-sm sm:text-base text-muted leading-relaxed">
                 {project.whatSupportProvides}
               </p>
             </div>
           </div>
 
           {/* Section: Needs Breakdown */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-6">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-indigo-600">Transparent Allocation</span>
-              <h2 className="text-lg font-bold text-slate-900 mt-1">Specific Hardware & Resource Needs</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-primary-600">Transparent Allocation</span>
+              <h2 className="text-xl font-display font-bold text-foreground mt-2">Specific Hardware & Resource Needs</h2>
+              <p className="text-sm text-muted mt-1.5">
                 Targeted requirements for this learning center. You can sponsor a specific item or make a general project contribution.
               </p>
             </div>
 
             {project.needs && project.needs.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                 {project.needs.map((need) => (
                   <NeedCard
                     key={need.id}
@@ -179,47 +175,47 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
                 ))}
               </div>
             ) : (
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-500 text-center">
+              <div className="p-6 bg-surfaceHover rounded-2xl border border-border text-sm font-medium text-muted text-center mt-6">
                 General project support fund active.
               </div>
             )}
           </div>
 
           {/* Section: Milestones & Lifecycle Roadmap */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-soft space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <FileCheck2 className="w-4 h-4 text-indigo-600" />
+              <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2.5">
+                <FileCheck2 className="w-5 h-5 text-primary-500" />
                 Project Milestones & Verification Timeline
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-sm text-muted mt-1.5">
                 Independent verification checkpoints required before subsequent phase disbursement.
               </p>
             </div>
 
             {project.milestones && project.milestones.length > 0 ? (
-              <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+              <div className="relative pl-7 space-y-8 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-px before:bg-border mt-6">
                 {project.milestones.map((milestone, idx) => (
                   <div key={milestone.id || idx} className="relative">
-                    <div className={`absolute -left-6 top-0.5 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center ${
-                      milestone.completed ? 'bg-emerald-500 text-white' : 'bg-slate-300'
+                    <div className={`absolute -left-[34px] top-1 w-5 h-5 rounded-full border-2 border-surface flex items-center justify-center transition-colors ${
+                      milestone.completed ? 'bg-success-500 text-white' : 'bg-muted'
                     }`}>
-                      {milestone.completed && <CheckCircle2 className="w-3 h-3" />}
+                      {milestone.completed && <CheckCircle2 className="w-3.5 h-3.5" />}
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-xs font-bold text-slate-900">{milestone.title}</h4>
-                        <span className="text-[11px] text-slate-400 font-mono">
+                        <h4 className="text-sm font-bold text-foreground">{milestone.title}</h4>
+                        <span className="text-xs text-muted font-medium bg-surfaceHover px-2 py-0.5 rounded border border-border">
                           {milestone.targetDate}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600">{milestone.description}</p>
+                      <p className="text-sm text-muted leading-relaxed">{milestone.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-4 bg-slate-50 rounded-2xl text-xs text-slate-500 text-center">
+              <div className="p-6 bg-surfaceHover rounded-2xl border border-border text-sm font-medium text-muted text-center mt-6">
                 Initial installation and workshop roadmap underway.
               </div>
             )}
@@ -228,27 +224,31 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
         </div>
 
         {/* RIGHT COLUMN: DONATION BOX, STATS & SAFEGUARDING */}
-        <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+        <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-28">
           
           {/* Donation Action Card */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-lg space-y-5">
+          <div className="bg-surface rounded-3xl p-6 sm:p-8 border border-border shadow-float space-y-6">
             <div>
-              <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5 font-semibold">
+              <div className="flex items-center justify-between text-sm text-muted mb-2 font-semibold">
                 <span>Funded Target</span>
-                <span className="text-slate-900 font-bold">{project.progressPercentage}%</span>
+                <span className="text-foreground font-bold">{project.progressPercentage}%</span>
               </div>
               <ProgressBar percentage={project.progressPercentage} size="lg" showLabel={false} />
             </div>
 
-            <div className="flex justify-between items-baseline pt-1">
+            <div className="flex justify-between items-baseline pt-2">
               <div>
-                <div className="text-2xl font-extrabold text-slate-900">
+                <div className="text-3xl font-display font-extrabold text-foreground tracking-tight">
                   ₹{project.currentValue.toLocaleString()}
                 </div>
-                <div className="text-[11px] text-slate-500">Pledged of ₹{project.goalValue.toLocaleString()} goal</div>
+                <div className="text-xs font-medium text-muted mt-1">Pledged of ₹{project.goalValue.toLocaleString()} goal</div>
               </div>
               <div className="text-right">
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${
+                  project.status === 'active' 
+                    ? 'text-success-700 bg-success-50 border-success-200' 
+                    : 'text-warning-700 bg-warning-50 border-warning-200'
+                }`}>
                   {project.status === 'active' ? 'Active Target' : 'Under Review'}
                 </span>
               </div>
@@ -259,54 +259,56 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
                 setSelectedNeedForDonation(null);
                 setIsDonationOpen(true);
               }}
-              className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-foreground hover:bg-foreground/90 text-surface font-bold text-sm transition-all shadow-card flex items-center justify-center gap-2.5 mt-6"
             >
-              <HeartHandshake className="w-4 h-4" />
+              <HeartHandshake className="w-5 h-5" />
               <span>Support This Project</span>
             </button>
 
-            <Link
-              href="/volunteer/apply"
-              className="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition flex items-center justify-center gap-2 text-center"
-            >
-              <Code className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Volunteer as Coding Mentor</span>
-            </Link>
+            <div className="flex flex-col gap-3 mt-4">
+              <Link
+                href="/volunteer/apply"
+                className="w-full py-3.5 rounded-2xl bg-surfaceHover hover:bg-border text-foreground font-semibold text-sm transition-colors flex items-center justify-center gap-2 text-center"
+              >
+                <Code className="w-4 h-4 text-primary-600" />
+                <span>Volunteer as Coding Mentor</span>
+              </Link>
 
-            <Link
-              href="/donate-device"
-              className="w-full py-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold text-xs transition flex items-center justify-center gap-2 text-center border border-emerald-200"
-            >
-              <Laptop className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Pledge Laptop for This Lab</span>
-            </Link>
+              <Link
+                href="/donate-device"
+                className="w-full py-3.5 rounded-2xl bg-success-50 hover:bg-success-100 text-success-800 font-semibold text-sm transition-colors flex items-center justify-center gap-2 text-center border border-success-200"
+              >
+                <Laptop className="w-4 h-4 text-success-600" />
+                <span>Pledge Laptop for This Lab</span>
+              </Link>
+            </div>
 
-            <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-[11px] text-slate-500 space-y-2">
-              <div className="flex items-center gap-2 font-semibold text-slate-700">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <div className="p-4 bg-surfaceHover rounded-2xl border border-border text-xs text-muted space-y-2 mt-4">
+              <div className="flex items-center gap-2 font-bold text-foreground">
+                <ShieldCheck className="w-4 h-4 text-success-600" />
                 <span>Transparency Assured</span>
               </div>
-              <p>
+              <p className="leading-relaxed">
                 100% of contributions are allocated directly to verifiable technology equipment and digital curriculum.
               </p>
             </div>
           </div>
 
           {/* Child Safeguarding Box */}
-          <div className="bg-indigo-950 text-white rounded-3xl p-6 shadow-md space-y-4">
-            <div className="flex items-center gap-2 text-xs font-bold text-indigo-300 uppercase tracking-wider">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="bg-foreground text-surface rounded-3xl p-6 sm:p-8 shadow-card space-y-4">
+            <div className="flex items-center gap-2 text-xs font-bold text-muted uppercase tracking-wider mb-2">
+              <ShieldCheck className="w-4 h-4 text-success-500" />
               <span>Safeguarding Standard</span>
             </div>
-            <h3 className="text-sm font-bold text-white">
+            <h3 className="text-base font-bold text-surface">
               Zero-PII Child Protection Policy
             </h3>
-            <p className="text-xs text-indigo-200/90 leading-relaxed">
+            <p className="text-sm text-surface/80 leading-relaxed font-medium">
               In accordance with our strict safeguarding charter, no individual child names, identifiable photographs, or addresses are published. All statistics reflect aggregate cohorts.
             </p>
             <Link
               href="/safeguarding"
-              className="inline-flex items-center gap-1 text-xs font-bold text-indigo-300 hover:text-white"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-primary-400 hover:text-primary-300 transition-colors pt-2"
             >
               Learn about our child protection protocols →
             </Link>

@@ -12,10 +12,10 @@ export async function generateMetadata({ params }: ProjectPageProps) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) {
-    return { title: 'Project Not Found — TechForKids' };
+    return { title: 'Project Not Found — DesiLearCode' };
   }
   return {
-    title: `${project.title} — TechForKids`,
+    title: `${project.title} — DesiLearCode`,
     description: project.tagline || project.description.slice(0, 150),
   };
 }
@@ -26,10 +26,10 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
   if (!project) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
-        <h2 className="text-2xl font-bold text-slate-900">Project Not Found</h2>
-        <p className="text-xs text-slate-600">The requested initiative slug could not be located in our active directory.</p>
-        <Link href="/projects" className="inline-block px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+      <div className="max-w-4xl mx-auto px-4 py-24 text-center space-y-4">
+        <h2 className="text-3xl font-display font-bold text-foreground">Project Not Found</h2>
+        <p className="text-base text-muted">The requested initiative could not be located in our active directory.</p>
+        <Link href="/projects" className="inline-block px-6 py-3 rounded-xl bg-foreground text-surface font-semibold hover:bg-foreground/90 transition shadow-card">
           ← Return to Projects
         </Link>
       </div>
