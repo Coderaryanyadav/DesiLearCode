@@ -157,3 +157,148 @@ INSERT INTO public.impact_reports (
     TRUE,
     NOW()
 );
+
+-- 5. Additional NGOs
+INSERT INTO public.organizations (
+    id, slug, name, tagline, description, registration_number, website, 
+    contact_person, email, phone, location, areas_served, programs, 
+    technology_needs_summary, verification_status, verified_at, logo_url, 
+    hero_image_url, is_fictional_demo
+) VALUES 
+(
+    'a0000000-0000-0000-0000-000000000003',
+    'delhi-digital-empower',
+    'Delhi Digital Empower',
+    'Bridging the IT gap in urban slums',
+    'Focuses on IT literacy in Delhi slums.',
+    'DEL/2021/112233',
+    'https://delhidigital.example.org',
+    'Amit Kumar',
+    'amit@delhidigital.example.org',
+    '+91 11 2233 4455',
+    'Delhi NCR',
+    ARRAY['Delhi', 'Noida'],
+    ARRAY['Digital Literacy'],
+    'Requires 50 desktops.',
+    'verified',
+    NOW(),
+    'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&auto=format&fit=crop&q=80',
+    TRUE
+),
+(
+    'a0000000-0000-0000-0000-000000000004',
+    'bangalore-tech-for-all',
+    'Bangalore Tech For All',
+    'Equipping rural Karnataka with 21st-century skills',
+    'Registered NGO operating out of Bangalore rural.',
+    'KAR/2018/887766',
+    'https://blrtech.example.org',
+    'Kavita Rao',
+    'kavita@blrtech.example.org',
+    '+91 80 5566 7788',
+    'Bangalore Rural, Karnataka',
+    ARRAY['Bangalore Rural', 'Mysore'],
+    ARRAY['Girls in Tech', 'Advanced Programming'],
+    'Needs 20 refurbished laptops for Girls in Tech batch.',
+    'verified',
+    NOW(),
+    'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&auto=format&fit=crop&q=80',
+    TRUE
+);
+
+-- 6. Additional Projects
+INSERT INTO public.projects (
+    id, organization_id, slug, title, summary, full_description, 
+    cover_image_url, status, published_at, category, primary_location, 
+    target_students, beneficiary_group, current_value, goal_value, 
+    fulfillment_percentage, is_fictional_demo
+) VALUES
+(
+    'b0000000-0000-0000-0000-000000000003',
+    'a0000000-0000-0000-0000-000000000004',
+    'girls-in-tech-mysore',
+    'Mysore Girls Tech Cohort 2026',
+    'Providing 20 laptops for an advanced Python programming course for rural girls.',
+    'A 6-month intensive program targeting 20 girls in Mysore rural. We are raising funds for 20 laptops and mentorship.',
+    'https://images.unsplash.com/photo-1571260899304-425f190bc1b9?w=800&auto=format&fit=crop&q=80',
+    'active',
+    NOW(),
+    'After-School Lab',
+    'Mysore, Karnataka',
+    20,
+    'Girls aged 14-17',
+    40000,
+    150000,
+    26,
+    TRUE
+);
+
+-- 7. Devices (Simulating Lifecycle)
+INSERT INTO public.devices (
+    id, tracking_code, device_type, manufacturer, model, specifications, 
+    condition_notes, donor_id, status, is_fictional_demo, created_at
+) VALUES 
+(
+    'e0000000-0000-0000-0000-000000000001',
+    'DLC-8F2A-4C1B',
+    'Laptop',
+    'Lenovo',
+    'ThinkPad T480',
+    'Core i5, 8GB RAM, 256GB SSD',
+    'Good condition, battery holds charge',
+    NULL,
+    'Received',
+    TRUE,
+    NOW() - INTERVAL '30 days'
+),
+(
+    'e0000000-0000-0000-0000-000000000002',
+    'DLC-9X3B-5D2C',
+    'Laptop',
+    'Dell',
+    'Latitude 5490',
+    'Core i5, 16GB RAM, 512GB SSD',
+    'Keyboard has sticky keys',
+    NULL,
+    'Repair',
+    TRUE,
+    NOW() - INTERVAL '15 days'
+),
+(
+    'e0000000-0000-0000-0000-000000000003',
+    'DLC-1A2B-3C4D',
+    'Desktop',
+    'HP',
+    'ProDesk 600',
+    'Core i3, 8GB RAM, 500GB HDD',
+    'Perfect working condition',
+    NULL,
+    'Ready',
+    TRUE,
+    NOW() - INTERVAL '5 days'
+);
+
+-- 8. Audit Logs
+INSERT INTO public.audit_logs (
+    id, actor_id, actor_role, action, target_type, target_id, details
+) VALUES 
+(
+    gen_random_uuid(),
+    NULL,
+    'admin',
+    'VERIFIED_ORGANIZATION',
+    'organization',
+    'a0000000-0000-0000-0000-000000000004',
+    'System generated verification for seed data'
+),
+(
+    gen_random_uuid(),
+    NULL,
+    'admin',
+    'UPDATED_DEVICE_STATUS',
+    'device',
+    'e0000000-0000-0000-0000-000000000002',
+    'Device status transitioned from Inspection to Repair'
+);

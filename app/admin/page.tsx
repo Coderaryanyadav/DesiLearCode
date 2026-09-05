@@ -10,6 +10,7 @@ import { getAllVolunteersForAdmin } from '@/lib/db/volunteers';
 import { getSafeguardingReportsForAdmin } from '@/lib/db/safeguarding';
 import { getAuditLogsForAdmin } from '@/lib/db/audit';
 import { VerificationBadge, StatusBadge } from '@/components/VerificationBadge';
+import { DeviceIntakeChart } from '@/components/charts/DeviceIntakeChart';
 import { 
   Shield, 
   Building2, 
@@ -207,6 +208,19 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="text-lg font-mono font-bold text-foreground">{safeguardingReports.length}</div>
         </Link>
+      </div>
+
+      {/* Analytics Chart */}
+      <div className="bg-surface rounded-xl border border-border overflow-hidden p-4">
+        <h3 className="font-bold text-xs text-foreground uppercase tracking-wide font-mono mb-4">Device Intake Velocity (Last 6 Months)</h3>
+        <DeviceIntakeChart data={[
+          { name: 'Jan', count: 4 },
+          { name: 'Feb', count: 12 },
+          { name: 'Mar', count: 8 },
+          { name: 'Apr', count: 25 },
+          { name: 'May', count: 18 },
+          { name: 'Jun', count: 40 }
+        ]} />
       </div>
 
       {/* Main Review Matrices (Two Dense Operational Columns) */}
