@@ -152,7 +152,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({ initialProjects }) =
             <ProjectCard
               key={project.id}
               project={project}
-              onDonate={() => setSelectedProject(project)}
+              onSupportClick={() => setSelectedProject(project)}
             />
           ))}
         </div>

@@ -62,7 +62,7 @@ export const AdminProjectsTable: React.FC<AdminProjectsTableProps> = ({ initialP
                   ₹{p.goalValue.toLocaleString()}
                 </td>
                 <td className="p-3.5">
-                  <StatusBadge status={p.status} size="sm" />
+                  <StatusBadge status={p.status} />
                 </td>
                 <td className="p-3.5 text-right space-x-1.5 whitespace-nowrap">
                   {updatingId === p.id ? (

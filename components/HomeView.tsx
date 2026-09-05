@@ -260,7 +260,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
               <ProjectCard
                 key={project.id}
                 project={project}
-                onDonate={() => setSelectedProjectForDonation(project)}
+                onSupportClick={() => setSelectedProjectForDonation(project)}
               />
             ))}
           </div>

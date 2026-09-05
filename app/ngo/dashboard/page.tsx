@@ -139,7 +139,7 @@ export default async function NgoDashboardPage() {
                   <div key={p.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
                     <div className="flex justify-between items-start">
                       <span className="text-xs font-bold text-slate-900 truncate max-w-xs">{p.title}</span>
-                      <StatusBadge status={p.status} size="sm" />
+                      <StatusBadge status={p.status} />
                     </div>
                     <p className="text-xs text-slate-600 line-clamp-2">{p.tagline}</p>
                     <div className="space-y-1 pt-1">
@@ -147,7 +147,7 @@ export default async function NgoDashboardPage() {
                         <span>Pledged ₹{p.currentValue.toLocaleString()} of ₹{p.goalValue.toLocaleString()}</span>
                         <span>{p.progressPercentage}%</span>
                       </div>
-                      <ProgressBar progress={p.progressPercentage} height="h-2" showLabel={false} />
+                      <ProgressBar percentage={p.progressPercentage} size="sm" showLabel={false} />
                     </div>
                   </div>
                 ))}

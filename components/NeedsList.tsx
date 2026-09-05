@@ -115,7 +115,7 @@ export const NeedsList: React.FC<NeedsListProps> = ({ initialNeeds, projects }) 
             <NeedCard
               key={need.id}
               need={need}
-              onFulfill={(n) => setSelectedNeed(n)}
+              onFulfillClick={(n: NeedItem) => setSelectedNeed(n)}
             />
           ))}
         </div>

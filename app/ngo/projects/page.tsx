@@ -73,7 +73,7 @@ export default async function NgoProjectsListPage() {
                     <span>Pledged ₹{p.currentValue.toLocaleString()} of ₹{p.goalValue.toLocaleString()}</span>
                     <span>{p.progressPercentage}%</span>
                   </div>
-                  <ProgressBar progress={p.progressPercentage} height="h-2" showLabel={false} />
+                  <ProgressBar percentage={p.progressPercentage} size="sm" showLabel={false} />
                 </div>
               </div>
 

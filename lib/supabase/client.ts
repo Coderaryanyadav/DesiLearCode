@@ -1,8 +1,13 @@
 import { createBrowserClient } from '@supabase/ssr';
 
 export const createClient = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('http')
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL
+    : 'https://placeholder-project.supabase.co';
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    url,
+    anonKey
   );
 };

@@ -61,7 +61,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
               <span className="text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
                 {project.category}
               </span>
-              <StatusBadge status={project.status} size="sm" />
+              <StatusBadge status={project.status} />
               {project.organizationVerified && (
                 <VerificationBadge status="verified" size="sm" />
               )}
@@ -174,7 +174,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
                   <NeedCard
                     key={need.id}
                     need={need}
-                    onFulfill={() => handleNeedDonate(need)}
+                    onFulfillClick={() => handleNeedDonate(need)}
                   />
                 ))}
               </div>
@@ -237,7 +237,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
                 <span>Funded Target</span>
                 <span className="text-slate-900 font-bold">{project.progressPercentage}%</span>
               </div>
-              <ProgressBar progress={project.progressPercentage} height="h-3" showLabel={false} />
+              <ProgressBar percentage={project.progressPercentage} size="lg" showLabel={false} />
             </div>
 
             <div className="flex justify-between items-baseline pt-1">

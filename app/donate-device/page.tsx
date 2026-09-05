@@ -173,7 +173,7 @@ export default function DonateDevicePage() {
                 <div>Storage/RAM: <strong className="text-white">{trackedDevice.storage} / {trackedDevice.ram}</strong></div>
               </div>
               <div className="pt-2">
-                <DeviceTimeline history={trackedDevice.statusHistory} />
+                <DeviceTimeline device={trackedDevice} />
               </div>
             </div>
           )}
