@@ -2,31 +2,25 @@
 
 import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useStore } from '@/lib/store';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { Code, CheckCircle2, ShieldCheck, HeartHandshake, Lock, ArrowLeft } from 'lucide-react';
+import { applyForVolunteering } from '@/app/actions/volunteers';
+import { Code, CheckCircle2, ShieldCheck, Lock, ArrowLeft, AlertCircle } from 'lucide-react';
 
 function VolunteerApplyContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const opportunityId = searchParams?.get('opp') || undefined;
 
-  const { applyForVolunteering, volunteerOpportunities } = useStore();
-  const { currentUser, setRole } = useAuth();
-
-  const opp = volunteerOpportunities.find(o => o.id === opportunityId);
+  const { currentUser } = useAuth();
 
   // Form states
-  const [name, setName] = useState(currentUser.name || '');
-  const [email, setEmail] = useState(currentUser.email || '');
-  const [phone, setPhone] = useState(currentUser.phone || '');
+  const [phone, setPhone] = useState(currentUser?.phone || '');
   const [experienceYears, setExperienceYears] = useState(3);
   const [availabilityHoursPerWeek, setAvailabilityHoursPerWeek] = useState(3);
   const [preferredMode, setPreferredMode] = useState<'online' | 'in_person' | 'both'>('both');
-  const [location, setLocation] = useState('Delhi NCR / Remote');
+  const [location, setLocation] = useState('Pune Urban / Remote');
   const [preferredAgeGroup, setPreferredAgeGroup] = useState('11–16 years');
-  const [bio, setBio] = useState('Passionate about teaching hands-on programming and computer literacy to empower children.');
+  const [bio, setBio] = useState('Passionate about teaching hands-on programming and computational thinking.');
   const [safeguardingConsent, setSafeguardingConsent] = useState(false);
 
   // Selected Skills & Subjects
@@ -41,14 +35,15 @@ function VolunteerApplyContent() {
     'English Literacy',
     'Applied Mathematics',
     'Science Experiments',
-    'Graphic Design'
   ];
   const [selectedSkills, setSelectedSkills] = useState<string[]>(['Python', 'Coding (Scratch/Block)']);
 
   const availableLanguages = ['English', 'Hindi', 'Marathi', 'Kannada', 'Tamil', 'Telugu', 'Bengali'];
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(['English', 'Hindi']);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const toggleSkill = (skill: string) => {
     setSelectedSkills(prev => 
@@ -62,63 +57,77 @@ function VolunteerApplyContent() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!safeguardingConsent) {
-      alert('Please review and confirm the Child Safeguarding declaration.');
+      setErrorMessage('You must review and accept the child safeguarding standards.');
       return;
     }
 
-    applyForVolunteering({
-      name,
-      email,
-      skills: selectedSkills,
-      experienceYears,
-      availabilityHoursPerWeek,
-      preferredMode,
-      preferredSubjects: selectedSkills,
-      preferredAgeGroup,
-      location,
-      languages: selectedLanguages,
-      bio,
-      opportunityId,
-    });
+    setIsSubmitting(true);
+    setErrorMessage(null);
 
-    setRole('volunteer');
-    setSubmitted(true);
+    const formData = new FormData();
+    formData.append('phone', phone);
+    formData.append('experienceYears', experienceYears.toString());
+    formData.append('availabilityHoursPerWeek', availabilityHoursPerWeek.toString());
+    formData.append('preferredMode', preferredMode);
+    formData.append('preferredAgeGroup', preferredAgeGroup);
+    formData.append('location', location);
+    formData.append('bio', bio);
+    formData.append('safeguardingConsent', safeguardingConsent ? 'true' : 'false');
+    if (opportunityId) formData.append('opportunityId', opportunityId);
+
+    selectedSkills.forEach(s => formData.append('skills', s));
+    selectedLanguages.forEach(l => formData.append('languages', l));
+
+    try {
+      const res = await applyForVolunteering(formData);
+      if (res.error) {
+        setErrorMessage(res.error);
+      } else {
+        setSubmitted(true);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to submit application.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-6">
         <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto shadow-md">
-          <CheckCircle2 className="w-10 h-10" />
+          <CheckCircle2 className="w-9 h-9" />
         </div>
 
-        <div>
-          <span className="text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200">
-            Application Registered
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-            Welcome to the TechForKids Volunteer Community!
+        <div className="space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Application Received!
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-md mx-auto leading-relaxed">
-            Your mentor profile has been initialized. We have activated the <strong>Volunteer Portal</strong> for your session where you can track opportunities, hours, and workshop schedules.
+          <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
+            Thank you for stepping forward to mentor young minds. Our education and safeguarding coordinator will review your background and reach out.
           </p>
         </div>
 
-        <div className="pt-4 flex flex-wrap justify-center gap-3">
+        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-left text-xs space-y-2 max-w-md mx-auto text-slate-600">
+          <div className="flex justify-between">
+            <span className="text-slate-400">Application Status:</span>
+            <span className="font-bold text-amber-600">Pending Background Check</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Safeguarding Agreement:</span>
+            <span className="font-semibold text-emerald-600">Signed & Logged</span>
+          </div>
+        </div>
+
+        <div className="pt-4">
           <Link
             href="/dashboard/volunteering"
-            className="px-6 py-3 rounded-2xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition shadow-md"
+            className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-md inline-block"
           >
-            Go to Volunteer Dashboard →
-          </Link>
-          <Link
-            href="/volunteer"
-            className="px-6 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition"
-          >
-            Explore More Roles
+            Go to Volunteer Portal
           </Link>
         </div>
       </div>
@@ -126,229 +135,200 @@ function VolunteerApplyContent() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link href="/volunteer" className="hover:text-indigo-600 flex items-center gap-1">
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to Volunteering
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      {/* Back button */}
+      <div>
+        <Link href="/volunteer" className="text-xs font-semibold text-slate-500 hover:text-indigo-600 flex items-center gap-1">
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Volunteer Overview
         </Link>
       </div>
 
+      {/* Header */}
       <div className="space-y-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">
-          Mentor Onboarding
+        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+          Volunteer Mentorship Intake
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Apply as a Volunteer Mentor
+          Join the TechForKids Mentorship Team
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          {opp ? `Applying for specific role: "${opp.roleTitle}" at ${opp.organizationName}` : 'Register your skills and availability across technology and digital literacy modules.'}
+          Please complete this application with your teaching preferences, skills, and background details.
         </p>
       </div>
 
-      {opp && (
-        <div className="p-4 bg-indigo-50/70 border border-indigo-200 rounded-2xl text-xs text-indigo-950 flex items-start gap-3">
-          <Code className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
-          <div>
-            <strong>Selected Role:</strong> {opp.roleTitle} ({opp.organizationName}) • {opp.hoursPerWeek} hrs/week ({opp.mode})
-          </div>
+      {errorMessage && (
+        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-xs flex items-center gap-2.5">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{errorMessage}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8">
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
         
-        {/* Contact Info */}
+        {/* Contact info */}
         <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2">
-            1. Personal & Contact Information
+          <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <Code className="w-4 h-4 text-indigo-600" />
+            Basic Contact & Experience
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name *</label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Rohan Mehra"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Email *</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="rohan@example.com"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Phone *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Phone / WhatsApp Number
+              </label>
               <input
                 type="tel"
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98111 22334"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
+                placeholder="+91 98765 43210"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                City / Location
+              </label>
+              <input
+                type="text"
+                required
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g. Pune, Maharashtra / Remote"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Relevant Tech Experience (Years)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="40"
+                value={experienceYears}
+                onChange={(e) => setExperienceYears(parseInt(e.target.value, 10))}
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Available Time (Hours / Week)
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={availabilityHoursPerWeek}
+                onChange={(e) => setAvailabilityHoursPerWeek(parseInt(e.target.value, 10))}
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
         </div>
 
-        {/* Skills Selection */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2">
-            2. Skills & Teaching Subjects (Select all that apply)
-          </h3>
+        {/* Skills */}
+        <div className="space-y-3 pt-4 border-t border-slate-100">
+          <label className="block text-xs font-bold text-slate-900">
+            Skills You Can Teach (Select all that apply)
+          </label>
           <div className="flex flex-wrap gap-2">
             {availableSkills.map((skill) => {
               const isSelected = selectedSkills.includes(skill);
               return (
                 <button
-                  type="button"
                   key={skill}
+                  type="button"
                   onClick={() => toggleSkill(skill)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition border ${
                     isSelected
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
-                  {skill} {isSelected && '✓'}
+                  {isSelected ? `✓ ${skill}` : `+ ${skill}`}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Availability & Mode */}
-        <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2">
-            3. Availability & Preferences
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Weekly Availability</label>
-              <select
-                value={availabilityHoursPerWeek}
-                onChange={(e) => setAvailabilityHoursPerWeek(parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 bg-white"
-              >
-                <option value={2}>2 Hours / Week (Weekend)</option>
-                <option value={4}>4 Hours / Week</option>
-                <option value={6}>6+ Hours / Week</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Preferred Mode</label>
-              <select
-                value={preferredMode}
-                onChange={(e) => setPreferredMode(e.target.value as any)}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 bg-white"
-              >
-                <option value="both">Both Online & In-Person</option>
-                <option value="in_person">In-Person Only (Classroom)</option>
-                <option value="online">Virtual / Online Only</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Target Age Group</label>
-              <select
-                value={preferredAgeGroup}
-                onChange={(e) => setPreferredAgeGroup(e.target.value)}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 bg-white"
-              >
-                <option value="8–12 years">Primary (8–12 years)</option>
-                <option value="11–16 years">Middle & High School (11–16 years)</option>
-                <option value="15–18 years">Young Adults (15–18 years)</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">City / Region Base</label>
-              <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. Pune, Maharashtra"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Languages for Instruction</label>
-              <div className="flex flex-wrap gap-1.5">
-                {availableLanguages.map((lang) => (
-                  <button
-                    type="button"
-                    key={lang}
-                    onClick={() => toggleLanguage(lang)}
-                    className={`px-2.5 py-1 text-[11px] rounded-lg border font-medium ${
-                      selectedLanguages.includes(lang)
-                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                        : 'bg-slate-50 text-slate-600 border-slate-200'
-                    }`}
-                  >
-                    {lang}
-                  </button>
-                ))}
-              </div>
-            </div>
+        {/* Languages */}
+        <div className="space-y-3 pt-4 border-t border-slate-100">
+          <label className="block text-xs font-bold text-slate-900">
+            Languages You Are Comfortable Mentoring In
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {availableLanguages.map((lang) => {
+              const isSelected = selectedLanguages.includes(lang);
+              return (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => toggleLanguage(lang)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition border ${
+                    isSelected
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  {isSelected ? `✓ ${lang}` : `+ ${lang}`}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Bio */}
-        <div className="space-y-2">
-          <label className="block text-xs font-semibold text-slate-700">Short Introduction / Motivation</label>
+        <div className="space-y-2 pt-4 border-t border-slate-100">
+          <label className="block text-xs font-bold text-slate-900">
+            Brief Intro & Teaching Motivation
+          </label>
           <textarea
             rows={3}
             required
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            placeholder="Tell us a little about your technical background and why you wish to mentor..."
-            className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
+            placeholder="Tell us a little about your experience with programming or why you'd like to mentor children..."
+            className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
-        {/* Child Safeguarding Consent */}
-        <div className="p-4 bg-indigo-50/80 border border-indigo-200 rounded-2xl space-y-3">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-indigo-700" />
-            <span className="text-xs font-bold text-indigo-950">Child Safeguarding & Protection Agreement</span>
+        {/* Child Safeguarding Agreement */}
+        <div className="p-4 bg-indigo-50/70 rounded-2xl border border-indigo-100 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-indigo-950">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>Mandatory Child Safeguarding & Privacy Agreement</span>
           </div>
-          <p className="text-[11px] text-indigo-900 leading-relaxed">
-            By applying as a mentor, you agree to adhere to TechForKids Zero-Harm and Zero-PII principles. You will conduct sessions strictly within supervised environments and never solicit or publish personal contact details of young participants.
+          <p className="text-[11px] text-indigo-900/90 leading-relaxed">
+            By submitting this application, you agree to comply with our Zero-PII Safeguarding Charter: never soliciting private contact information from children, maintaining supervised sessions, and submitting to background validation.
           </p>
-          <div className="flex items-center gap-2 pt-1">
+          <label className="flex items-start gap-2 pt-1 cursor-pointer select-none">
             <input
               type="checkbox"
-              id="safeguardConsent"
               required
               checked={safeguardingConsent}
               onChange={(e) => setSafeguardingConsent(e.target.checked)}
-              className="w-4 h-4 text-indigo-600 rounded border-slate-300"
+              className="mt-0.5 w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
             />
-            <label htmlFor="safeguardConsent" className="text-xs text-indigo-950 font-semibold select-none">
-              I agree to the Child Safeguarding Code of Conduct & Identity Verification Checks.
-            </label>
-          </div>
+            <span className="text-xs font-bold text-slate-800">
+              I agree to the child safeguarding protocols and identity verification check.
+            </span>
+          </label>
         </div>
 
+        {/* Submit */}
         <button
           type="submit"
-          className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm transition shadow-lg shadow-indigo-600/20"
+          disabled={isSubmitting}
+          className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/25 disabled:opacity-60"
         >
-          Submit Volunteer Application
+          {isSubmitting ? 'Submitting Application...' : 'Submit Volunteer Application'}
         </button>
 
       </form>
@@ -358,11 +338,7 @@ function VolunteerApplyContent() {
 
 export default function VolunteerApplyPage() {
   return (
-    <Suspense fallback={
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center text-xs text-slate-500">
-        Loading volunteer onboarding portal...
-      </div>
-    }>
+    <Suspense fallback={<div className="p-12 text-center text-xs text-slate-500">Loading form...</div>}>
       <VolunteerApplyContent />
     </Suspense>
   );

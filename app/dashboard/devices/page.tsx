@@ -1,17 +1,23 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { useAuth } from '@/lib/auth-context';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getDevicesForDonor } from '@/lib/db/devices';
 import { DeviceTimeline } from '@/components/DeviceTimeline';
 import { Laptop, ArrowLeft, Plus } from 'lucide-react';
 
-export default function DashboardDevicesPage() {
-  const { currentUser } = useAuth();
-  const { devices } = useStore();
+export const metadata = {
+  title: 'My Donated Devices — TechForKids',
+};
 
-  const userDevices = devices.filter(d => d.donorEmail.toLowerCase() === currentUser.email.toLowerCase() || currentUser.role === 'donor');
+export default async function DashboardDevicesPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect('/login');
+
+  const { data: profile } = await supabase.from('profiles').select('id, full_name, email').eq('user_id', user.id).single();
+  const devices = profile ? await getDevicesForDonor(profile.id) : [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -28,10 +34,10 @@ export default function DashboardDevicesPage() {
             Hardware Lifecycles
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-            My Donated Devices ({userDevices.length})
+            My Donated Devices ({devices.length})
           </h1>
           <p className="text-xs text-slate-500">
-            Real-time status milestones, DoD wiping records, and classroom assignments.
+            Real-time status milestones, wiping records, and classroom assignments.
           </p>
         </div>
 
@@ -44,11 +50,21 @@ export default function DashboardDevicesPage() {
         </Link>
       </div>
 
-      <div className="space-y-6">
-        {userDevices.map((device) => (
-          <DeviceTimeline key={device.id} device={device} />
-        ))}
-      </div>
+      {devices.length > 0 ? (
+        <div className="space-y-6">
+          {devices.map((device) => (
+            <DeviceTimeline key={device.id} device={device} />
+          ))}
+        </div>
+      ) : (
+        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3 text-xs text-slate-500">
+          <Laptop className="w-8 h-8 text-slate-400 mx-auto" />
+          <p>No device donations recorded on your account yet.</p>
+          <Link href="/donate-device" className="inline-block font-bold text-indigo-600 hover:underline">
+            Submit a device assessment →
+          </Link>
+        </div>
+      )}
 
     </div>
   );

@@ -1,12 +1,26 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { ArrowLeft, AlertTriangle, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getSafeguardingReportsForAdmin } from '@/lib/db/safeguarding';
+import { ArrowLeft, AlertTriangle, ShieldAlert } from 'lucide-react';
 
-export default function AdminReportsPage() {
-  const { safeguardingReports } = useStore();
+export const metadata = {
+  title: 'Safeguarding Incident Queue — TechForKids Admin',
+};
+
+export default async function AdminReportsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect('/login');
+
+  const { data: profile } = await supabase.from('profiles').select('role').eq('user_id', user.id).single();
+  if (profile?.role !== 'admin') {
+    redirect('/dashboard');
+  }
+
+  const safeguardingReports = await getSafeguardingReportsForAdmin();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -18,7 +32,7 @@ export default function AdminReportsPage() {
       </div>
 
       <div>
-        <span className="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-50 px-3 py-1 rounded-full">
+        <span className="text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full">
           Child Protection & Flagging Queue
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
@@ -32,9 +46,9 @@ export default function AdminReportsPage() {
       {safeguardingReports.length > 0 ? (
         <div className="space-y-4">
           {safeguardingReports.map((report) => (
-            <div key={report.id} className="bg-white rounded-3xl border border-red-200 p-6 space-y-3 shadow-xs">
+            <div key={report.id} className="bg-white rounded-3xl border border-rose-200 p-6 space-y-3 shadow-sm">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider bg-red-100 text-red-800 px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold uppercase tracking-wider bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-full">
                   {report.status.toUpperCase()} • Subject: {report.subjectType} ({report.subjectId})
                 </span>
                 <span className="text-xs text-slate-400 font-mono">
@@ -42,31 +56,23 @@ export default function AdminReportsPage() {
                 </span>
               </div>
 
-              <p className="text-xs text-slate-800 leading-relaxed font-medium bg-red-50/40 p-3.5 rounded-2xl border border-red-100">
+              <p className="text-xs text-slate-800 leading-relaxed font-medium bg-rose-50/40 p-3.5 rounded-2xl border border-rose-100">
                 {report.description}
               </p>
 
               <div className="text-[11px] text-slate-500 flex items-center justify-between pt-2 border-t border-slate-100">
                 <span>Reporter: <strong>{report.reporterName}</strong> ({report.reporterEmail})</span>
-                <button
-                  onClick={() => alert(`Investigation opened for report #${report.id}`)}
-                  className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-lg transition"
-                >
-                  Mark Under Investigation
-                </button>
+                <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">
+                  Report ID: #{report.id.slice(0, 8)}
+                </span>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-3">
-          <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-6 h-6" />
-          </div>
-          <h3 className="font-bold text-slate-900 text-base">Safeguarding Queue is Clear</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            No active safety flags or privacy concerns reported. The confidential intake form on <code>/safeguarding</code> is active.
-          </p>
+        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3 text-xs text-slate-500 shadow-sm">
+          <ShieldAlert className="w-8 h-8 text-emerald-600 mx-auto" />
+          <p>No active safeguarding or privacy incidents reported in queue.</p>
         </div>
       )}
 

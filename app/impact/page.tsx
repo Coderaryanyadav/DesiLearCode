@@ -1,30 +1,27 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
+import { getVerifiedImpactReports, getPlatformImpactMetrics } from '@/lib/db/impact';
 import { SafeguardingBanner } from '@/components/SafeguardingBanner';
 import { 
-  BarChart3, 
   Laptop, 
   Users, 
   Clock, 
-  Sparkles, 
   Building2, 
-  CheckCircle2, 
   ArrowRight,
-  TrendingUp,
-  ShieldCheck
+  ShieldCheck,
+  CheckCircle2
 } from 'lucide-react';
 
-export default function ImpactDashboardPage() {
-  const { impactReports, projects, devices, volunteerProfiles, organizations } = useStore();
+export const metadata = {
+  title: 'Transparency & Impact Dashboard — TechForKids',
+  description: 'Real-time verified platform statistics and impact reports across child learning centers.',
+};
 
-  const totalComputers = 47;
-  const totalStudents = 126;
-  const totalVolunteerHours = 76;
-  const totalWorkshops = 18;
-  const totalOrganizations = organizations.length;
+export default async function ImpactDashboardPage() {
+  const [reports, metrics] = await Promise.all([
+    getVerifiedImpactReports(),
+    getPlatformImpactMetrics(),
+  ]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-14">
@@ -38,135 +35,96 @@ export default function ImpactDashboardPage() {
           Transparency & Impact Dashboard
         </h1>
         <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-          Real-time aggregated progress across all partnered community learning hubs, hardware deployments, and verified mentorship hours.
-        </p>
-        <p className="text-xs text-slate-400 italic">
-          *Initial sample/demo values shown for local development & demonstration.
+          Aggregated progress across all partnered community learning hubs, hardware deployments, and verified mentorship hours calculated directly from PostgreSQL records.
         </p>
       </div>
 
       {/* Aggregate Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-2">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
           <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <Laptop className="w-5 h-5" />
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">{totalComputers}</div>
+          <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">{metrics.devicesReceivedCount}</div>
           <div className="text-xs font-bold text-slate-700">Computers Provided</div>
-          <p className="text-[11px] text-slate-500">Refurbished & active in classrooms</p>
+          <p className="text-[11px] text-slate-500">Tracked in lifecycle ledger</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-2">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
           <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
             <Users className="w-5 h-5" />
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold text-emerald-600">{totalStudents}</div>
+          <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">{metrics.studentsReachedEstimate}</div>
           <div className="text-xs font-bold text-slate-700">Students Reached</div>
-          <p className="text-[11px] text-slate-500">Aggregated attendance tally</p>
+          <p className="text-[11px] text-slate-500">Aggregated cohort tally</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-2">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
           <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
             <Clock className="w-5 h-5" />
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold text-amber-600">{totalVolunteerHours} hrs</div>
-          <div className="text-xs font-bold text-slate-700">Mentorship Hours</div>
-          <p className="text-[11px] text-slate-500">Verified programming & STEM time</p>
+          <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">{metrics.volunteersCount}</div>
+          <div className="text-xs font-bold text-slate-700">Registered Mentors</div>
+          <p className="text-[11px] text-slate-500">STEM & coding instructors</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-2">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
           <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
             <Building2 className="w-5 h-5" />
           </div>
-          <div className="text-3xl sm:text-4xl font-extrabold text-purple-600">{totalOrganizations}</div>
+          <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">{metrics.verifiedOrgsCount}</div>
           <div className="text-xs font-bold text-slate-700">Verified Organizations</div>
-          <p className="text-[11px] text-slate-500">Full statutory audit completed</p>
+          <p className="text-[11px] text-slate-500">Statutory verified non-profits</p>
         </div>
       </div>
 
-      {/* Project-Level Impact Reports (Before / After Showcase) */}
+      {/* Verified Impact Reports */}
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-              Verified Project Impact Reports
-            </h2>
-            <p className="text-xs text-slate-500">Before-and-after baseline transformations submitted by non-profit partners.</p>
+        <div className="space-y-1">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600">Audited Milestones</span>
+          <h2 className="text-2xl font-bold text-slate-900">Published Impact Reports</h2>
+        </div>
+
+        {reports.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {reports.map((report) => (
+              <div key={report.id} className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div className="flex justify-between items-center text-xs text-slate-500">
+                  <span className="font-bold text-indigo-600">{report.organizationName}</span>
+                  <span className="bg-slate-100 px-2.5 py-0.5 rounded-full font-mono">{report.period}</span>
+                </div>
+
+                <h3 className="text-base font-bold text-slate-900">{report.headline}</h3>
+                <p className="text-xs text-slate-600 leading-relaxed">{report.summary}</p>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                  <div>Before: <span className="text-slate-600">{report.beforeState}</span></div>
+                  <div>After: <span className="text-emerald-700 font-semibold">{report.afterState}</span></div>
+                </div>
+
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5 text-emerald-600 font-bold">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Admin Verified</span>
+                  </div>
+                  <Link href={`/projects`} className="font-semibold text-indigo-600 hover:underline">
+                    View Project →
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {impactReports.map((report) => (
-            <div key={report.id} className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-5 shadow-xs flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg">
-                    {report.period} Audit
-                  </span>
-                  <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Verified by Admin
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 leading-snug">{report.headline}</h3>
-                  <div className="text-xs text-slate-500 mt-1">
-                    Project: <strong className="text-slate-800">{report.projectTitle}</strong> • {report.organizationName}
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {report.summary}
-                </p>
-
-                {/* Before / After comparison cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs space-y-1">
-                    <strong className="text-red-700 font-bold uppercase tracking-wide text-[10px] block">
-                      Before Assistance
-                    </strong>
-                    <p className="text-slate-600 leading-relaxed">{report.beforeState}</p>
-                  </div>
-
-                  <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100 text-xs space-y-1">
-                    <strong className="text-emerald-800 font-bold uppercase tracking-wide text-[10px] block">
-                      After TechForKids Support
-                    </strong>
-                    <p className="text-slate-700 leading-relaxed">{report.afterState}</p>
-                  </div>
-                </div>
-
-                {/* Report Key Stats */}
-                <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-center">
-                  <div className="p-2 bg-slate-50 rounded-xl">
-                    <div className="text-xs font-bold text-slate-900">{report.computersProvided}</div>
-                    <div className="text-[10px] text-slate-500">Laptops</div>
-                  </div>
-                  <div className="p-2 bg-slate-50 rounded-xl">
-                    <div className="text-xs font-bold text-slate-900">{report.studentsTrained}</div>
-                    <div className="text-[10px] text-slate-500">Students</div>
-                  </div>
-                  <div className="p-2 bg-slate-50 rounded-xl">
-                    <div className="text-xs font-bold text-slate-900">{report.volunteerHours}h</div>
-                    <div className="text-[10px] text-slate-500">Mentored</div>
-                  </div>
-                  <div className="p-2 bg-slate-50 rounded-xl">
-                    <div className="text-xs font-bold text-slate-900">{report.workshopsConducted}</div>
-                    <div className="text-[10px] text-slate-500">Workshops</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-2 text-[11px] text-slate-400">
-                Published {new Date(report.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-              </div>
-            </div>
-          ))}
-        </div>
+        ) : (
+          <div className="p-10 bg-white rounded-3xl border border-slate-200 text-center space-y-2 text-xs text-slate-500">
+            <p>No verified periodic impact reports published yet.</p>
+            <p>Once partner organizations complete quarterly learning checkpoints, reports will appear here.</p>
+          </div>
+        )}
       </div>
 
-      {/* Safeguarding notice */}
-      <SafeguardingBanner />
+      <div className="pt-4">
+        <SafeguardingBanner />
+      </div>
 
     </div>
   );

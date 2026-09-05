@@ -1,18 +1,31 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { useAuth } from '@/lib/auth-context';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getOpenNeeds } from '@/lib/db/needs';
 import { NeedCard } from '@/components/NeedCard';
-import { ArrowLeft, Sparkles, Plus } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 
-export default function NgoNeedsPage() {
-  const { currentUser } = useAuth();
-  const { needs, organizations } = useStore();
+export const metadata = {
+  title: 'Manage Needs — TechForKids NGO',
+};
 
-  const org = organizations.find(o => o.id === currentUser.organizationId) || organizations[0];
-  const orgNeeds = needs.filter(n => n.organizationId === org.id);
+export default async function NgoNeedsPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect('/login');
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('organization_id')
+    .eq('user_id', user.id)
+    .single();
+
+  const allNeeds = await getOpenNeeds();
+  const orgNeeds = profile?.organization_id 
+    ? allNeeds.filter(n => n.organizationId === profile.organization_id)
+    : [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -44,11 +57,17 @@ export default function NgoNeedsPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {orgNeeds.map((need) => (
-          <NeedCard key={need.id} need={need} />
-        ))}
-      </div>
+      {orgNeeds.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {orgNeeds.map((need) => (
+            <NeedCard key={need.id} need={need} />
+          ))}
+        </div>
+      ) : (
+        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3 text-xs text-slate-500 shadow-sm">
+          <p>No open needs registered under your organization.</p>
+        </div>
+      )}
 
     </div>
   );

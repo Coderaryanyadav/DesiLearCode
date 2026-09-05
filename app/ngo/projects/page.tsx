@@ -1,19 +1,29 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { useAuth } from '@/lib/auth-context';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getProjectsForOrg } from '@/lib/db/projects';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ProgressBar } from '@/components/ProgressBar';
-import { ArrowLeft, Plus, ExternalLink, Settings } from 'lucide-react';
+import { ArrowLeft, Plus, ExternalLink } from 'lucide-react';
 
-export default function NgoProjectsListPage() {
-  const { currentUser } = useAuth();
-  const { projects, organizations } = useStore();
+export const metadata = {
+  title: 'Manage Projects — TechForKids NGO',
+};
 
-  const org = organizations.find(o => o.id === currentUser.organizationId) || organizations[0];
-  const orgProjects = projects.filter(p => p.organizationId === org.id);
+export default async function NgoProjectsListPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect('/login');
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('organization_id')
+    .eq('user_id', user.id)
+    .single();
+
+  const orgProjects = profile?.organization_id ? await getProjectsForOrg(profile.organization_id) : [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -43,53 +53,53 @@ export default function NgoProjectsListPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {orgProjects.map((p) => (
-          <div key={p.id} className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4 flex flex-col justify-between shadow-xs">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700">
-                  {p.category}
+      {orgProjects.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {orgProjects.map((p) => (
+            <div key={p.id} className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4 flex flex-col justify-between shadow-sm">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700">
+                    {p.category}
+                  </span>
+                  <StatusBadge status={p.status} />
+                </div>
+
+                <h3 className="font-bold text-slate-900 text-base">{p.title}</h3>
+                <p className="text-xs text-slate-600 line-clamp-2">{p.tagline}</p>
+
+                <div className="pt-2">
+                  <div className="flex justify-between text-[11px] text-slate-500 font-semibold mb-1">
+                    <span>Pledged ₹{p.currentValue.toLocaleString()} of ₹{p.goalValue.toLocaleString()}</span>
+                    <span>{p.progressPercentage}%</span>
+                  </div>
+                  <ProgressBar progress={p.progressPercentage} height="h-2" showLabel={false} />
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-mono text-[11px]">
+                  Created {new Date(p.createdAt).toLocaleDateString()}
                 </span>
-                <StatusBadge status={p.status} />
-              </div>
-
-              <h3 className="font-bold text-slate-900 text-base">{p.title}</h3>
-              <p className="text-xs text-slate-600 line-clamp-2">{p.tagline}</p>
-
-              <div className="pt-2">
-                <ProgressBar
-                  percentage={p.progressPercentage}
-                  labelLeft={`₹${p.currentValue.toLocaleString()} raised`}
-                  labelRight={`Goal: ₹${p.goalValue.toLocaleString()}`}
-                  size="sm"
-                />
-              </div>
-
-              <div className="text-[11px] text-slate-500 flex justify-between pt-1">
-                <span>Target: {p.targetStudents} students</span>
-                <span>{p.needs.length} itemized needs</span>
+                <Link
+                  href={`/projects/${p.slug}`}
+                  className="font-bold text-indigo-600 hover:underline flex items-center gap-1"
+                >
+                  <span>Public View</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </div>
-
-            <div className="pt-4 border-t border-slate-100 flex items-center gap-2">
-              <Link
-                href={`/ngo/projects/${p.id}`}
-                className="flex-1 py-2 text-center text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition flex items-center justify-center gap-1"
-              >
-                <Settings className="w-3.5 h-3.5" />
-                <span>Edit Milestones & Needs</span>
-              </Link>
-              <Link
-                href={`/projects/${p.slug}`}
-                className="px-3 py-2 text-xs font-bold rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition"
-              >
-                Public Page
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-3 text-xs text-slate-500 shadow-sm">
+          <p>No initiatives registered yet.</p>
+          <Link href="/ngo/projects/new" className="inline-block font-bold text-indigo-600 hover:underline">
+            Submit a new project →
+          </Link>
+        </div>
+      )}
 
     </div>
   );

@@ -1,9 +1,14 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { useAuth } from '@/lib/auth-context';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getAllOrganizationsForAdmin } from '@/lib/db/organizations';
+import { getAllProjectsForAdmin } from '@/lib/db/projects';
+import { getAllDevicesForAdmin } from '@/lib/db/devices';
+import { getAllDonationsForAdmin } from '@/lib/db/donations';
+import { getAllVolunteersForAdmin } from '@/lib/db/volunteers';
+import { getSafeguardingReportsForAdmin } from '@/lib/db/safeguarding';
+import { getAuditLogsForAdmin } from '@/lib/db/audit';
 import { VerificationBadge } from '@/components/VerificationBadge';
 import { StatusBadge } from '@/components/StatusBadge';
 import { 
@@ -21,19 +26,56 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-export default function AdminDashboardPage() {
-  const { 
-    organizations, 
-    projects, 
-    devices, 
-    donations, 
-    volunteerProfiles, 
-    auditLogs, 
+export const metadata = {
+  title: 'Platform Administration — TechForKids',
+};
+
+export default async function AdminDashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) redirect('/login');
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, full_name, email')
+    .eq('user_id', user.id)
+    .single();
+
+  if (profile?.role !== 'admin') {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-20 text-center space-y-4">
+        <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto">
+          <Shield className="w-6 h-6" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900">Access Restricted</h2>
+        <p className="text-xs text-slate-600">
+          This portal requires verified administrative privileges. Your current role is &ldquo;{profile?.role || 'visitor'}&rdquo;.
+        </p>
+        <Link href="/dashboard" className="inline-block px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs">
+          Return to User Dashboard
+        </Link>
+      </div>
+    );
+  }
+
+  const [
+    organizations,
+    projects,
+    devices,
+    donations,
+    volunteers,
     safeguardingReports,
-    updateOrganizationStatus,
-    updateProjectStatus 
-  } = useStore();
-  const { currentUser } = useAuth();
+    auditLogs
+  ] = await Promise.all([
+    getAllOrganizationsForAdmin(),
+    getAllProjectsForAdmin(),
+    getAllDevicesForAdmin(),
+    getAllDonationsForAdmin(),
+    getAllVolunteersForAdmin(),
+    getSafeguardingReportsForAdmin(),
+    getAuditLogsForAdmin(),
+  ]);
 
   const pendingOrgs = organizations.filter(o => o.verificationStatus === 'under_review' || o.verificationStatus === 'pending');
   const pendingProjects = projects.filter(p => p.status === 'pending_approval');
@@ -50,7 +92,7 @@ export default function AdminDashboardPage() {
               Administrative Command Center
             </span>
             <span className="text-xs font-bold bg-slate-900 text-white px-2.5 py-0.5 rounded-full">
-              Super Admin Mode
+              Server Authenticated Admin
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
@@ -64,215 +106,140 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/admin/audit"
-            className="px-4 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition"
           >
-            <Shield className="w-4 h-4 text-purple-400" />
-            <span>View Audit Logs</span>
-          </Link>
-          <Link
-            href="/admin/reports"
-            className="px-4 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs hover:bg-red-700 transition flex items-center gap-1.5"
-          >
-            <AlertTriangle className="w-4 h-4" />
-            <span>Safeguarding Queue ({safeguardingReports.length})</span>
+            Audit Trail Logs ({auditLogs.length})
           </Link>
         </div>
       </div>
 
-      {/* Sub Navigation */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 text-xs font-bold overflow-x-auto no-scrollbar">
-        <Link href="/admin" className="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 shrink-0">
-          Overview
-        </Link>
-        <Link href="/admin/organizations" className="px-3 py-1.5 text-slate-600 hover:text-slate-900 shrink-0">
-          Organizations ({organizations.length})
-        </Link>
-        <Link href="/admin/projects" className="px-3 py-1.5 text-slate-600 hover:text-slate-900 shrink-0">
-          Projects ({projects.length})
-        </Link>
-        <Link href="/admin/devices" className="px-3 py-1.5 text-slate-600 hover:text-slate-900 shrink-0">
-          Hardware Donations ({devices.length})
-        </Link>
-        <Link href="/admin/donations" className="px-3 py-1.5 text-slate-600 hover:text-slate-900 shrink-0">
-          Donation Intents
-        </Link>
-        <Link href="/admin/volunteers" className="px-3 py-1.5 text-slate-600 hover:text-slate-900 shrink-0">
-          Volunteers ({volunteerProfiles.length})
-        </Link>
-        <Link href="/admin/audit" className="px-3 py-1.5 text-slate-600 hover:text-slate-900 shrink-0">
-          Audit Logs
-        </Link>
-      </div>
-
-      {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-            <Building2 className="w-5 h-5" />
-          </div>
-          <div className="text-3xl font-extrabold text-slate-900">{organizations.length}</div>
-          <div className="text-xs font-bold text-slate-700">Verified Organizations</div>
-          <p className="text-[11px] text-amber-600 font-semibold">{pendingOrgs.length} awaiting review</p>
-        </div>
-
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <Layers className="w-5 h-5" />
-          </div>
-          <div className="text-3xl font-extrabold text-emerald-600">{projects.length}</div>
-          <div className="text-xs font-bold text-slate-700">Total Initiatives</div>
-          <p className="text-[11px] text-indigo-600 font-semibold">{pendingProjects.length} pending approval</p>
-        </div>
-
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-            <Laptop className="w-5 h-5" />
-          </div>
-          <div className="text-3xl font-extrabold text-amber-600">{devices.length}</div>
-          <div className="text-xs font-bold text-slate-700">Tracked Devices</div>
-          <p className="text-[11px] text-slate-500">Live #TFK hardware</p>
-        </div>
-
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-            <HeartHandshake className="w-5 h-5" />
-          </div>
-          <div className="text-3xl font-extrabold text-purple-600">₹{totalDonationValue.toLocaleString()}</div>
-          <div className="text-xs font-bold text-slate-700">Project Support Pledges</div>
-          <p className="text-[11px] text-slate-500">Issued partner receipts</p>
-        </div>
-      </div>
-
-      {/* Main Moderation Split */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        {/* Left: Verification & Moderation Queues */}
-        <div className="lg:col-span-7 space-y-8">
-          
-          {/* Org Verification Queue */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4 shadow-xs">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <FileCheck className="w-4 h-4 text-amber-600" />
-                <span>Organizations Pending Verification ({pendingOrgs.length})</span>
-              </h2>
-              <Link href="/admin/organizations" className="text-xs font-bold text-indigo-600 hover:underline">
-                View all →
-              </Link>
-            </div>
-
-            {pendingOrgs.length > 0 ? (
-              <div className="space-y-3">
-                {pendingOrgs.map((org) => (
-                  <div key={org.id} className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <h4 className="font-bold text-slate-900 text-xs">{org.name}</h4>
-                      <p className="text-[11px] text-slate-600 font-mono">{org.registrationNumber} • {org.location}</p>
-                      <span className="text-[11px] text-slate-500 mt-1 block">Contact: {org.contactPerson} ({org.email})</span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => updateOrganizationStatus(org.id, 'verified', currentUser.name)}
-                        className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition"
-                      >
-                        Approve & Verify
-                      </button>
-                      <button
-                        onClick={() => updateOrganizationStatus(org.id, 'rejected', currentUser.name)}
-                        className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-red-50 hover:text-red-700 text-slate-600 font-bold text-xs transition"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="p-6 bg-slate-50 rounded-2xl text-center text-xs text-slate-500">
-                All non-profit organization registration deeds verified!
-              </div>
-            )}
-          </div>
-
-          {/* Project Moderation Queue */}
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4 shadow-xs">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-indigo-600" />
-                <span>Projects Pending Moderation ({pendingProjects.length})</span>
-              </h2>
-              <Link href="/admin/projects" className="text-xs font-bold text-indigo-600 hover:underline">
-                View all →
-              </Link>
-            </div>
-
-            {pendingProjects.length > 0 ? (
-              <div className="space-y-3">
-                {pendingProjects.map((p) => (
-                  <div key={p.id} className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <h4 className="font-bold text-slate-900 text-xs">{p.title}</h4>
-                      <p className="text-[11px] text-slate-600">{p.organizationName} • Target: ₹{p.goalValue.toLocaleString()}</p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => updateProjectStatus(p.id, 'active', currentUser.name)}
-                        className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition"
-                      >
-                        Approve Project
-                      </button>
-                      <button
-                        onClick={() => updateProjectStatus(p.id, 'draft', currentUser.name)}
-                        className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition"
-                      >
-                        Hold
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="p-6 bg-slate-50 rounded-2xl text-center text-xs text-slate-500">
-                No initiatives currently in moderation queue.
-              </div>
-            )}
-          </div>
-
-        </div>
-
-        {/* Right: Live Audit Log Stream */}
-        <div className="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 space-y-4 shadow-xs">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+        <Link href="/admin/organizations" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-slate-500" />
-              <span>Immutable Audit Trail</span>
-            </h2>
-            <Link href="/admin/audit" className="text-xs font-bold text-indigo-600 hover:underline">
-              Full Log →
+            <Building2 className="w-5 h-5 text-indigo-600" />
+            {pendingOrgs.length > 0 && (
+              <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                {pendingOrgs.length} Pending
+              </span>
+            )}
+          </div>
+          <div className="text-2xl font-extrabold text-slate-900">{organizations.length}</div>
+          <div className="text-xs font-bold text-slate-700">Organizations</div>
+        </Link>
+
+        <Link href="/admin/projects" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
+          <div className="flex items-center justify-between">
+            <Layers className="w-5 h-5 text-emerald-600" />
+            {pendingProjects.length > 0 && (
+              <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                {pendingProjects.length} Pending
+              </span>
+            )}
+          </div>
+          <div className="text-2xl font-extrabold text-slate-900">{projects.length}</div>
+          <div className="text-xs font-bold text-slate-700">Projects</div>
+        </Link>
+
+        <Link href="/admin/devices" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
+          <Laptop className="w-5 h-5 text-purple-600" />
+          <div className="text-2xl font-extrabold text-slate-900">{devices.length}</div>
+          <div className="text-xs font-bold text-slate-700">Devices Tracked</div>
+        </Link>
+
+        <Link href="/admin/donations" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
+          <HeartHandshake className="w-5 h-5 text-amber-600" />
+          <div className="text-2xl font-extrabold text-slate-900">₹{(totalDonationValue / 1000).toFixed(1)}k</div>
+          <div className="text-xs font-bold text-slate-700">Donations Logged</div>
+        </Link>
+
+        <Link href="/admin/volunteers" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
+          <UserCheck className="w-5 h-5 text-blue-600" />
+          <div className="text-2xl font-extrabold text-slate-900">{volunteers.length}</div>
+          <div className="text-xs font-bold text-slate-700">Volunteers</div>
+        </Link>
+
+        <Link href="/admin/reports" className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:border-indigo-300 transition space-y-2">
+          <div className="flex items-center justify-between">
+            <AlertTriangle className="w-5 h-5 text-rose-600" />
+            {safeguardingReports.filter(r => r.status === 'new').length > 0 && (
+              <span className="text-[10px] font-bold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full">
+                {safeguardingReports.filter(r => r.status === 'new').length} New
+              </span>
+            )}
+          </div>
+          <div className="text-2xl font-extrabold text-slate-900">{safeguardingReports.length}</div>
+          <div className="text-xs font-bold text-slate-700">Safeguarding</div>
+        </Link>
+      </div>
+
+      {/* Pending Reviews Queue */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* NGO Verification Queue */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-base font-bold text-slate-900">NGO Verification Queue</h3>
+            <Link href="/admin/organizations" className="text-xs font-bold text-indigo-600 hover:underline">
+              View all ({organizations.length}) →
             </Link>
           </div>
 
-          <div className="space-y-3 text-xs">
-            {auditLogs.slice(0, 5).map((log) => (
-              <div key={log.id} className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold font-mono text-indigo-700 text-[11px]">{log.action}</span>
-                  <span className="text-[10px] text-slate-400">
-                    {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
+          {pendingOrgs.length > 0 ? (
+            <div className="space-y-3">
+              {pendingOrgs.map((org) => (
+                <div key={org.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center text-xs">
+                  <div>
+                    <div className="font-bold text-slate-900">{org.name}</div>
+                    <div className="text-[11px] text-slate-500">Reg: {org.registrationNumber} • {org.location}</div>
+                  </div>
+                  <Link
+                    href={`/admin/organizations`}
+                    className="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs"
+                  >
+                    Review
+                  </Link>
                 </div>
-                <p className="text-slate-700">{log.details}</p>
-                <div className="text-[10px] text-slate-400 flex items-center justify-between pt-0.5">
-                  <span>Actor: {log.actorName} ({log.actorRole})</span>
-                  <span>Target: #{log.targetId}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 text-center text-xs text-slate-500">
+              No pending organizations in verification queue.
+            </div>
+          )}
         </div>
 
+        {/* Project Moderation Queue */}
+        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-base font-bold text-slate-900">Project Approval Queue</h3>
+            <Link href="/admin/projects" className="text-xs font-bold text-indigo-600 hover:underline">
+              View all ({projects.length}) →
+            </Link>
+          </div>
+
+          {pendingProjects.length > 0 ? (
+            <div className="space-y-3">
+              {pendingProjects.map((proj) => (
+                <div key={proj.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center text-xs">
+                  <div>
+                    <div className="font-bold text-slate-900">{proj.title}</div>
+                    <div className="text-[11px] text-slate-500">{proj.organizationName} • Goal: ₹{proj.goalValue.toLocaleString()}</div>
+                  </div>
+                  <Link
+                    href={`/admin/projects`}
+                    className="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs"
+                  >
+                    Review
+                  </Link>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 text-center text-xs text-slate-500">
+              No projects waiting for administrative approval.
+            </div>
+          )}
+        </div>
       </div>
 
     </div>

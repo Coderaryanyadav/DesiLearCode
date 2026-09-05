@@ -1,71 +1,76 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createClient } from './supabase/client';
 import { UserRole, UserProfile } from './types';
-import { DEMO_USERS } from './mock-data';
 
 interface AuthContextType {
-  currentUser: UserProfile;
-  currentRole: UserRole;
-  setRole: (role: UserRole) => void;
-  login: (email: string, role: UserRole) => void;
-  logout: () => void;
+  currentUser: UserProfile | null;
+  currentRole: UserRole | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   isRole: (role: UserRole | UserRole[]) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<UserProfile>(DEMO_USERS.donor);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const supabase = createClient();
 
   useEffect(() => {
-    try {
-      const savedUser = localStorage.getItem('tfk_user_role');
-      if (savedUser && DEMO_USERS[savedUser]) {
-        setCurrentUser(DEMO_USERS[savedUser]);
+    const fetchSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          // Fetch the profile from the public.profiles table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+
+          if (profile) {
+            setCurrentUser({
+              id: profile.id,
+              name: profile.full_name,
+              email: profile.email,
+              role: profile.role,
+              organizationId: profile.organization_id,
+              avatarUrl: profile.avatar_url,
+              createdAt: profile.created_at,
+            } as UserProfile);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching auth session:", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch {
-      // ignore storage errors
-    }
-  }, []);
-
-  const setRole = (role: UserRole) => {
-    const selected = DEMO_USERS[role] || DEMO_USERS.visitor;
-    setCurrentUser(selected);
-    try {
-      localStorage.setItem('tfk_user_role', role);
-    } catch {
-      // ignore
-    }
-  };
-
-  const login = (email: string, role: UserRole) => {
-    const matched = Object.values(DEMO_USERS).find(u => u.email.toLowerCase() === email.toLowerCase()) || {
-      id: `usr_${Date.now()}`,
-      name: email.split('@')[0],
-      email,
-      role,
-      createdAt: new Date().toISOString(),
     };
-    setCurrentUser(matched);
-    try {
-      localStorage.setItem('tfk_user_role', matched.role);
-    } catch {
-      // ignore
-    }
-  };
 
-  const logout = () => {
-    setCurrentUser(DEMO_USERS.visitor);
-    try {
-      localStorage.setItem('tfk_user_role', 'visitor');
-    } catch {
-      // ignore
-    }
-  };
+    fetchSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+          fetchSession();
+        } else if (event === 'SIGNED_OUT') {
+          setCurrentUser(null);
+        }
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   const isRole = (role: UserRole | UserRole[]) => {
+    if (!currentUser) return false;
     if (Array.isArray(role)) {
       return role.includes(currentUser.role);
     }
@@ -76,11 +81,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         currentUser,
-        currentRole: currentUser.role,
-        setRole,
-        login,
-        logout,
-        isAuthenticated: currentUser.role !== 'visitor',
+        currentRole: currentUser?.role || null,
+        isAuthenticated: !!currentUser,
+        isLoading,
         isRole,
       }}
     >

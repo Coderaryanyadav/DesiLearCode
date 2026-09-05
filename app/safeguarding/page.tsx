@@ -2,29 +2,43 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { ShieldCheck, Lock, AlertTriangle, CheckCircle2, HeartHandshake, FileCheck, Send } from 'lucide-react';
+import { submitSafeguardingReport } from '@/app/actions/safeguarding';
+import { ShieldCheck, Lock, AlertTriangle, CheckCircle2, FileCheck, Send, AlertCircle } from 'lucide-react';
 
 export default function SafeguardingPage() {
-  const { submitSafeguardingReport } = useStore();
-
   const [reporterName, setReporterName] = useState('');
   const [reporterEmail, setReporterEmail] = useState('');
   const [subjectType, setSubjectType] = useState<'project' | 'organization' | 'content' | 'volunteer'>('project');
   const [subjectId, setSubjectId] = useState('');
   const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    submitSafeguardingReport({
-      reporterName,
-      reporterEmail,
-      subjectType,
-      subjectId: subjectId || 'general_inquiry',
-      description,
-    });
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    const formData = new FormData();
+    formData.append('reporterName', reporterName || 'Anonymous Reporter');
+    formData.append('reporterEmail', reporterEmail || 'reporter@example.org');
+    formData.append('subjectType', subjectType);
+    formData.append('subjectId', subjectId || 'general_concern');
+    formData.append('description', description);
+
+    try {
+      const res = await submitSafeguardingReport(formData);
+      if (res.error) {
+        setErrorMessage(res.error);
+      } else {
+        setSubmitted(true);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to submit report.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -52,136 +66,138 @@ export default function SafeguardingPage() {
           </div>
           <h3 className="font-bold text-slate-900 text-base">1. Strict Zero-PII Data Policy</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            TechForKids strictly prohibits public profiles of children. We never disclose full names, birth dates, phone numbers, private emails, medical records, government ID numbers, or exact foster shelter addresses. All outcomes are communicated via aggregated statistical cohorts (e.g. &ldquo;30 Middle School Students&rdquo;).
+            TechForKids strictly prohibits individual public profiles of children. We never disclose full names, birth dates, phone numbers, private emails, medical records, government ID numbers, or exact shelter addresses. All outcomes are communicated via aggregated statistical cohorts (e.g. &ldquo;30 Middle School Students&rdquo;).
           </p>
         </div>
 
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 space-y-3">
           <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <HeartHandshake className="w-5 h-5" />
+            <FileCheck className="w-5 h-5" />
           </div>
-          <h3 className="font-bold text-slate-900 text-base">2. Consent-Driven Responsible Storytelling</h3>
+          <h3 className="font-bold text-slate-900 text-base">2. Verified Consent & Media Standards</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Photographs or field stories must have explicit verified institutional guardian consent. We reject exploitative, pity-driven, or stereotyping portrayals of children, focusing exclusively on their agency, technical curiosity, and educational growth.
+            All imagery depicting hands-on classroom activities requires written institutional guardian consent. We emphasize group learning interactions, hands-on hardware, coding screens, and robotics kits rather than focus on individual faces.
           </p>
         </div>
 
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 space-y-3">
           <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-            <FileCheck className="w-5 h-5" />
+            <ShieldCheck className="w-5 h-5" />
           </div>
-          <h3 className="font-bold text-slate-900 text-base">3. Volunteer & Mentor Code of Conduct</h3>
+          <h3 className="font-bold text-slate-900 text-base">3. Supervised Mentorship Protocols</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            All mentors undergo identity screening, agree to supervised group-session guidelines, and are prohibited from soliciting personal contact channels or private 1-on-1 unmonitored digital conversations with minor learners.
+            Volunteer mentors never engage in 1-on-1 unmonitored communication with minors. All remote and in-person sessions occur in structured group settings with verified NGO staff facilitators present.
           </p>
         </div>
 
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 space-y-3">
-          <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
+          <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5" />
           </div>
-          <h3 className="font-bold text-slate-900 text-base">4. Immediate Incident Response</h3>
+          <h3 className="font-bold text-slate-900 text-base">4. Direct Whistleblower & Incident Escalation</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            Any concern or violation flagged via our reporting mechanisms triggers immediate freeze of associated initiatives and investigation by our platform administrator council.
+            Anyone who observes a privacy violation, suspicious content, or unauthorized direct communication can submit a confidential incident report below for immediate review by our safeguarding team.
           </p>
         </div>
       </div>
 
-      {/* Interactive Report Form */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 space-y-6 shadow-sm">
+      {/* Incident Intake Form */}
+      <div className="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-sm space-y-6">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-50 px-3 py-1 rounded-md">
-            Confidential Reporting Channel
-          </span>
-          <h2 className="text-xl font-bold text-slate-900 mt-2">Report a Safeguarding or Privacy Concern</h2>
-          <p className="text-xs text-slate-500 mt-1">
-            If you notice any sensitive information, unauthorized photographs, or conduct concerns, please submit a report below.
+          <span className="text-xs font-bold uppercase tracking-wider text-rose-600">Confidential Escalation</span>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">Report a Safeguarding or Privacy Concern</h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Reports submitted here are routed directly and confidentially to our platform safeguarding officer.
           </p>
         </div>
 
+        {errorMessage && (
+          <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         {submitted ? (
-          <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-3 animate-in zoom-in-95">
-            <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center mx-auto">
+          <div className="p-6 bg-emerald-50 rounded-2xl border border-emerald-200 text-emerald-900 space-y-3 text-center">
+            <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-slate-900 text-base">Safeguarding Report Filed</h4>
-            <p className="text-xs text-slate-600 max-w-md mx-auto">
-              Thank you for keeping children safe. Your report has been logged in our secure administrative audit queue and assigned for immediate review.
+            <h3 className="text-base font-bold">Report Received in Confidential Queue</h3>
+            <p className="text-xs text-emerald-800 max-w-md mx-auto">
+              Our child protection officers review all submissions promptly. For immediate emergencies, please contact local emergency authorities.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Your Name</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Your Name (Optional)</label>
                 <input
                   type="text"
-                  required
                   value={reporterName}
                   onChange={(e) => setReporterName(e.target.value)}
-                  placeholder="e.g. Concerned Visitor"
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-red-500"
+                  placeholder="Anonymous or your name"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Your Email</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Email for Follow-up (Optional)</label>
                 <input
                   type="email"
-                  required
                   value={reporterEmail}
                   onChange={(e) => setReporterEmail(e.target.value)}
-                  placeholder="e.g. reporter@example.com"
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-red-500"
+                  placeholder="name@example.com"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Subject Type</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Subject Area</label>
                 <select
                   value={subjectType}
-                  onChange={(e) => setSubjectType(e.target.value as any)}
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-red-500 bg-white"
+                  onChange={(e: any) => setSubjectType(e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 >
-                  <option value="project">Project Initiative</option>
+                  <option value="project">Project Content / Update</option>
                   <option value="organization">Partner Organization</option>
-                  <option value="content">Published Photo or Text Content</option>
-                  <option value="volunteer">Volunteer Conduct</option>
+                  <option value="volunteer">Volunteer Mentorship Interaction</option>
+                  <option value="content">Photo / PII Exposure</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Subject Identifier / URL</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Project / Entity ID (If known)</label>
                 <input
                   type="text"
                   value={subjectId}
                   onChange={(e) => setSubjectId(e.target.value)}
-                  placeholder="e.g. Community Computer Lab Delhi"
-                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-red-500"
+                  placeholder="e.g. Pune Coding Lab"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Description of Concern *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Incident or Concern Details</label>
               <textarea
                 rows={4}
                 required
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Please explain the safety, privacy, or ethical concern with as much detail as possible..."
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-red-500"
+                placeholder="Please provide specific details regarding what was observed, URL, or time of interaction..."
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500"
               />
             </div>
 
             <button
               type="submit"
-              className="px-6 py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition shadow-md shadow-red-600/20 flex items-center gap-2"
+              disabled={isSubmitting}
+              className="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition shadow-md shadow-rose-600/20 flex items-center gap-2 disabled:opacity-60"
             >
-              <Send className="w-3.5 h-3.5" />
-              <span>Submit Confidential Report</span>
+              <Send className="w-4 h-4" />
+              <span>{isSubmitting ? 'Submitting...' : 'Submit Confidential Report'}</span>
             </button>
           </form>
         )}

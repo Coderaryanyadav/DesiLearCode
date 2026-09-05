@@ -1,29 +1,21 @@
-'use client';
-
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { useAuth } from '@/lib/auth-context';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getVolunteerProfileForUser } from '@/lib/db/volunteers';
 import { UserCheck, Clock, Award, Users, Plus, CheckCircle2, ArrowLeft, Code } from 'lucide-react';
 
-export default function DashboardVolunteeringPage() {
-  const { currentUser } = useAuth();
-  const { volunteerProfiles, logVolunteerHours, volunteerOpportunities } = useStore();
+export const metadata = {
+  title: 'Volunteer Mentorship Tracker — TechForKids',
+};
 
-  const profile = volunteerProfiles.find(v => v.userId === currentUser.id || v.email === currentUser.email) || volunteerProfiles[0];
+export default async function DashboardVolunteeringPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const [hoursToAdd, setHoursToAdd] = useState(2);
-  const [sessionNote, setSessionNote] = useState('Conducted 90-min Scratch loops & animation session with 14 students.');
-  const [loggedSuccess, setLoggedSuccess] = useState(false);
+  if (!user) redirect('/login');
 
-  const handleLogHours = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (profile) {
-      logVolunteerHours(profile.id, hoursToAdd, sessionNote);
-      setLoggedSuccess(true);
-      setTimeout(() => setLoggedSuccess(false), 3000);
-    }
-  };
+  const profile = await getVolunteerProfileForUser(user.id);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -55,121 +47,77 @@ export default function DashboardVolunteeringPage() {
         </Link>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-            <Clock className="w-5 h-5" />
+      {profile ? (
+        <>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2 shadow-sm">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <Clock className="w-5 h-5" />
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">{profile.hoursVolunteered} hrs</div>
+              <div className="text-xs font-bold text-slate-700">Verified Service Hours</div>
+              <p className="text-[11px] text-slate-500">Formally audited by NGO coordinator</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2 shadow-sm">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Award className="w-5 h-5" />
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">{profile.workshopsCompleted}</div>
+              <div className="text-xs font-bold text-slate-700">Workshops Completed</div>
+              <p className="text-[11px] text-slate-500">Coding & STEM tracks</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2 shadow-sm">
+              <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">{profile.studentsReached}</div>
+              <div className="text-xs font-bold text-slate-700">Students Guided</div>
+              <p className="text-[11px] text-slate-500">Aggregate classroom cohorts</p>
+            </div>
           </div>
-          <div className="text-3xl font-extrabold text-slate-900">{profile?.hoursVolunteered || 0} hrs</div>
-          <div className="text-xs font-bold text-slate-700">Verified Teaching Hours</div>
-          <p className="text-[11px] text-slate-500">Logged with partner coordinators</p>
-        </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <Award className="w-5 h-5" />
-          </div>
-          <div className="text-3xl font-extrabold text-emerald-600">{profile?.workshopsCompleted || 0}</div>
-          <div className="text-xs font-bold text-slate-700">Workshops Completed</div>
-          <p className="text-[11px] text-slate-500">Python, Scratch & Cyber Safety</p>
-        </div>
-
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
-            <Users className="w-5 h-5" />
-          </div>
-          <div className="text-3xl font-extrabold text-purple-600">{profile?.studentsReached || 0}</div>
-          <div className="text-xs font-bold text-slate-700">Students Reached</div>
-          <p className="text-[11px] text-slate-500">Aggregated learner impact</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        {/* Left: Applications list & Profile */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4">
-            <h2 className="text-base font-bold text-slate-900">Your Volunteer Applications</h2>
-
-            <div className="space-y-3">
-              {profile?.applications?.map((app) => (
-                <div key={app.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-xs">{app.projectTitle}</h4>
-                    <p className="text-[11px] text-slate-500">{app.organizationName} • Applied {new Date(app.appliedAt).toLocaleDateString()}</p>
+          {/* Applications list */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <h3 className="text-base font-bold text-slate-900">Your Mentorship Applications</h3>
+            {profile.applications.length > 0 ? (
+              <div className="space-y-3">
+                {profile.applications.map((app) => (
+                  <div key={app.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center text-xs">
+                    <div>
+                      <div className="font-bold text-slate-900">{app.projectTitle}</div>
+                      <div className="text-[11px] text-slate-500">{app.organizationName}</div>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 font-semibold uppercase text-[10px]">
+                      {app.status}
+                    </span>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    Active Mentor
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-6 text-center text-xs text-slate-500">
+                You haven&apos;t applied for any specific project opportunities yet. <Link href="/volunteer" className="text-indigo-600 font-bold hover:underline">Explore open roles</Link>.
+              </div>
+            )}
           </div>
-
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4">
-            <h2 className="text-base font-bold text-slate-900">Your Verified Skill Profile</h2>
-            <div className="flex flex-wrap gap-2">
-              {profile?.skills?.map((skill, idx) => (
-                <span key={idx} className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-xs font-bold">
-                  {skill}
-                </span>
-              ))}
-            </div>
-            <p className="text-xs text-slate-600 leading-relaxed pt-2">
-              <strong>Bio:</strong> {profile?.bio}
-            </p>
-          </div>
+        </>
+      ) : (
+        <div className="p-12 bg-white rounded-3xl border border-slate-200 text-center space-y-4 shadow-sm">
+          <Code className="w-10 h-10 text-slate-400 mx-auto" />
+          <h3 className="text-base font-bold text-slate-900">You haven&apos;t registered as a mentor yet</h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            Submit your volunteer profile with your subject skills and preferred languages to start mentoring children.
+          </p>
+          <Link
+            href="/volunteer/apply"
+            className="inline-block px-6 py-3 rounded-2xl bg-indigo-600 text-white font-bold text-xs shadow-md"
+          >
+            Submit Volunteer Application
+          </Link>
         </div>
-
-        {/* Right: Log Service Session Form */}
-        <div className="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 space-y-4 shadow-xs">
-          <h2 className="text-base font-bold text-slate-900">Log a Mentorship Workshop</h2>
-          <p className="text-xs text-slate-500">Record session hours for verification and impact tallying.</p>
-
-          {loggedSuccess && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 font-medium flex items-center gap-2 animate-in fade-in">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>Workshop session hours successfully logged!</span>
-            </div>
-          )}
-
-          <form onSubmit={handleLogHours} className="space-y-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Hours Conducted</label>
-              <input
-                type="number"
-                min="1"
-                max="8"
-                required
-                value={hoursToAdd}
-                onChange={(e) => setHoursToAdd(parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Session Summary & Module Taught</label>
-              <textarea
-                rows={3}
-                required
-                value={sessionNote}
-                onChange={(e) => setSessionNote(e.target.value)}
-                placeholder="e.g. Completed Python functions module with 15 participants..."
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition"
-            >
-              Log Verified Hours
-            </button>
-          </form>
-        </div>
-
-      </div>
+      )}
 
     </div>
   );

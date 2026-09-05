@@ -1,25 +1,16 @@
-'use client';
-
-import React, { useState } from 'react';
-import { useStore } from '@/lib/store';
-import { OrganizationCard } from '@/components/OrganizationCard';
+import React from 'react';
+import { getVerifiedOrganizations } from '@/lib/db/organizations';
+import { OrganizationsList } from '@/components/OrganizationsList';
 import { SafeguardingBanner } from '@/components/SafeguardingBanner';
-import { Building2, ShieldCheck, Search, CheckCircle2, FileCheck } from 'lucide-react';
+import { FileCheck, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
-export default function OrganizationsPage() {
-  const { organizations } = useStore();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'All' | 'verified' | 'under_review'>('All');
+export const metadata = {
+  title: 'Verified Non-Profit Partners — TechForKids',
+  description: 'Explore verified NGOs and child-care institutions providing technology access and digital education.',
+};
 
-  const filtered = organizations.filter((org) => {
-    const matchesSearch = 
-      org.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      org.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      org.tagline.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesStatus = filterStatus === 'All' || org.verificationStatus === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
+export default async function OrganizationsPage() {
+  const organizations = await getVerifiedOrganizations();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
@@ -33,7 +24,7 @@ export default function OrganizationsPage() {
           Verified Partner Organizations & NGOs
         </h1>
         <p className="text-sm text-slate-600 max-w-3xl leading-relaxed">
-          Every organization on TechForKids undergoes statutory validation (Registration Deeds, 12A/80G status, physical infrastructure audit, and Child Safeguarding commitment) before publishing initiatives.
+          Every organization on TechForKids undergoes statutory validation (Registration Deeds, statutory compliance, physical infrastructure audit, and Child Safeguarding commitment) before publishing initiatives.
         </p>
       </div>
 
@@ -42,8 +33,8 @@ export default function OrganizationsPage() {
         <div className="flex items-start gap-3">
           <FileCheck className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
           <div className="text-xs space-y-1">
-            <strong className="text-white block font-semibold text-sm">1. Legal & Tax Audit</strong>
-            <span className="text-slate-400">Trust registration deed, 80G tax-exemption verification, and audited financials.</span>
+            <strong className="text-white block font-semibold text-sm">1. Legal & Non-Profit Audit</strong>
+            <span className="text-slate-400">Trust registration deeds, compliance certificates, and audited activity reports.</span>
           </div>
         </div>
         <div className="flex items-start gap-3">
@@ -57,61 +48,18 @@ export default function OrganizationsPage() {
           <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
           <div className="text-xs space-y-1">
             <strong className="text-white block font-semibold text-sm">3. Physical Center Verification</strong>
-            <span className="text-slate-400">Supervised classrooms with surge protection and mentor attendance tracking.</span>
+            <span className="text-slate-400">Supervised classrooms with electrical surge protection and mentor attendance tracking.</span>
           </div>
         </div>
       </div>
 
-      {/* Search & Filter */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search organizations by name or region..."
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+      {/* Organizations interactive listing */}
+      <OrganizationsList initialOrganizations={organizations} />
 
-        <div className="flex items-center gap-2 w-full sm:w-auto text-xs">
-          <button
-            onClick={() => setFilterStatus('All')}
-            className={`px-3 py-1.5 rounded-full font-medium transition ${
-              filterStatus === 'All' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            All ({organizations.length})
-          </button>
-          <button
-            onClick={() => setFilterStatus('verified')}
-            className={`px-3 py-1.5 rounded-full font-medium transition ${
-              filterStatus === 'verified' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            Verified Only
-          </button>
-          <button
-            onClick={() => setFilterStatus('under_review')}
-            className={`px-3 py-1.5 rounded-full font-medium transition ${
-              filterStatus === 'under_review' ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            Under Review
-          </button>
-        </div>
+      {/* Safeguarding guarantee */}
+      <div className="pt-4">
+        <SafeguardingBanner />
       </div>
-
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((org) => (
-          <OrganizationCard key={org.id} org={org} />
-        ))}
-      </div>
-
-      {/* Safeguarding notice */}
-      <SafeguardingBanner />
 
     </div>
   );

@@ -3,51 +3,56 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useStore } from '@/lib/store';
-import { useAuth } from '@/lib/auth-context';
-import { ArrowLeft, CheckCircle2, ShieldCheck, BarChart3, Send } from 'lucide-react';
+import { publishImpactReport } from '@/app/actions/impact';
+import { ArrowLeft, CheckCircle2, ShieldCheck, BarChart3, AlertCircle } from 'lucide-react';
 
 export default function NgoSubmitImpactPage() {
   const router = useRouter();
-  const { currentUser } = useAuth();
-  const { projects, publishImpactReport, organizations } = useStore();
 
-  const org = organizations.find(o => o.id === currentUser.organizationId) || organizations[0];
-  const orgProjects = projects.filter(p => p.organizationId === org.id);
-
-  const [selectedProjectId, setSelectedProjectId] = useState(orgProjects[0]?.id || projects[0]?.id);
+  const [projectId, setProjectId] = useState('');
   const [period, setPeriod] = useState('Q3 2026');
   const [headline, setHeadline] = useState('First 15 Students Complete Python Game Modules');
   const [summary, setSummary] = useState('Equipped 4 refurbished stations and conducted 8 weekend mentor workshops.');
-  const [beforeState, setBeforeState] = useState('0 working computers; theoretical rote learning.');
+  const [beforeState, setBeforeState] = useState('0 working computers; theoretical learning only.');
   const [afterState, setAfterState] = useState('4 operational Linux terminals; all students built text-based interactive games.');
   const [computersProvided, setComputersProvided] = useState(4);
   const [studentsTrained, setStudentsTrained] = useState(22);
   const [volunteerHours, setVolunteerHours] = useState(16);
   const [workshopsConducted, setWorkshopsConducted] = useState(6);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const proj = projects.find(p => p.id === selectedProjectId) || projects[0];
+    setIsSubmitting(true);
+    setErrorMessage(null);
 
-    publishImpactReport({
-      projectId: proj.id,
-      projectTitle: proj.title,
-      organizationName: org.name,
-      period,
-      headline,
-      summary,
-      beforeState,
-      afterState,
-      computersProvided,
-      studentsTrained,
-      volunteerHours,
-      workshopsConducted,
-    });
+    const formData = new FormData();
+    formData.append('projectId', projectId || 'b0000000-0000-0000-0000-000000000001');
+    formData.append('period', period);
+    formData.append('headline', headline);
+    formData.append('summary', summary);
+    formData.append('beforeState', beforeState);
+    formData.append('afterState', afterState);
+    formData.append('computersProvided', computersProvided.toString());
+    formData.append('studentsTrained', studentsTrained.toString());
+    formData.append('volunteerHours', volunteerHours.toString());
+    formData.append('workshopsConducted', workshopsConducted.toString());
 
-    setSubmitted(true);
-    setTimeout(() => router.push('/impact'), 2000);
+    try {
+      const res = await publishImpactReport(formData);
+      if (res.error) {
+        setErrorMessage(res.error);
+      } else {
+        setSubmitted(true);
+        setTimeout(() => router.push('/impact'), 2000);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Failed to submit impact report.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -61,155 +66,187 @@ export default function NgoSubmitImpactPage() {
 
       <div>
         <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-          Outcome Reporting
+          Periodic Accountability
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-          Submit Verifiable Impact Report
+          Publish Verifiable Impact Report
         </h1>
-        <p className="text-xs sm:text-sm text-slate-600">
-          Document before-and-after transformations and aggregate learner attendance tallies.
+        <p className="text-xs text-slate-500">
+          Document measurable learning outcomes, student progress milestones, and equipment utilization.
         </p>
       </div>
 
+      {errorMessage && (
+        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
       {submitted ? (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-3xl p-8 text-center space-y-3">
-          <div className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
-            <CheckCircle2 className="w-8 h-8" />
+        <div className="bg-white rounded-3xl p-10 border border-slate-200 text-center space-y-4 shadow-sm">
+          <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-extrabold text-slate-900">Impact Report Published Successfully!</h3>
-          <p className="text-xs text-slate-600">Redirecting to the Public Impact Dashboard...</p>
+          <h2 className="text-xl font-bold text-slate-900">Impact Report Submitted for Verification</h2>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            Once reviewed by platform admins, this report will appear on the public Transparency Dashboard.
+          </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Select Initiative</label>
-              <select
-                value={selectedProjectId}
-                onChange={(e) => setSelectedProjectId(e.target.value)}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 bg-white font-semibold"
-              >
-                {orgProjects.map(p => (
-                  <option key={p.id} value={p.id}>{p.title}</option>
-                ))}
-              </select>
+        <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-indigo-600" />
+              1. Report Period & Headline
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Quarter / Period
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  placeholder="e.g. Q3 2026"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Headline Summary
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={headline}
+                  onChange={(e) => setHeadline(e.target.value)}
+                  placeholder="e.g. 20 Students Completed Web Basics Track"
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Audit Period</label>
-              <input
-                type="text"
-                required
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-                placeholder="e.g. Q3 2026"
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Headline Summary *</label>
-            <input
-              type="text"
-              required
-              value={headline}
-              onChange={(e) => setHeadline(e.target.value)}
-              placeholder="e.g. 15 Students Build First Interactive Python Barrier Alarms"
-              className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 font-bold"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Executive Summary *</label>
-            <textarea
-              rows={3}
-              required
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-              placeholder="Provide context on curriculum taught, attendance, and skills gained..."
-              className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
-            <div>
-              <label className="block text-xs font-bold text-red-700 mb-1">Before Assistance Baseline *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Narrative Summary
+              </label>
               <textarea
-                rows={2}
+                rows={3}
                 required
-                value={beforeState}
-                onChange={(e) => setBeforeState(e.target.value)}
-                placeholder="e.g. 0 computers; students shared 1 smartphone intermittently..."
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-red-200 focus:ring-2 focus:ring-red-500 bg-red-50/30"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-emerald-700 mb-1">After Assistance Outcome *</label>
-              <textarea
-                rows={2}
-                required
-                value={afterState}
-                onChange={(e) => setAfterState(e.target.value)}
-                placeholder="e.g. 5 laptops active in supervised classroom station..."
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-500 bg-emerald-50/30"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                placeholder="Describe workshop activities and student engagement..."
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-100">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Computers Installed</label>
-              <input
-                type="number"
-                min="0"
-                value={computersProvided}
-                onChange={(e) => setComputersProvided(parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
+          <div className="space-y-4 pt-4 border-t border-slate-100">
+            <h3 className="text-sm font-bold text-slate-900">
+              2. Before vs. After Transformation
+            </h3>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Students Trained</label>
-              <input
-                type="number"
-                min="1"
-                value={studentsTrained}
-                onChange={(e) => setStudentsTrained(parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Before Baseline
+                </label>
+                <textarea
+                  rows={2}
+                  required
+                  value={beforeState}
+                  onChange={(e) => setBeforeState(e.target.value)}
+                  placeholder="Baseline state before lab equipment was deployed..."
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Volunteer Hours</label>
-              <input
-                type="number"
-                min="0"
-                value={volunteerHours}
-                onChange={(e) => setVolunteerHours(parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Current / After Outcomes
+                </label>
+                <textarea
+                  rows={2}
+                  required
+                  value={afterState}
+                  onChange={(e) => setAfterState(e.target.value)}
+                  placeholder="Measurable skills and projects built by students..."
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Workshops Held</label>
-              <input
-                type="number"
-                min="0"
-                value={workshopsConducted}
-                onChange={(e) => setWorkshopsConducted(parseInt(e.target.value, 10))}
-                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500"
-              />
+          <div className="space-y-4 pt-4 border-t border-slate-100">
+            <h3 className="text-sm font-bold text-slate-900">
+              3. Measurable Metrics (Aggregated)
+            </h3>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Computers Active</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={computersProvided}
+                  onChange={(e) => setComputersProvided(parseInt(e.target.value, 10))}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Students Reached</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={studentsTrained}
+                  onChange={(e) => setStudentsTrained(parseInt(e.target.value, 10))}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Volunteer Hours</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={volunteerHours}
+                  onChange={(e) => setVolunteerHours(parseInt(e.target.value, 10))}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Workshops Held</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={workshopsConducted}
+                  onChange={(e) => setWorkshopsConducted(parseInt(e.target.value, 10))}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
             </div>
+          </div>
+
+          <div className="p-4 bg-indigo-50/70 rounded-2xl border border-indigo-100 text-[11px] text-indigo-900 flex items-start gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <span>
+              <strong>Safeguarding Guard:</strong> Never enter names or identifiable photos of children. Impact reports are reviewed by platform admins before publication.
+            </span>
           </div>
 
           <button
             type="submit"
-            className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition shadow-md shadow-emerald-600/20"
+            disabled={isSubmitting}
+            className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/25 disabled:opacity-60"
           >
-            Publish Verified Impact Report
+            {isSubmitting ? 'Submitting Report...' : 'Publish Impact Report'}
           </button>
         </form>
       )}

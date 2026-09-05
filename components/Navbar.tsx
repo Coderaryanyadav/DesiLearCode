@@ -7,23 +7,25 @@ import {
   Laptop, 
   Menu, 
   X, 
-  HeartHandshake, 
   Layers, 
   Sparkles, 
   Building2, 
   UserCheck, 
   BarChart3, 
-  ShieldCheck, 
   Info,
-  ChevronRight
+  ChevronRight,
+  LogOut,
+  User,
+  Shield
 } from 'lucide-react';
-import { RoleSwitcher } from './RoleSwitcher';
 import { useAuth } from '@/lib/auth-context';
+import { logout } from '@/app/actions/auth';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { currentRole, isAuthenticated } = useAuth();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { currentRole, currentUser, isAuthenticated, isLoading } = useAuth();
 
   const navLinks = [
     { href: '/projects', label: 'Projects', icon: Layers },
@@ -38,6 +40,7 @@ export const Navbar: React.FC = () => {
   const getDashboardHref = () => {
     if (currentRole === 'admin') return '/admin';
     if (currentRole === 'ngo') return '/ngo/dashboard';
+    if (currentRole === 'volunteer') return '/dashboard/volunteering';
     return '/dashboard';
   };
 
@@ -93,9 +96,6 @@ export const Navbar: React.FC = () => {
 
           {/* Right Action Bar */}
           <div className="flex items-center gap-2.5">
-            {/* Persona Switcher for easy demo inspection */}
-            <RoleSwitcher />
-
             {/* Quick Action button */}
             <Link
               href="/donate-device"
@@ -105,23 +105,92 @@ export const Navbar: React.FC = () => {
               <span>Donate Device</span>
             </Link>
 
-            {/* User Dashboard / Login */}
-            {isAuthenticated ? (
-              <Link
-                href={getDashboardHref()}
-                className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 transition"
-              >
-                <span>Dashboard</span>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                className="hidden md:inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-indigo-600 transition"
-              >
-                Sign In
-              </Link>
-            )}
+            {/* Authenticated User Menu or Sign In */}
+            {!isLoading && isAuthenticated && currentUser ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition text-xs font-medium text-slate-700"
+                >
+                  <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[11px]">
+                    {currentUser.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="hidden md:inline font-semibold">{currentUser.name}</span>
+                  <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800">
+                    {currentUser.role}
+                  </span>
+                </button>
+
+                {userMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50 animate-in fade-in zoom-in-95 duration-100 text-xs">
+                      <div className="px-3 py-2 border-b border-slate-100">
+                        <div className="font-bold text-slate-900">{currentUser.name}</div>
+                        <div className="text-[11px] text-slate-500 truncate">{currentUser.email}</div>
+                      </div>
+                      <div className="py-1 space-y-0.5">
+                        <Link
+                          href={getDashboardHref()}
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-50 text-slate-700 font-medium"
+                        >
+                          <span className="flex items-center gap-2">
+                            {currentUser.role === 'admin' ? <Shield className="w-3.5 h-3.5 text-indigo-600" /> : <User className="w-3.5 h-3.5 text-indigo-600" />}
+                            Role Portal
+                          </span>
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                        </Link>
+                        {currentUser.role === 'donor' && (
+                          <Link
+                            href="/dashboard/donations"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center px-3 py-2 rounded-xl hover:bg-slate-50 text-slate-700"
+                          >
+                            My Donations & Receipts
+                          </Link>
+                        )}
+                        {currentUser.role === 'donor' && (
+                          <Link
+                            href="/dashboard/devices"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center px-3 py-2 rounded-xl hover:bg-slate-50 text-slate-700"
+                          >
+                            My Donated Devices
+                          </Link>
+                        )}
+                      </div>
+                      <div className="pt-1 border-t border-slate-100">
+                        <form action={logout}>
+                          <button
+                            type="submit"
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 font-medium transition"
+                          >
+                            <LogOut className="w-3.5 h-3.5" />
+                            Sign Out
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : !isLoading ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/login"
+                  className="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-indigo-600 transition"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="hidden md:inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm"
+                >
+                  Register
+                </Link>
+              </div>
+            ) : null}
 
             {/* Mobile menu button */}
             <button
@@ -182,13 +251,23 @@ export const Navbar: React.FC = () => {
             >
               Volunteer as Mentor
             </Link>
-            <Link
-              href={getDashboardHref()}
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2 text-center text-xs font-semibold text-slate-600 hover:text-slate-900"
-            >
-              Go to Role Dashboard ({currentRole})
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href={getDashboardHref()}
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-2 text-center text-xs font-semibold text-slate-600 hover:text-slate-900"
+              >
+                Go to Portal ({currentRole})
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-2 text-center text-xs font-semibold text-indigo-600"
+              >
+                Sign In / Register
+              </Link>
+            )}
           </div>
         </div>
       )}

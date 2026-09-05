@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { Project, NeedItem } from '@/lib/types';
-import { useStore } from '@/lib/store';
 import { useAuth } from '@/lib/auth-context';
-import { X, HeartHandshake, ShieldCheck, CheckCircle2, Lock, FileText } from 'lucide-react';
+import { submitDonationIntent } from '@/app/actions/donations';
+import { X, HeartHandshake, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface DonationModalProps {
   project?: Project | null;
@@ -19,21 +19,20 @@ export const DonationModal: React.FC<DonationModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { submitDonationIntent, projects } = useStore();
   const { currentUser } = useAuth();
-
-  const activeProject = project || (need ? projects.find(p => p.id === need.projectId) : projects[0]);
 
   const [amount, setAmount] = useState<number>(1000);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [donorName, setDonorName] = useState(currentUser.name || '');
-  const [donorEmail, setDonorEmail] = useState(currentUser.email || '');
+  const [donorName, setDonorName] = useState(currentUser?.name || '');
+  const [donorEmail, setDonorEmail] = useState(currentUser?.email || '');
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [generatedReceipt, setGeneratedReceipt] = useState<string>('');
 
-  if (!isOpen || !activeProject) return null;
+  if (!isOpen || !project) return null;
 
   const presetAmounts = [500, 1000, 2500, 5000, 10000];
 
@@ -51,26 +50,43 @@ export const DonationModal: React.FC<DonationModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (amount <= 0) return;
+    if (amount < 100) {
+      setErrorMessage('Minimum contribution is ₹100.');
+      return;
+    }
 
-    const receipt = submitDonationIntent({
-      donorName: isAnonymous ? 'Anonymous Supporter' : (donorName || 'Generous Donor'),
-      donorEmail: donorEmail || 'donor@example.com',
-      isAnonymous,
-      projectId: activeProject.id,
-      amount,
-      allocatedNeedType: need?.type || 'project_support',
-      message,
-    });
+    setIsSubmitting(true);
+    setErrorMessage(null);
 
-    setGeneratedReceipt(receipt);
-    setIsSubmitted(true);
+    const formData = new FormData();
+    formData.append('donorName', isAnonymous ? 'Anonymous Supporter' : (donorName || 'Generous Donor'));
+    formData.append('donorEmail', donorEmail || 'donor@example.com');
+    formData.append('isAnonymous', isAnonymous ? 'true' : 'false');
+    formData.append('projectId', project.id);
+    formData.append('amount', amount.toString());
+    if (need?.type) formData.append('allocatedNeedType', need.type);
+    if (message) formData.append('message', message);
+
+    try {
+      const res = await submitDonationIntent(formData);
+      if (res.error) {
+        setErrorMessage(res.error);
+      } else if (res.receiptNumber) {
+        setGeneratedReceipt(res.receiptNumber);
+        setIsSubmitted(true);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An unexpected error occurred.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAndClose = () => {
     setIsSubmitted(false);
+    setErrorMessage(null);
     onClose();
   };
 
@@ -94,28 +110,28 @@ export const DonationModal: React.FC<DonationModalProps> = ({
 
             <div>
               <span className="text-xs font-mono font-bold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200">
-                Receipt #{generatedReceipt}
+                Pledge #{generatedReceipt}
               </span>
               <h3 className="text-xl font-extrabold text-slate-900 mt-2">
                 Thank You For Your Support!
               </h3>
               <p className="text-xs text-slate-600 mt-1 max-w-sm mx-auto">
-                Your support pledge of <strong className="text-slate-900">₹{amount.toLocaleString()}</strong> for <strong>{activeProject.title}</strong> has been confirmed.
+                Your support pledge of <strong className="text-slate-900">₹{amount.toLocaleString()}</strong> for <strong>{project.title}</strong> has been recorded in the platform ledger.
               </p>
             </div>
 
             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left text-xs space-y-2 text-slate-600">
               <div className="flex justify-between">
                 <span className="text-slate-400">Partner Organization:</span>
-                <span className="font-semibold text-slate-900">{activeProject.organizationName}</span>
+                <span className="font-semibold text-slate-900">{project.organizationName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Beneficiary Target:</span>
-                <span className="font-semibold text-slate-900">{activeProject.targetStudents} Students</span>
+                <span className="font-semibold text-slate-900">{project.targetStudents} Students</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Tax Exemption:</span>
-                <span className="text-emerald-700 font-semibold">80G Eligible Receipt Generated</span>
+                <span className="text-slate-400">Allocation Status:</span>
+                <span className="text-emerald-700 font-semibold">Allocated to Project Hardware & Need Fund</span>
               </div>
             </div>
 
@@ -124,7 +140,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 onClick={resetAndClose}
                 className="w-full py-3 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition"
               >
-                Close & View Updates
+                Close & View Project
               </button>
             </div>
           </div>
@@ -137,10 +153,10 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <span>Project-Based Support</span>
               </div>
               <h3 className="text-lg font-bold text-slate-900">
-                Support {activeProject.title}
+                Support {project.title}
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Managed by {activeProject.organizationName}
+                Managed by {project.organizationName}
               </p>
             </div>
 
@@ -148,6 +164,13 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               <div className="p-3 bg-indigo-50/70 rounded-xl border border-indigo-100 text-xs text-indigo-900 flex items-center justify-between">
                 <span>Allocating towards need: <strong>{need.title}</strong></span>
                 <span className="font-semibold">{need.quantityFulfilled}/{need.quantityRequired} fulfilled</span>
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{errorMessage}</span>
               </div>
             )}
 
@@ -177,7 +200,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <div className="mt-2.5">
                   <input
                     type="number"
-                    placeholder="Or enter custom amount (e.g. 7500)"
+                    placeholder="Or enter custom amount (min ₹100)"
                     value={customAmount}
                     onChange={handleCustomChange}
                     min="100"
@@ -251,16 +274,17 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-[11px] text-slate-500 flex items-start gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 <span>
-                  <strong>Transparency Guarantee:</strong> Support is allocated directly to verified project milestones. No raw card or banking credentials stored.
+                  <strong>Transparent Direct Pledge:</strong> Pledges directly update project funding status in PostgreSQL. Gateway payment processing connects via secure sandbox/provider webhook.
                 </span>
               </div>
 
               {/* Submit CTA */}
               <button
                 type="submit"
-                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-md shadow-indigo-600/20"
+                disabled={isSubmitting}
+                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition shadow-md shadow-indigo-600/20 disabled:opacity-60"
               >
-                Pledge ₹{amount.toLocaleString()} Support
+                {isSubmitting ? 'Recording Pledge...' : `Pledge ₹${amount.toLocaleString()} Support`}
               </button>
             </form>
           </div>

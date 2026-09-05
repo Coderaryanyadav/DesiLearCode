@@ -1,15 +1,13 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useStore } from '@/lib/store';
-import { useAuth } from '@/lib/auth-context';
-import { DeviceTimeline } from '@/components/DeviceTimeline';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getDonationsForDonor } from '@/lib/db/donations';
+import { getDevicesForDonor } from '@/lib/db/devices';
 import { 
   HeartHandshake, 
   Laptop, 
   UserCheck, 
-  FileText, 
   ArrowRight, 
   CheckCircle2, 
   Clock, 
@@ -17,14 +15,30 @@ import {
   Building2
 } from 'lucide-react';
 
-export default function UserDashboardPage() {
-  const { currentUser } = useAuth();
-  const { donations, devices, projects } = useStore();
+export const metadata = {
+  title: 'Supporter Dashboard — TechForKids',
+};
 
-  const userDonations = donations.filter(d => d.donorEmail.toLowerCase() === currentUser.email.toLowerCase() || currentUser.role === 'donor');
-  const userDevices = devices.filter(d => d.donorEmail.toLowerCase() === currentUser.email.toLowerCase() || currentUser.role === 'donor');
+export default async function UserDashboardPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const totalPledged = userDonations.reduce((acc, curr) => acc + curr.amount, 0);
+  if (!user) {
+    redirect('/login');
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', user.id)
+    .single();
+
+  const [donations, devices] = await Promise.all([
+    profile ? getDonationsForDonor(profile.id) : [],
+    profile ? getDevicesForDonor(profile.id) : [],
+  ]);
+
+  const totalPledged = donations.reduce((acc, curr) => acc + curr.amount, 0);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -36,10 +50,10 @@ export default function UserDashboardPage() {
             Donor & Supporter Hub
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
-            Welcome back, {currentUser.name}
+            Welcome back, {profile?.full_name || 'Supporter'}
           </h1>
           <p className="text-xs text-slate-500">
-            Track your supported initiatives, hardware lifecycles, and tax receipts.
+            Track your supported initiatives, hardware lifecycles, and contribution pledges.
           </p>
         </div>
 
@@ -60,109 +74,101 @@ export default function UserDashboardPage() {
         </div>
       </div>
 
-      {/* Overview Cards */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
           <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <HeartHandshake className="w-5 h-5" />
           </div>
-          <div className="text-3xl font-extrabold text-slate-900">₹{totalPledged.toLocaleString()}</div>
-          <div className="text-xs font-bold text-slate-700">Total Support Pledged</div>
-          <p className="text-[11px] text-slate-500">Itemized project allocations</p>
+          <div className="text-2xl font-extrabold text-slate-900">₹{totalPledged.toLocaleString()}</div>
+          <div className="text-xs font-bold text-slate-700">Total Project Pledges</div>
+          <p className="text-[11px] text-slate-500">{donations.length} contributions recorded</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
           <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
             <Laptop className="w-5 h-5" />
           </div>
-          <div className="text-3xl font-extrabold text-emerald-600">{userDevices.length}</div>
+          <div className="text-2xl font-extrabold text-slate-900">{devices.length}</div>
           <div className="text-xs font-bold text-slate-700">Devices Donated</div>
-          <p className="text-[11px] text-slate-500">Refurbished with #TFK codes</p>
+          <p className="text-[11px] text-slate-500">Tracked in lifecycle ledger</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-2">
-          <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-            <FileText className="w-5 h-5" />
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-2">
+          <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <ShieldCheck className="w-5 h-5" />
           </div>
-          <div className="text-3xl font-extrabold text-amber-600">{userDonations.length}</div>
-          <div className="text-xs font-bold text-slate-700">Tax Receipts (80G)</div>
-          <p className="text-[11px] text-slate-500">Eligible for statutory deductions</p>
+          <div className="text-2xl font-extrabold text-slate-900">Active</div>
+          <div className="text-xs font-bold text-slate-700">Account Security</div>
+          <p className="text-[11px] text-slate-500">Authenticated via Supabase</p>
         </div>
       </div>
 
-      {/* Tabs / Sub-Navigation */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 text-xs font-bold">
-        <Link href="/dashboard" className="px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700">
-          Overview
-        </Link>
-        <Link href="/dashboard/donations" className="px-3 py-1.5 text-slate-600 hover:text-slate-900">
-          Donation History
-        </Link>
-        <Link href="/dashboard/devices" className="px-3 py-1.5 text-slate-600 hover:text-slate-900">
-          Device Trackers
-        </Link>
-        <Link href="/dashboard/volunteering" className="px-3 py-1.5 text-slate-600 hover:text-slate-900">
-          Volunteering
-        </Link>
-        <Link href="/dashboard/profile" className="px-3 py-1.5 text-slate-600 hover:text-slate-900">
-          Profile Settings
-        </Link>
-      </div>
-
-      {/* Active Device Highlight */}
-      {userDevices.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-slate-900">Your Active Hardware Lifecycles</h2>
-            <Link href="/dashboard/devices" className="text-xs font-bold text-indigo-600 hover:underline">
-              View all devices ({userDevices.length}) →
-            </Link>
-          </div>
-          <DeviceTimeline device={userDevices[0]} />
-        </div>
-      )}
-
-      {/* Recent Pledges Table */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-slate-900">Recent Project Support Pledges</h2>
-          <Link href="/dashboard/donations" className="text-xs font-bold text-indigo-600 hover:underline">
-            View Receipts →
+      {/* Recent Devices */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-base font-bold text-slate-900">Your Donated Hardware</h3>
+          <Link href="/dashboard/devices" className="text-xs font-semibold text-indigo-600 hover:underline">
+            View all ({devices.length}) →
           </Link>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
-              <tr>
-                <th className="p-3 rounded-l-xl">Receipt #</th>
-                <th className="p-3">Project</th>
-                <th className="p-3">Organization</th>
-                <th className="p-3">Amount</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 rounded-r-xl">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {userDonations.map((don) => (
-                <tr key={don.id} className="hover:bg-slate-50/60">
-                  <td className="p-3 font-mono font-bold text-indigo-600">{don.receiptNumber}</td>
-                  <td className="p-3 font-semibold text-slate-900">{don.projectTitle}</td>
-                  <td className="p-3 text-slate-600">{don.organizationName}</td>
-                  <td className="p-3 font-bold text-slate-900">₹{don.amount.toLocaleString()}</td>
-                  <td className="p-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      Confirmed
-                    </span>
-                  </td>
-                  <td className="p-3 text-slate-500">
-                    {new Date(don.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {devices.length > 0 ? (
+          <div className="space-y-3">
+            {devices.slice(0, 3).map((d) => (
+              <div key={d.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div>
+                  <span className="font-mono font-bold text-indigo-600">{d.trackingCode}</span>
+                  <div className="font-bold text-slate-900 mt-0.5">{d.manufacturer} {d.model}</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[11px]">
+                    {d.status}
+                  </span>
+                  <Link href={`/donate-device`} className="text-slate-600 hover:text-slate-900 font-semibold">
+                    Timeline →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-6 text-center text-xs text-slate-500">
+            No devices donated yet. <Link href="/donate-device" className="text-indigo-600 font-bold hover:underline">Donate a laptop or PC</Link> to equip a learning center.
+          </div>
+        )}
+      </div>
+
+      {/* Recent Donations */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-base font-bold text-slate-900">Recent Project Support</h3>
+          <Link href="/dashboard/donations" className="text-xs font-semibold text-indigo-600 hover:underline">
+            View all ({donations.length}) →
+          </Link>
         </div>
+
+        {donations.length > 0 ? (
+          <div className="space-y-3">
+            {donations.slice(0, 3).map((don) => (
+              <div key={don.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div>
+                  <span className="font-mono text-slate-500 font-semibold">{don.receiptNumber}</span>
+                  <div className="font-bold text-slate-900 mt-0.5">{don.projectTitle}</div>
+                  <div className="text-[11px] text-slate-400">{don.organizationName}</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-extrabold text-slate-900 text-sm">₹{don.amount.toLocaleString()}</div>
+                  <span className="text-[10px] text-emerald-700 font-semibold capitalize">{don.status}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-6 text-center text-xs text-slate-500">
+            No project contributions recorded yet. <Link href="/projects" className="text-indigo-600 font-bold hover:underline">Explore community projects</Link>.
+          </div>
+        )}
       </div>
 
     </div>
