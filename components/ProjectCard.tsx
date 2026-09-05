@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Project } from '@/lib/types';
 import { ProgressBar } from './ProgressBar';
 import { VerificationBadge, StatusBadge } from './VerificationBadge';
@@ -155,10 +156,12 @@ export const FeaturedProjectCard: React.FC<ProjectCardProps> = ({ project, onSup
       <div className="grid grid-cols-1 lg:grid-cols-12">
         {/* Left Visual Column */}
         <div className="lg:col-span-6 relative min-h-[280px] lg:min-h-[380px] bg-surfaceSubtle border-b lg:border-b-0 lg:border-r border-border">
-          <img
+          <Image
             src={project.heroImageUrl || '/images/default-project.jpg'}
             alt={project.title}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
           />
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <span className="px-2.5 py-1 rounded text-xs font-semibold bg-foreground text-surface">
@@ -287,8 +290,8 @@ export const ProjectListRow: React.FC<ProjectCardProps> = ({ project, onSupportC
   return (
     <div className="p-4 bg-surface rounded-lg border border-border hover:border-borderMuted hover:shadow-subtle transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-start sm:items-center gap-4">
-        <div className="w-12 h-12 rounded bg-surfaceSubtle border border-border shrink-0 overflow-hidden hidden sm:block">
-          <img src={project.heroImageUrl || '/images/default-project.jpg'} alt="" className="w-full h-full object-cover" />
+        <div className="relative w-12 h-12 rounded bg-surfaceSubtle border border-border shrink-0 overflow-hidden hidden sm:block">
+          <Image src={project.heroImageUrl || '/images/default-project.jpg'} alt="" fill sizes="48px" className="object-cover" />
         </div>
         <div className="space-y-1">
           <div className="flex items-center gap-2 flex-wrap">
@@ -355,8 +358,8 @@ export const CompactProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       className="block p-3 bg-surface rounded-lg border border-border hover:border-borderMuted hover:shadow-subtle transition-all"
     >
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded bg-surfaceSubtle border border-border shrink-0 overflow-hidden">
-          <img src={project.heroImageUrl || '/images/default-project.jpg'} alt="" className="w-full h-full object-cover" />
+        <div className="relative w-12 h-12 rounded bg-surfaceSubtle border border-border shrink-0 overflow-hidden">
+          <Image src={project.heroImageUrl || '/images/default-project.jpg'} alt="" fill sizes="48px" className="object-cover" />
         </div>
         <div className="min-w-0 flex-1">
           <h5 className="text-xs font-bold text-foreground truncate">{project.title}</h5>

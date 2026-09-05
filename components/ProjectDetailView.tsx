@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Project, NeedItem } from '@/lib/types';
 import { ProgressBar } from '@/components/ProgressBar';
 import { VerificationBadge, StatusBadge } from '@/components/VerificationBadge';
@@ -120,10 +121,13 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
 
             {/* Hero Image */}
             <div className="rounded-lg overflow-hidden aspect-[16/9] relative bg-surfaceSubtle border border-border">
-              <img
+              <Image
                 src={project.heroImageUrl || '/images/default-project.jpg'}
                 alt={project.title}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 1024px) 100vw, 800px"
+                className="object-cover"
+                priority
               />
               <div className="absolute bottom-3 left-3 bg-surface/95 backdrop-blur-sm text-foreground text-xs font-mono font-medium px-2.5 py-1 rounded border border-border flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-primary-500" />

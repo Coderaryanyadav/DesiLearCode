@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Organization } from '@/lib/types';
 import { VerificationBadge } from './VerificationBadge';
 import { MapPin, Users, Laptop, ExternalLink, ShieldCheck, CheckCircle2 } from 'lucide-react';
@@ -12,10 +13,12 @@ export const OrganizationCard: React.FC<{ org: Organization }> = ({ org }) => {
       <div>
         {/* Banner */}
         <div className="relative h-28 w-full bg-surfaceSubtle border-b border-border">
-          <img
+          <Image
             src={org.heroImageUrl || '/images/default-org.jpg'}
             alt={org.name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute top-2.5 right-2.5">
@@ -26,11 +29,13 @@ export const OrganizationCard: React.FC<{ org: Organization }> = ({ org }) => {
         {/* Logo & Entity Meta */}
         <div className="p-5 pt-0 relative">
           <div className="-mt-6 mb-3 flex items-end justify-between">
-            <div className="w-12 h-12 rounded-lg bg-surface p-0.5 border border-border shadow-subtle overflow-hidden">
-              <img
+            <div className="relative w-12 h-12 rounded-lg bg-surface p-0.5 border border-border shadow-subtle overflow-hidden">
+              <Image
                 src={org.logoUrl || '/logo.jpg'}
                 alt={org.name}
-                className="w-full h-full object-cover rounded-md"
+                fill
+                sizes="48px"
+                className="object-cover rounded-md p-0.5"
               />
             </div>
             <span className="text-[10px] font-mono text-muted bg-surfaceSubtle px-2 py-0.5 rounded border border-border">
