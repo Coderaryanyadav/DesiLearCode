@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
             </span>
             <span className="flex items-center gap-1 text-[#8b949e]">
               <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-              FCRA / 12A Verified
+              Statutory Verification
             </span>
           </div>
         </div>

@@ -18,7 +18,7 @@ export default function FAQPage() {
     },
     {
       q: 'How are NGOs and childcare organizations verified?',
-      a: 'Our administrative compliance team verifies valid trust/society registrations, 12A tax exemption certificates, audited financials, and conducts physical checks to ensure safe classroom environments and designated child protection officers.'
+      a: 'Our administrative compliance team verifies valid trust/society registrations, statutory compliance filings, audited financials, and conducts physical checks to ensure safe classroom environments and designated child protection officers.'
     },
     {
       q: 'How are monetary contributions handled?',

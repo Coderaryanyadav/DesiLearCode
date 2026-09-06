@@ -21,13 +21,15 @@ import {
   ChevronRight,
   RefreshCw,
   Sliders,
-  Sparkles
+  Sparkles,
+  Layers,
+  FileCheck
 } from 'lucide-react';
 
 export default function DonateDevicePage() {
   const { currentUser } = useAuth();
 
-  // Multi-step Wizard State (1: Specs, 2: Condition, 3: Logistics, 4: Sanitization Pledge, 5: Review & Submit)
+  // Multi-step Wizard State (1: Device Specs, 2: Condition & Diagnostics, 3: Handover Logistics & Contact, 4: Data Erasure Consent & Review)
   const [currentStep, setCurrentStep] = useState(1);
 
   // Form State
@@ -135,27 +137,29 @@ export default function DonateDevicePage() {
         </p>
       </div>
 
-      {/* 9-Stage Verifiable Device Lifecycle */}
-      <div className="bg-surface rounded-xl p-5 border border-border space-y-3 shadow-subtle">
-        <div className="flex items-center justify-between text-xs font-mono">
-          <span className="font-bold text-foreground uppercase tracking-wider">Verifiable Hardware Lifecycle</span>
-          <span className="text-muted">Standard Operating Procedure</span>
+      {/* 8-Stage Trust Pipeline (Upfront Roadmap) */}
+      <div className="bg-surface rounded-xl p-6 border border-border space-y-4 shadow-subtle">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+          <span className="font-bold text-xs font-mono text-foreground uppercase tracking-wider">
+            What Happens To Your Device?
+          </span>
+          <span className="text-[11px] font-mono text-muted">Standard Operating Procedure</span>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 text-center font-mono text-[11px]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-center font-mono text-[11px]">
           {[
-            { label: '1. DONATED', desc: 'Logged' },
-            { label: '2. REVIEWED', desc: 'Specs Checked' },
-            { label: '3. RECEIVED', desc: 'Transit Hub' },
-            { label: '4. INSPECTED', desc: 'Diagnostic' },
-            { label: '5. SANITIZED', desc: 'NIST SP 800-88' },
-            { label: '6. READY', desc: 'Linux Imaged' },
-            { label: '7. MATCHED', desc: 'Project Paired' },
-            { label: '8. DELIVERED', desc: 'Lab Receipt' },
-            { label: '9. IN USE', desc: 'Active Lab' },
+            { step: '01', title: 'DONATE', desc: 'Logged' },
+            { step: '02', title: 'REVIEW', desc: 'Specs Checked' },
+            { step: '03', title: 'RECEIVE', desc: 'Regional Hub' },
+            { step: '04', title: 'INSPECT', desc: 'Diagnostics' },
+            { step: '05', title: 'SANITIZE', desc: 'NIST SP 800-88' },
+            { step: '06', title: 'MATCH', desc: 'Lab Paired' },
+            { step: '07', title: 'DELIVER', desc: 'Classroom' },
+            { step: '08', title: 'USE', desc: 'Active Lab' },
           ].map((s, idx) => (
-            <div key={idx} className="p-2 rounded bg-surfaceSubtle border border-border flex flex-col justify-between">
-              <span className="font-bold text-foreground text-[10px]">{s.label}</span>
-              <span className="text-[9px] text-muted mt-1">{s.desc}</span>
+            <div key={idx} className="p-2.5 rounded bg-surfaceSubtle border border-border flex flex-col justify-between">
+              <span className="text-[10px] text-primary-600 font-bold">{s.step}</span>
+              <span className="font-bold text-foreground text-xs mt-0.5">{s.title}</span>
+              <span className="text-[10px] text-muted mt-1">{s.desc}</span>
             </div>
           ))}
         </div>
@@ -277,8 +281,8 @@ export default function DonateDevicePage() {
                 <h2 className="text-base font-bold text-foreground">
                   {currentStep === 1 && '1. Hardware Specifications'}
                   {currentStep === 2 && '2. Functional Diagnostics'}
-                  {currentStep === 3 && '3. Handover & Logistics Method'}
-                  {currentStep === 4 && '4. Sanitization Agreement & Review'}
+                  {currentStep === 3 && '3. Handover Logistics & Contact'}
+                  {currentStep === 4 && '4. Data Sanitization Consent & Review'}
                 </h2>
               </div>
               <div className="flex gap-1">
@@ -557,7 +561,7 @@ export default function DonateDevicePage() {
                       onClick={() => setCurrentStep(4)}
                       className="px-4 py-2 rounded-md bg-foreground text-surface text-xs font-medium hover:bg-foreground/90 transition-colors flex items-center gap-1.5"
                     >
-                      <span>Review & Pledge</span>
+                      <span>Review & Consent</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>

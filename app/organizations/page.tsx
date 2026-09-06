@@ -24,7 +24,7 @@ export default async function OrganizationsPage() {
           Verified Institutional Partners
         </h1>
         <p className="text-xs sm:text-sm text-muted max-w-2xl leading-relaxed">
-          Every organization on DesiLearCode undergoes legal compliance validation (Trust Deeds, Section 8/12A certificates, physical lab audits, and safeguarding agreements) before publishing initiatives.
+          Every organization on DesiLearCode undergoes legal compliance validation (Trust Deeds, Section 8/society registrations, physical lab audits, and safeguarding agreements) before publishing initiatives.
         </p>
       </div>
 

@@ -4,9 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Project } from '@/lib/types';
-import { ProgressBar } from './ProgressBar';
 import { VerificationBadge, StatusBadge } from './VerificationBadge';
-import { MapPin, Users, Laptop, ArrowRight, ShieldCheck, Clock, CheckCircle2, ChevronRight, Layers } from 'lucide-react';
+import { MapPin, Users, Laptop, ArrowRight, ShieldCheck, Clock, CheckCircle2, ChevronRight, Layers, Coins } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;
@@ -15,6 +14,7 @@ interface ProjectCardProps {
 
 /**
  * 1. Standard Project Card (Clean, disciplined border-based surface)
+ * Answers: WHAT, WHERE, WHO, NEED, HOW MUCH (Remaining gap), PROGRESS, ACTIONS
  */
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSupportClick }) => {
   const primaryNeed = project.needs && project.needs.length > 0 
@@ -25,7 +25,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSupportClic
   const securedCount = primaryNeed ? primaryNeed.quantityFulfilled : 0;
   const remainingCount = primaryNeed ? Math.max(0, neededCount - securedCount) : 0;
   const needUnit = primaryNeed?.unit || 'Units';
-  const needTitle = primaryNeed ? primaryNeed.title : 'Learning Equipment';
+  const needTitle = primaryNeed ? primaryNeed.title : 'Required Learning Hardware';
   const needPercentage = neededCount > 0 
     ? Math.min(100, Math.round((securedCount / neededCount) * 100))
     : project.progressPercentage;
@@ -74,11 +74,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSupportClic
             </p>
           </div>
 
-          {/* REAL RESOURCE NEED BOX */}
+          {/* REAL RESOURCE NEED BOX: "WHAT IS STILL NEEDED?" */}
           <div className="p-3.5 bg-surfaceSubtle rounded-lg border border-border space-y-2">
             <div className="flex items-baseline justify-between">
               <span className="text-xs font-mono font-bold text-foreground uppercase tracking-wide">
-                {neededCount > 0 ? `${neededCount} ${needUnit.toUpperCase()} NEEDED` : 'TARGET RESOURCE NEED'}
+                {remainingCount > 0 
+                  ? `${remainingCount} ${needUnit.toUpperCase()} STILL NEEDED` 
+                  : `${neededCount} ${needUnit.toUpperCase()} TARGET`}
               </span>
               <span className="text-[11px] font-mono text-muted">
                 {needTitle}
@@ -90,7 +92,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSupportClic
                 <strong className="text-foreground">{securedCount}</strong> secured
               </span>
               <span className="text-primary-600 font-bold">
-                {remainingCount} remaining
+                {needPercentage}% fulfilled
               </span>
             </div>
 
@@ -103,7 +105,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSupportClic
             </div>
           </div>
 
-          {/* Financial Indicator & Target Cohort */}
+          {/* Cohort & Pledged intent */}
           <div className="flex items-center justify-between text-[11px] font-mono text-muted pt-1">
             <span>Cohort: <strong className="text-foreground font-mono">{project.targetStudents} students</strong></span>
             <span>Pledged: <strong className="text-foreground font-mono">₹{project.currentValue.toLocaleString()}</strong></span>
@@ -112,7 +114,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, onSupportClic
         </div>
       </div>
 
-      {/* Dual Direct Actions: Donate Device & Support Project */}
+      {/* Action Strip: Clear Primary & Secondary Actions */}
       <div className="p-4 pt-0 bg-surface">
         <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border">
           <Link
@@ -209,7 +211,7 @@ export const FeaturedProjectCard: React.FC<ProjectCardProps> = ({ project, onSup
             <div className="p-4 rounded-xl bg-surfaceSubtle border border-border space-y-2.5">
               <div className="flex items-baseline justify-between">
                 <span className="text-xs font-mono font-bold text-foreground uppercase tracking-wide">
-                  {neededCount > 0 ? `${neededCount} ${needUnit.toUpperCase()} NEEDED` : 'TARGET RESOURCE NEED'}
+                  {remainingCount > 0 ? `${remainingCount} ${needUnit.toUpperCase()} STILL NEEDED` : 'TARGET RESOURCE NEED'}
                 </span>
                 <span className="text-xs font-mono text-muted">
                   {needTitle}
@@ -218,7 +220,7 @@ export const FeaturedProjectCard: React.FC<ProjectCardProps> = ({ project, onSup
 
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-muted">
-                  <strong className="text-foreground">{securedCount}</strong> secured
+                  <strong className="text-foreground">{securedCount}</strong> secured of {neededCount}
                 </span>
                 <span className="text-primary-600 font-bold">
                   {remainingCount} remaining gap
@@ -334,7 +336,7 @@ export const ProjectListRow: React.FC<ProjectCardProps> = ({ project, onSupportC
             href={`/projects/${project.slug}`}
             className="py-1.5 px-2.5 rounded text-xs font-medium bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border transition-colors"
           >
-            Details
+            Dossier
           </Link>
           <button
             onClick={() => onSupportClick ? onSupportClick(project) : window.location.href = `/projects/${project.slug}`}
