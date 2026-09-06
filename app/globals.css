@@ -30,6 +30,13 @@
   }
 }
 
+/* Ensure no horizontal overflow and smooth touch scrolling on mobile */
+html, body {
+  overflow-x: clip;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -44,6 +51,28 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.025em;
   font-weight: 700;
   color: var(--foreground);
+}
+
+/* Touch target helper: ensure minimum 44px hit area for interactive elements */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Safe area padding utilities for mobile viewports */
+.safe-pb {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+}
+
+.safe-pt {
+  padding-top: max(1rem, env(safe-area-inset-top, 0px));
+}
+
+.safe-bottom-fixed {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* Minimalist technical scrollbar */
@@ -87,4 +116,14 @@ h1, h2, h3, h4, h5, h6 {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.75rem;
   letter-spacing: 0.02em;
+}
+
+/* Accessibility: respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

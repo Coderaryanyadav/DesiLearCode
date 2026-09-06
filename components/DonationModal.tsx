@@ -91,15 +91,16 @@ export const DonationModal: React.FC<DonationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="relative w-full max-w-md bg-surface rounded-xl shadow-overlay border border-border overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+      <div className="relative w-full max-w-md max-h-[92vh] overflow-y-auto bg-surface rounded-2xl shadow-overlay border border-border animate-in fade-in zoom-in-95 duration-150">
         
         {/* Close Button */}
         <button
           onClick={resetAndClose}
-          className="absolute top-4 right-4 p-1.5 text-muted hover:text-foreground rounded-md hover:bg-surfaceSubtle transition-colors z-10"
+          className="absolute top-3.5 right-3.5 p-2 text-muted hover:text-foreground rounded-full hover:bg-surfaceSubtle transition-colors z-10 touch-target flex items-center justify-center"
+          aria-label="Close modal"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
         {isSubmitted ? (
@@ -142,16 +143,16 @@ export const DonationModal: React.FC<DonationModalProps> = ({
             <div className="pt-2">
               <button
                 onClick={resetAndClose}
-                className="w-full py-2.5 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors"
+                className="w-full min-h-[48px] py-2.5 rounded-xl bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors flex items-center justify-center"
               >
                 Close & Return to Initiative
               </button>
             </div>
           </div>
         ) : (
-          <div className="p-6 sm:p-7 space-y-5">
+          <div className="p-5 sm:p-7 space-y-5">
             {/* Header */}
-            <div className="space-y-1">
+            <div className="space-y-1 pr-6">
               <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-primary-600 uppercase">
                 <HeartHandshake className="w-3.5 h-3.5" />
                 <span>MILESTONE-GATED PLEDGE</span>
@@ -186,15 +187,15 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <label className="block text-xs font-semibold text-foreground">
                   Select Contribution Tier (INR)
                 </label>
-                <div className="grid grid-cols-5 gap-1.5">
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                   {presetAmounts.map((preset) => (
                     <button
                       key={preset}
                       type="button"
                       onClick={() => handleAmountSelect(preset)}
-                      className={`py-1.5 text-xs font-mono font-medium rounded border transition-colors ${
+                      className={`min-h-[44px] py-2 px-1 text-xs font-mono font-semibold rounded-lg border transition-all flex items-center justify-center ${
                         amount === preset && !customAmount
-                          ? 'bg-foreground text-surface border-foreground'
+                          ? 'bg-foreground text-surface border-foreground shadow-xs'
                           : 'bg-surfaceSubtle text-muted border-border hover:bg-surfaceHover hover:text-foreground'
                       }`}
                     >
@@ -206,11 +207,12 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                 <div className="pt-1">
                   <input
                     type="number"
+                    inputMode="numeric"
                     placeholder="Custom amount (min ₹100)"
                     value={customAmount}
                     onChange={handleCustomChange}
                     min="100"
-                    className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-mono font-medium"
+                    className="w-full min-h-[44px] px-3.5 py-2.5 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-mono font-medium"
                   />
                 </div>
               </div>
@@ -225,10 +227,11 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                     type="text"
                     required={!isAnonymous}
                     disabled={isAnonymous}
+                    autoComplete="name"
                     value={isAnonymous ? 'Anonymous Supporter' : donorName}
                     onChange={(e) => setDonorName(e.target.value)}
                     placeholder="Ananya Sharma"
-                    className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 disabled:opacity-50 font-medium"
+                    className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 disabled:opacity-50 font-medium"
                   />
                 </div>
 
@@ -239,10 +242,12 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   <input
                     type="email"
                     required
+                    inputMode="email"
+                    autoComplete="email"
                     value={donorEmail}
                     onChange={(e) => setDonorEmail(e.target.value)}
                     placeholder="ananya@example.com"
-                    className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                    className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
                   />
                 </div>
               </div>
@@ -258,24 +263,24 @@ export const DonationModal: React.FC<DonationModalProps> = ({
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Keep building future tech leaders!"
                   maxLength={150}
-                  className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                  className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
                 />
               </div>
 
               {/* Anonymous Checkbox */}
-              <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer select-none">
+              <label className="flex items-center gap-2.5 min-h-[40px] text-xs text-foreground cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={isAnonymous}
                   onChange={(e) => setIsAnonymous(e.target.checked)}
-                  className="w-4 h-4 rounded border-border text-primary-600 focus:ring-primary-500"
+                  className="w-5 h-5 rounded border-border text-primary-600 focus:ring-primary-500"
                 />
                 <span>Record pledge anonymously in public ledger</span>
               </label>
 
               {/* Transparency Notice */}
-              <div className="p-3 bg-surfaceSubtle rounded-md border border-border text-[11px] text-muted flex items-start gap-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-primary-600 shrink-0 mt-0.5" />
+              <div className="p-3 bg-surfaceSubtle rounded-lg border border-border text-[11px] text-muted flex items-start gap-2">
+                <ShieldCheck className="w-4 h-4 text-primary-600 shrink-0 mt-0.5" />
                 <span>Pledge commitments are logged for transparent capacity planning. Payment gateway integration will activate upon completion of regulatory trust vetting.</span>
               </div>
 
@@ -283,7 +288,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-2.5 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full min-h-[48px] py-3 rounded-xl bg-foreground hover:bg-foreground/90 text-surface font-semibold text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <span>Recording Ledger Entry...</span>

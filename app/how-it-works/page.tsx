@@ -10,213 +10,147 @@ import {
   Code, 
   CheckCircle2, 
   Lock, 
-  Sparkles, 
   ArrowRight,
   Truck,
-  Wrench,
-  BarChart3,
+  FileCheck,
   Coins,
   Search,
-  FileCheck,
-  Cpu,
   Layers
 } from 'lucide-react';
 
 export default function HowItWorksPage() {
   const steps = [
     {
-      stage: 'STAGE 01',
-      title: 'Resource Contribution',
-      subtitle: 'Devices, funding, or mentorship time',
+      number: '01',
+      title: 'Give',
+      subtitle: 'Contribute a device, funding, or skills',
       icon: Laptop,
-      content: 'Individuals and companies have functional unused laptops, desktops, or tablets sitting idle. Engineers have coding skills to share. Donors can also fund itemized hardware components (RAM, SSDs, Wi-Fi routers).',
-      tag: 'Input: Community Resources'
+      content: 'You contribute an unused laptop, fund an itemized project requirement (like RAM, batteries, or Wi-Fi), or sign up to volunteer 2 hours per week as a coding mentor.'
     },
     {
-      stage: 'STAGE 02',
-      title: 'Standardized Submission',
-      subtitle: 'Intake wizard & cryptographic tracking identifier',
-      icon: FileCheck,
-      content: 'Contributors submit hardware specs, volunteer availability, or project funding intent. An unguessable, high-entropy tracking reference (e.g. #DLC-XXXX-XXXX) is generated via CSPRNG for transparent public telemetry.',
-      tag: 'Tracking: #DLC-XXXX-XXXX'
-    },
-    {
-      stage: 'STAGE 03',
-      title: 'Rigorous Verification',
-      subtitle: 'NIST SP 800-88 guidance sanitization & statutory NGO vetting',
+      number: '02',
+      title: 'Verify',
+      subtitle: 'Inspect hardware & review non-profits',
       icon: ShieldCheck,
-      content: 'Hardware storage drives undergo complete data sanitization aligned with NIST SP 800-88 guidance, thermals are serviced, and lightweight Linux OS is deployed. Non-profit partners must pass statutory checks, classroom electrical safety checks, and child protection officer verification.',
-      tag: 'Security: Zero Donor Data'
+      content: 'Hardware storage drives undergo data sanitization aligned with NIST SP 800-88 guidance, thermals are cleaned, and educational software is installed. Partner organizations are reviewed for legal registration and classroom safety.'
     },
     {
-      stage: 'STAGE 04',
-      title: 'Precision Matching',
-      subtitle: 'Pairing verified resources with itemized project needs',
+      number: '03',
+      title: 'Match',
+      subtitle: 'Connect resource with verified need',
       icon: Layers,
-      content: 'Instead of shipping arbitrary piles of e-waste to unprepared centers, DesiLearCode matches hardware directly to itemized project requirements (e.g. "12 laptops for Darbhanga middle school coding batch").',
-      tag: 'Coordination: Itemized Allocation'
+      content: 'Rather than shipping arbitrary equipment piles, DesiLearCode matches your contribution directly to an itemized requirement in a verified educational lab.'
     },
     {
-      stage: 'STAGE 05',
-      title: 'Secure Delivery & Setup',
-      subtitle: 'Doorstep transit & classroom deployment',
+      number: '04',
+      title: 'Deliver',
+      subtitle: 'Arrival & classroom setup',
       icon: Truck,
-      content: 'Refurbished assets and pre-imaged curriculum suites (Scratch 3, Python 3, Kiwix offline library) are delivered directly to the vetted learning center. Physical receipt is recorded in the immutable audit log.',
-      tag: 'Logistics: Classroom Receipt'
+      content: 'The hardware or materials reach the learning center and are set up for scheduled student classes under the supervision of the local center coordinator.'
     },
     {
-      stage: 'STAGE 06',
-      title: 'Audited Project Updates',
-      subtitle: 'Structured progress reports with child safeguarding checks',
-      icon: Wrench,
-      content: 'Partner centers publish regular updates tracking curriculum progress, student attendance, and hardware maintenance. All updates pass automated PII scans and safeguarding checks before publication.',
-      tag: 'Integrity: Safeguarded Feeds'
-    },
-    {
-      stage: 'STAGE 07',
-      title: 'Verified Public Impact',
-      subtitle: 'Aggregated learning metrics with zero child PII exposure',
-      icon: BarChart3,
-      content: 'Impact is derived from actual classroom logs: students trained, active terminals, and mentor hours completed. No individual child identities, faces, or private locations are ever exposed.',
-      tag: 'Outcome: Open Audit Ledger'
+      number: '05',
+      title: 'Report',
+      subtitle: 'Visible milestones & child privacy',
+      icon: CheckCircle2,
+      content: 'Partner centers share verified progress updates and curriculum milestones. All public records adhere to strict Zero-PII child privacy rules.'
     }
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-14">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       
-      {/* Editorial Header */}
+      {/* Header */}
       <div className="max-w-3xl space-y-3">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surfaceSubtle border border-border text-[11px] font-mono text-muted">
-          <span>THE DESILEARCODE OPERATING SYSTEM</span>
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-surfaceSubtle border border-border text-xs text-muted">
+          <span>How It Works</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-display font-extrabold text-foreground tracking-tight">
-          How DesiLearCode Moves Resources from Donor to Verified Classroom
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-foreground tracking-tight">
+          How contributions reach the classroom
         </h1>
-        <p className="text-xs sm:text-sm text-muted leading-relaxed">
-          We replace vague charitable appeals with a transparent, 7-stage technology infrastructure: itemized intake, data sanitization, non-profit vetting, direct matching, and verified public impact.
+        <p className="text-sm sm:text-base text-muted leading-relaxed">
+          A clear, accountable five-step journey from your initial contribution to verified student outcomes in learning centers across India.
         </p>
       </div>
 
-      {/* 7-Stage Visual Pipeline */}
+      {/* 5-Step Process Timeline */}
       <div className="space-y-4">
-        {steps.map((item, idx) => {
-          const Icon = item.icon;
+        {steps.map((step) => {
+          const Icon = step.icon;
           return (
-            <div key={idx} className="bg-surface rounded-xl border border-border p-6 flex flex-col md:flex-row gap-6 items-start shadow-subtle hover:border-borderMuted transition-all">
-              
-              <div className="flex items-center gap-4 shrink-0">
-                <span className="text-2xl sm:text-3xl font-extrabold text-muted/30 font-mono">
-                  0{idx + 1}
+            <div
+              key={step.number}
+              className="p-6 bg-surface rounded-xl border border-border space-y-3 hover:border-borderMuted hover:shadow-subtle transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-8 rounded-lg bg-surfaceSubtle border border-border flex items-center justify-center font-bold text-xs text-primary-600">
+                  {step.number}
                 </span>
-                <div className="w-10 h-10 rounded-lg bg-surfaceSubtle text-primary-600 flex items-center justify-center border border-border">
-                  <Icon className="w-5 h-5" />
+                <div>
+                  <h3 className="font-display font-bold text-base text-foreground">
+                    {step.title} — <span className="text-muted font-normal text-xs">{step.subtitle}</span>
+                  </h3>
                 </div>
               </div>
-
-              <div className="space-y-2 flex-1">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-foreground">{item.title}</h3>
-                    <span className="text-xs text-muted font-mono hidden sm:inline">— {item.subtitle}</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded border border-primary-200">
-                    {item.tag}
-                  </span>
-                </div>
-                <p className="text-xs sm:text-sm text-muted leading-relaxed">
-                  {item.content}
-                </p>
-              </div>
-
+              <p className="text-xs sm:text-sm text-muted leading-relaxed sm:pl-11">
+                {step.content}
+              </p>
             </div>
           );
         })}
       </div>
 
-      {/* Technical Refurbishment Standard */}
-      <div className="bg-[#090c10] text-[#8b949e] rounded-xl p-6 sm:p-8 border border-[#21262d] space-y-6 font-mono text-xs shadow-panel">
-        <div className="max-w-2xl space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
-            Technical Standards
-          </span>
-          <h2 className="text-base sm:text-xl font-bold text-white font-sans">
-            Refurbishment & Data Sanitization Protocol
-          </h2>
-          <p className="text-xs text-[#8b949e] font-sans">
-            Every donated device is treated as mission-critical learning hardware.
-          </p>
-        </div>
+      {/* Key Accountability Guarantees */}
+      <div className="bg-surfaceSubtle rounded-2xl border border-border p-5 sm:p-8 space-y-6">
+        <h2 className="font-display font-bold text-xl text-foreground">
+          Our core commitments to donors & organizations
+        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
-          {[
-            { 
-              title: 'NIST SP 800-88 Sanitization', 
-              desc: 'Storage drives undergo cryptographic erasure or multi-pass overwrite aligned with NIST SP 800-88 guidance. Zero donor personal data is preserved.' 
-            },
-            { 
-              title: 'Thermals & Diagnostic Bench', 
-              desc: 'Fans cleaned, thermal compound renewed, keyboard and battery health tested under load.' 
-            },
-            { 
-              title: 'Lightweight Educational OS', 
-              desc: 'Configured with lightweight Linux / ChromeOS Flex for smooth performance on older hardware.' 
-            },
-            { 
-              title: 'Offline Curriculum Suite', 
-              desc: 'Preloaded with Scratch 3, Python 3 IDE, VS Code OSS, and Kiwix offline encyclopedias for zero-internet classrooms.' 
-            },
-            { 
-              title: 'Statutory NGO Audit', 
-              desc: 'Physical electrical surge protection, locked classroom security, and verified Child Safeguarding Officer assignment.' 
-            },
-            { 
-              title: 'High-Entropy Asset Telemetry', 
-              desc: 'Each unit is tagged with a CSPRNG identifier (#DLC-XXXX-XXXX) for public logistics tracking without leaking donor PII.' 
-            },
-          ].map((item, idx) => (
-            <div key={idx} className="p-4 rounded-lg bg-[#0d1117] border border-[#21262d] space-y-1.5">
-              <strong className="text-xs font-bold text-white block font-sans">{item.title}</strong>
-              <p className="text-[11px] text-[#8b949e] leading-relaxed">{item.desc}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div className="p-4 bg-surface rounded-xl border border-border space-y-2">
+            <div className="flex items-center gap-2 font-bold text-foreground">
+              <Lock className="w-4 h-4 text-primary-600" />
+              <span>Safe Data Sanitization</span>
             </div>
-          ))}
+            <p className="text-muted leading-relaxed">
+              Storage erasure performed aligned with NIST SP 800-88 guidance to permanently remove all donor data before re-imaging.
+            </p>
+          </div>
+
+          <div className="p-4 bg-surface rounded-xl border border-border space-y-2">
+            <div className="flex items-center gap-2 font-bold text-foreground">
+              <ShieldCheck className="w-4 h-4 text-primary-600" />
+              <span>Zero-PII Child Safeguarding</span>
+            </div>
+            <p className="text-muted leading-relaxed">
+              No individual child names, identifiable facial photos, or private shelter coordinates are ever published publicly.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Action CTA array */}
-      <div className="p-8 bg-surface rounded-xl border border-border text-center space-y-4">
-        <h3 className="font-display font-bold text-xl text-foreground">
-          Ready to put unused resources to work?
-        </h3>
-        <p className="text-xs sm:text-sm text-muted max-w-xl mx-auto">
-          Whether you have an idle laptop, professional coding skills to share, or funding for a learning center, your contribution is tracked with full accountability.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+      {/* Call to Action */}
+      <div className="text-center space-y-4 pt-4">
+        <h2 className="font-display font-bold text-xl sm:text-2xl text-foreground">
+          Ready to get involved?
+        </h2>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/donate-device"
-            className="w-full sm:w-auto px-6 py-3 rounded-md bg-foreground text-surface hover:bg-foreground/90 font-medium text-xs transition-colors flex items-center justify-center gap-2 shadow-subtle"
+            className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-foreground text-surface font-semibold text-xs hover:bg-foreground/90 transition-colors shadow-subtle flex items-center justify-center"
           >
-            <Laptop className="w-4 h-4 text-primary-400" />
-            <span>Donate a Device</span>
+            Donate a Device
           </Link>
           <Link
             href="/projects"
-            className="w-full sm:w-auto px-6 py-3 rounded-md bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border font-medium text-xs transition-colors flex items-center justify-center gap-2"
+            className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-surface border border-border text-foreground font-semibold text-xs hover:bg-surfaceSubtle transition-colors flex items-center justify-center"
           >
-            <span>Explore Active Projects</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/volunteer"
-            className="w-full sm:w-auto px-6 py-3 rounded-md bg-surfaceSubtle hover:bg-surfaceHover text-foreground border border-border font-medium text-xs transition-colors flex items-center justify-center gap-2"
-          >
-            <Code className="w-4 h-4 text-primary-600" />
-            <span>Volunteer as Mentor</span>
+            Explore Projects
           </Link>
         </div>
       </div>
 
-      {/* Safeguarding notice */}
+      {/* Safeguarding Banner */}
       <SafeguardingBanner />
 
     </div>

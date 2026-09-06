@@ -166,7 +166,7 @@ function VolunteerApplyContent() {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-surface p-6 sm:p-8 rounded-xl border border-border space-y-6">
+      <form onSubmit={handleSubmit} className="bg-surface p-5 sm:p-8 rounded-2xl border border-border space-y-6">
         
         {/* Contact info */}
         <div className="space-y-4">
@@ -182,11 +182,13 @@ function VolunteerApplyContent() {
               </label>
               <input
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel"
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 98765 43210"
-                className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
               />
             </div>
 
@@ -196,11 +198,12 @@ function VolunteerApplyContent() {
               </label>
               <input
                 type="text"
+                autoComplete="address-level2"
                 required
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Pune, Maharashtra / Hybrid"
-                className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
               />
             </div>
 
@@ -210,11 +213,12 @@ function VolunteerApplyContent() {
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 min="0"
                 max="40"
                 value={experienceYears}
                 onChange={(e) => setExperienceYears(parseInt(e.target.value, 10))}
-                className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
               />
             </div>
 
@@ -224,11 +228,12 @@ function VolunteerApplyContent() {
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 min="1"
                 max="20"
                 value={availabilityHoursPerWeek}
                 onChange={(e) => setAvailabilityHoursPerWeek(parseInt(e.target.value, 10))}
-                className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
               />
             </div>
           </div>
@@ -239,7 +244,7 @@ function VolunteerApplyContent() {
           <label className="block text-xs font-mono font-bold uppercase text-foreground">
             02 / Technical Skills You Can Teach
           </label>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {availableSkills.map((skill) => {
               const isSelected = selectedSkills.includes(skill);
               return (
@@ -247,9 +252,9 @@ function VolunteerApplyContent() {
                   key={skill}
                   type="button"
                   onClick={() => toggleSkill(skill)}
-                  className={`px-3 py-1 rounded text-xs font-mono font-medium transition-colors border ${
+                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-mono font-medium transition-all border flex items-center gap-1.5 ${
                     isSelected
-                      ? 'bg-foreground text-surface border-foreground'
+                      ? 'bg-foreground text-surface border-foreground shadow-xs font-bold'
                       : 'bg-surfaceSubtle text-muted border-border hover:bg-surfaceHover hover:text-foreground'
                   }`}
                 >
@@ -265,7 +270,7 @@ function VolunteerApplyContent() {
           <label className="block text-xs font-mono font-bold uppercase text-foreground">
             03 / Instruction Languages
           </label>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {availableLanguages.map((lang) => {
               const isSelected = selectedLanguages.includes(lang);
               return (
@@ -273,9 +278,9 @@ function VolunteerApplyContent() {
                   key={lang}
                   type="button"
                   onClick={() => toggleLanguage(lang)}
-                  className={`px-3 py-1 rounded text-xs font-mono font-medium transition-colors border ${
+                  className={`min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-mono font-medium transition-all border flex items-center gap-1.5 ${
                     isSelected
-                      ? 'bg-primary-50 text-primary-700 border-primary-200'
+                      ? 'bg-primary-50 text-primary-800 border-primary-300 shadow-xs font-bold'
                       : 'bg-surfaceSubtle text-muted border-border hover:bg-surfaceHover hover:text-foreground'
                   }`}
                 >
@@ -297,12 +302,12 @@ function VolunteerApplyContent() {
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             placeholder="Briefly describe your programming background and experience working with learners..."
-            className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+            className="w-full px-3.5 py-2.5 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
           />
         </div>
 
         {/* Child Safeguarding Agreement */}
-        <div className="p-4 bg-surfaceSubtle rounded-md border border-border space-y-2.5">
+        <div className="p-4 bg-surfaceSubtle rounded-xl border border-border space-y-2.5">
           <div className="flex items-center gap-2 text-xs font-bold text-foreground">
             <ShieldCheck className="w-4 h-4 text-success-600 shrink-0" />
             <span>Child Safeguarding Charter Agreement</span>
@@ -310,13 +315,13 @@ function VolunteerApplyContent() {
           <p className="text-xs text-muted leading-relaxed">
             By submitting, you pledge adherence to our Zero-PII protection policy: never soliciting private contact info from minors, keeping all communications in supervised lab channels, and agreeing to identity validation.
           </p>
-          <label className="flex items-start gap-2 pt-1 cursor-pointer select-none">
+          <label className="flex items-center gap-2.5 pt-1 cursor-pointer select-none min-h-[44px]">
             <input
               type="checkbox"
               required
               checked={safeguardingConsent}
               onChange={(e) => setSafeguardingConsent(e.target.checked)}
-              className="w-4 h-4 mt-0.5 rounded border-border text-primary-600 focus:ring-primary-500"
+              className="w-5 h-5 rounded border-border text-primary-600 focus:ring-primary-500"
             />
             <span className="text-xs font-medium text-foreground">
               I agree to the safeguarding charter and background check verification.
@@ -329,7 +334,7 @@ function VolunteerApplyContent() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-2.5 rounded-md bg-foreground hover:bg-foreground/90 text-surface font-medium text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full min-h-[48px] py-3 rounded-xl bg-foreground hover:bg-foreground/90 text-surface font-semibold text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {isSubmitting ? 'Submitting Application...' : 'Submit Mentorship Application'}
           </button>

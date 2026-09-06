@@ -125,15 +125,15 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({ initialProjects }) =
         </div>
 
         {/* Category Filters */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 -mx-1 px-1 touch-pan-x text-xs">
           <span className="text-[11px] font-mono text-muted uppercase shrink-0 mr-1">Filter:</span>
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-2.5 py-1 rounded text-xs font-mono font-medium whitespace-nowrap transition-colors border ${
+              className={`min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-all border flex items-center justify-center ${
                 selectedCategory === cat
-                  ? 'bg-foreground text-surface border-foreground'
+                  ? 'bg-foreground text-surface border-foreground font-bold shadow-xs'
                   : 'bg-surfaceSubtle border-border text-muted hover:text-foreground hover:bg-surfaceHover'
               }`}
             >

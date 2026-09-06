@@ -119,8 +119,8 @@ export default function SafeguardingPage() {
         )}
 
         {submitted ? (
-          <div className="p-6 bg-success-50 rounded-lg border border-success-200 text-success-900 space-y-2 text-center">
-            <div className="w-10 h-10 bg-success-100 text-success-600 rounded-md flex items-center justify-center mx-auto">
+          <div className="p-6 bg-success-50 rounded-xl border border-success-200 text-success-900 space-y-2 text-center">
+            <div className="w-10 h-10 bg-success-100 text-success-600 rounded-lg flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <h3 className="text-sm font-bold">Report Received in Confidential Queue</h3>
@@ -135,10 +135,11 @@ export default function SafeguardingPage() {
                 <label className="block text-xs font-semibold text-foreground mb-1">Your Name (Optional)</label>
                 <input
                   type="text"
+                  autoComplete="name"
                   value={reporterName}
                   onChange={(e) => setReporterName(e.target.value)}
                   placeholder="Anonymous or your name"
-                  className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                  className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
                 />
               </div>
 
@@ -146,10 +147,12 @@ export default function SafeguardingPage() {
                 <label className="block text-xs font-semibold text-foreground mb-1">Email for Follow-up (Optional)</label>
                 <input
                   type="email"
+                  inputMode="email"
+                  autoComplete="email"
                   value={reporterEmail}
                   onChange={(e) => setReporterEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                  className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
                 />
               </div>
 
@@ -158,7 +161,7 @@ export default function SafeguardingPage() {
                 <select
                   value={subjectType}
                   onChange={(e: any) => setSubjectType(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                  className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
                 >
                   <option value="project">Project Content / Update</option>
                   <option value="organization">Partner Organization</option>
@@ -174,7 +177,7 @@ export default function SafeguardingPage() {
                   value={subjectId}
                   onChange={(e) => setSubjectId(e.target.value)}
                   placeholder="e.g. Pune Coding Lab"
-                  className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                  className="w-full min-h-[44px] px-3.5 py-2 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
                 />
               </div>
             </div>
@@ -187,16 +190,16 @@ export default function SafeguardingPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Please provide specific details regarding what was observed, URL, or time of interaction..."
-                className="w-full px-3 py-2 text-xs rounded-md border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
+                className="w-full px-3.5 py-2.5 text-xs rounded-lg border border-border bg-surfaceSubtle focus:bg-surface focus:outline-none focus:border-primary-500 font-medium"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-md bg-error-600 hover:bg-error-700 text-white font-medium text-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-error-600 hover:bg-error-700 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Send className="w-4 h-4" />
               <span>{isSubmitting ? 'Submitting...' : 'Submit Confidential Report'}</span>
             </button>
           </form>

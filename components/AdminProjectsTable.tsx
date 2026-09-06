@@ -33,7 +33,64 @@ export const AdminProjectsTable: React.FC<AdminProjectsTableProps> = ({ initialP
 
   return (
     <div className="bg-surface rounded-xl border border-border overflow-hidden shadow-panel">
-      <div className="overflow-x-auto">
+      
+      {/* Mobile Card List View (< md) */}
+      <div className="md:hidden divide-y divide-border">
+        {projects.map((p) => (
+          <div key={p.id} className="p-4 space-y-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h4 className="font-bold text-sm text-foreground">{p.title}</h4>
+                <div className="text-xs text-muted font-mono">{p.organizationName}</div>
+              </div>
+              <StatusBadge status={p.status} size="sm" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs bg-surfaceSubtle p-2.5 rounded-lg border border-border font-mono">
+              <div>Category: <span className="text-foreground font-semibold">{p.category}</span></div>
+              <div>Goal: <span className="text-foreground font-semibold">₹{p.goalValue.toLocaleString()}</span></div>
+              <div className="col-span-2">Cohort: <span className="text-foreground font-semibold">{p.targetStudents} Students</span></div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              {updatingId === p.id ? (
+                <span className="text-xs text-muted font-mono py-1">Updating status...</span>
+              ) : (
+                <>
+                  {p.status !== 'active' && (
+                    <button
+                      onClick={() => handleStatusChange(p.id, 'active')}
+                      className="min-h-[38px] px-3 py-1.5 rounded-lg bg-success-50 text-success-700 font-medium hover:bg-success-100 transition-colors border border-success-200 inline-flex items-center gap-1.5 text-xs font-mono touch-target"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Approve</span>
+                    </button>
+                  )}
+                  {p.status !== 'paused' && (
+                    <button
+                      onClick={() => handleStatusChange(p.id, 'paused')}
+                      className="min-h-[38px] px-3 py-1.5 rounded-lg bg-warning-50 text-warning-700 font-medium hover:bg-warning-100 transition-colors border border-warning-200 inline-flex items-center gap-1.5 text-xs font-mono touch-target"
+                    >
+                      <Pause className="w-3.5 h-3.5" />
+                      <span>Pause</span>
+                    </button>
+                  )}
+                  <Link
+                    href={`/projects/${p.slug}`}
+                    className="min-h-[38px] px-3 py-1.5 rounded-lg bg-surfaceSubtle hover:bg-surfaceHover text-foreground font-medium border border-border inline-flex items-center gap-1.5 text-xs font-mono ml-auto touch-target"
+                  >
+                    <span>View Spec</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table View (>= md) */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left text-xs">
           <thead className="bg-surfaceSubtle text-muted font-mono font-bold uppercase text-[10px] border-b border-border">
             <tr>
