@@ -136,7 +136,7 @@ export const DonationModal: React.FC<DonationModalProps> = ({
             </div>
 
             <p className="text-[11px] text-muted text-left border-l-2 border-amber-400 pl-2">
-              Note: Tax exemption (80G) documentation depends on the recipient organization&apos;s statutory legal status and applicable transaction rules upon final settlement.
+              Note: Tax exemption documentation depends on the recipient organization&apos;s statutory legal status and applicable transaction rules upon final settlement.
             </p>
 
             <div className="pt-2">

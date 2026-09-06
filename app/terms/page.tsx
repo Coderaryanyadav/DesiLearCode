@@ -23,7 +23,7 @@ export default function TermsPage() {
         <section className="space-y-2">
           <h2 className="text-base font-bold text-slate-900">1. Verification & Representation</h2>
           <p>
-            All non-profit organizations must submit authentic statutory certificates (Registration Deeds, 80G/12A certificates). Providing false information or misrepresenting beneficiary counts results in immediate permanent suspension and legal reporting.
+            All non-profit organizations must submit authentic statutory certificates (Registration Deeds). Providing false information or misrepresenting beneficiary counts results in immediate permanent suspension and legal reporting.
           </p>
         </section>
 

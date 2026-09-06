@@ -34,7 +34,7 @@ export default async function OrganizationsPage() {
           <FileCheck className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
           <div className="space-y-0.5">
             <strong className="text-white block font-sans font-bold">1. Legal & Non-Profit Audit</strong>
-            <span className="text-[11px] text-[#8b949e] font-sans">Trust deeds, 80G/12A filings, and statutory compliance check.</span>
+            <span className="text-[11px] text-[#8b949e] font-sans">Trust deeds and statutory compliance check.</span>
           </div>
         </div>
         <div className="flex items-start gap-2.5">

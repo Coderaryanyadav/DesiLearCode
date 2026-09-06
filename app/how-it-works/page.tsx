@@ -45,7 +45,7 @@ export default function HowItWorksPage() {
       title: 'Rigorous Verification',
       subtitle: 'NIST SP 800-88 guidance sanitization & statutory NGO vetting',
       icon: ShieldCheck,
-      content: 'Hardware storage drives undergo complete data sanitization aligned with NIST SP 800-88 guidance, thermals are serviced, and lightweight Linux OS is deployed. Non-profit partners must pass 12A/80G statutory checks, classroom electrical safety checks, and child protection officer verification.',
+      content: 'Hardware storage drives undergo complete data sanitization aligned with NIST SP 800-88 guidance, thermals are serviced, and lightweight Linux OS is deployed. Non-profit partners must pass statutory checks, classroom electrical safety checks, and child protection officer verification.',
       tag: 'Security: Zero Donor Data'
     },
     {

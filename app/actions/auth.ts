@@ -28,7 +28,7 @@ export async function login(formData: FormData) {
   if (data.user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('*')
+      .select('id, is_active, full_name, email, role')
       .eq('user_id', data.user.id)
       .single();
 

@@ -105,7 +105,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
               <div className="pt-6 border-t border-border grid grid-cols-3 gap-4 text-xs font-mono text-muted">
                 <div>
                   <span className="block font-bold text-foreground">Verified Nonprofits</span>
-                  <span className="text-[11px]">Statutory 12A/80G vetted</span>
+                  <span className="text-[11px]">Statutory & legal vetted</span>
                 </div>
                 <div>
                   <span className="block font-bold text-foreground">NIST SP 800-88</span>
@@ -532,7 +532,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ featuredProjects, metrics })
                 <span>Verified Organizations</span>
               </div>
               <p className="text-muted leading-relaxed">
-                NGOs must submit 12A/80G filings, statutory trust deeds, and electrical safety audits before publishing project needs.
+                NGOs must submit statutory legal filings, trust deeds, and electrical safety audits before publishing project needs.
               </p>
             </div>
 
