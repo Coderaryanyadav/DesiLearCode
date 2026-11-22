@@ -5,11 +5,13 @@
 > engineering mentors, and verified grassroots educational labs across India.
 
 [![Production Deployment](https://img.shields.io/badge/Vercel-Live%20Production-success?logo=vercel)](https://desilearncode.vercel.app)
+[![CI Pipeline](https://github.com/Coderaryanyadav/DesiLearCode/actions/workflows/ci.yml/badge.svg)](https://github.com/Coderaryanyadav/DesiLearCode/actions/workflows/ci.yml)
 [![Tests Passing](https://img.shields.io/badge/Tests-57%20Passed-emerald?logo=vitest)](https://github.com/Coderaryanyadav/DesiLearCode)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.5.25-black?logo=next.js)](https://nextjs.org)
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-5.9%20Strict-blue?logo=typescript)](https://www.typescriptlang.org)
 
 **Live Production URL**: [https://desilearncode.vercel.app](https://desilearncode.vercel.app)  
+**Vercel Project Dashboard**: [https://vercel.com/aryanjyadav-9862s-projects/desilearncode](https://vercel.com/aryanjyadav-9862s-projects/desilearncode)  
 **GitHub Repository**: [https://github.com/Coderaryanyadav/DesiLearCode](https://github.com/Coderaryanyadav/DesiLearCode)
 
 ---

@@ -34,3 +34,11 @@ jobs:
 
       - name: Test (Vitest)
         run: npm test
+
+      - name: Build Verification (Next.js)
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://mock-build-db.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: mock-anon-key-for-build-prerendering-only-1234567890
+          NEXT_PUBLIC_APP_URL: https://desilearncode.vercel.app
+          NEXT_PUBLIC_SAFEGUARDING_EMAIL: safeguarding@desilearncode.org

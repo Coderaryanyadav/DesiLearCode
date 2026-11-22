@@ -1,6 +1,7 @@
 # DesiLearCode — Production Deployment & Operations Guide
 
 > **Live Production URL**: [https://desilearncode.vercel.app](https://desilearncode.vercel.app)  
+> **Vercel Project Dashboard**: [https://vercel.com/aryanjyadav-9862s-projects/desilearncode](https://vercel.com/aryanjyadav-9862s-projects/desilearncode)  
 > **Source Repository**: [https://github.com/Coderaryanyadav/DesiLearCode](https://github.com/Coderaryanyadav/DesiLearCode)  
 > **Target Cloud**: Vercel (Edge & Node.js Serverless Functions)  
 > **Primary Database**: Supabase PostgreSQL 15+ (us-east-1 / AWS Mumbai)
