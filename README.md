@@ -109,58 +109,19 @@ DesiLearCode Stack
 └── Deployment Target: Vercel (Edge Middleware + Node.js Serverless Functions)
 ```
 
-### File System Directory Map:
+### Project Structure:
 
 ```
 .
-├── app/
-│   ├── actions/                   # Validated Server Actions (auth, devices, donations, impact, orgs, projects, safeguarding, volunteers)
-│   ├── admin/                     # Platform administrator control center & audit queues
-│   ├── dashboard/                 # Donor & volunteer self-service account dashboard
-│   ├── donate-device/page.tsx     # 5-step hardware intake wizard & public tracking lookup
-│   ├── impact/page.tsx            # Live PostgreSQL platform metrics & verified field reports
-│   ├── needs/page.tsx             # Real-time equipment & mentorship directory
-│   ├── ngo/                       # Multi-tenant grassroots partner operating portal
-│   ├── organizations/page.tsx     # Directory of statutory-verified NGOs
-│   ├── projects/                  # Case-file initiatives dossier & support modal
-│   ├── safeguarding/page.tsx      # Child protection charter & confidential whistleblower intake
-│   ├── volunteer/page.tsx         # Engineering mentor onboarding & opportunities
-│   ├── icon.tsx                   # Dynamic edge-generated PNG/SVG brand favicon
-│   ├── manifest.ts                # Web App Manifest for mobile PWA installability
-│   ├── robots.ts                  # Search engine crawler guardrails (protects admin/ngo/api)
-│   ├── sitemap.ts                 # Dynamic XML sitemap indexing all public initiatives
-│   ├── layout.tsx                 # Root layout with Safeguarding banner, metadataBase & SEO
-│   ├── error.tsx                  # Controlled service communication error boundary
-│   └── not-found.tsx              # Clean 404 ledger lookup page
-├── components/                    # Reusable, accessible UI components (cards, badges, modals, timelines)
-├── docs/                          # Comprehensive technical documentation & audit library
-│   ├── ARCHITECTURE.md            # System architecture, RBAC, and subsystems
-│   ├── DEPLOYMENT.md              # Vercel deployment topology & operations guide
-│   ├── DESIGN_SYSTEM.md           # Tokens, typography & WCAG 2.2 AA guidelines
-│   ├── FINAL_REPOSITORY_AUDIT.md  # 54-point audit & verification evidence
-│   ├── PRODUCTION_READINESS.md    # 5-tier production launch gate checklist
-│   ├── PRODUCTION_LAUNCH_REQUIREMENTS.md # Statutory NGO compliance criteria
-│   ├── SECURITY_AUDIT.md          # Threat modeling & security assessment
-│   ├── SECURITY_MATRIX.md         # RBAC permission matrix & RLS policies
-│   └── UX_AUDIT.md                # Usability & mobile interaction review
-├── lib/
-│   ├── crypto-id.ts               # CSPRNG tracking IDs (#DLC-XXXX-XXXX) and receipt numbers
-│   ├── device-lifecycle.ts        # Finite state machine (12 discrete device states)
-│   ├── dtos/                      # Zero-PII safe public DTO sanitization layer
-│   ├── env.ts                     # Robust Zod environment validation with auto-protocol cleanup
-│   ├── payments/                  # Payment gateway abstraction (defaults to NOT_CONFIGURED)
-│   ├── rate-limit.ts              # Sliding-window token bucket abuse protection
-│   ├── validations.ts             # Strict Zod schemas for all forms
-│   └── supabase/                  # Server and browser client initialization
-├── supabase/
-│   ├── migrations/                # Database schemas & production hardening RLS migrations
-│   │   ├── 20240101000000_initial_schema.sql
-│   │   ├── 20260101000000_production_hardening.sql
-│   │   └── 20260101000001_project_subtables_rls.sql
-│   └── seed.sql                   # Realistic initial initiatives, needs, and hardware data
-├── tests/                         # Automated test suite (57/57 passing tests across 8 suites)
-├── vercel.json                    # Vercel deployment configuration & security headers
-└── vitest.config.ts               # Path aliases and test configuration
+├── .github/      # CI/CD verification workflows, issue & PR templates, community standards
+├── app/          # Next.js 15 App Router (dynamic server actions, layouts, routes, PWA)
+├── components/   # Reusable UI component library (cards, charts, modal dialogues, badges)
+├── docs/         # Consolidated technical documentation, security matrices & audit reports
+├── lib/          # Core infrastructure (Supabase clients, DTO sanitizers, rate limiter, FSM)
+├── public/       # Static assets, logos, and web manifest metadata
+├── scripts/      # Database maintenance and administration utilities
+├── supabase/     # PostgreSQL schema migrations and seed datasets
+└── tests/        # Vitest automated test suites (57/57 tests passing across 8 suites)
 ```
 
 ---
