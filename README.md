@@ -4,6 +4,14 @@
 > An open, zero-trust infrastructure connecting refurbished hardware,
 > engineering mentors, and verified grassroots educational labs across India.
 
+[![Production Deployment](https://img.shields.io/badge/Vercel-Live%20Production-success?logo=vercel)](https://desilearncode.vercel.app)
+[![Tests Passing](https://img.shields.io/badge/Tests-57%20Passed-emerald?logo=vitest)](https://github.com/Coderaryanyadav/DesiLearCode)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15.5.25-black?logo=next.js)](https://nextjs.org)
+[![TypeScript Strict](https://img.shields.io/badge/TypeScript-5.9%20Strict-blue?logo=typescript)](https://www.typescriptlang.org)
+
+**Live Production URL**: [https://desilearncode.vercel.app](https://desilearncode.vercel.app)  
+**GitHub Repository**: [https://github.com/Coderaryanyadav/DesiLearCode](https://github.com/Coderaryanyadav/DesiLearCode)
+
 ---
 
 ## Table of Contents
@@ -94,8 +102,9 @@ DesiLearCode Stack
 ├── Row Level Security: 25+ Granular PostgreSQL RLS Policies
 ├── Session & Auth: Supabase SSR Cookie Exchange (HttpOnly, SameSite=Lax)
 ├── Rate Limiting: In-Memory Sliding-Window Token Bucket
-├── Testing Framework: Vitest (54 Unit, Integration & Security Tests)
-└── Deployment Target: Vercel (Edge Middleware + Node.js Runtime)
+├── PWA & Search Engine Indexing: Dynamic Sitemap, Robots.txt & Web App Manifest
+├── Testing Framework: Vitest (57 Unit, Integration, Security & Discovery Tests)
+└── Deployment Target: Vercel (Edge Middleware + Node.js Serverless Functions)
 ```
 
 ### File System Directory Map:
@@ -114,7 +123,11 @@ DesiLearCode Stack
 │   ├── projects/                  # Case-file initiatives dossier & support modal
 │   ├── safeguarding/page.tsx      # Child protection charter & confidential whistleblower intake
 │   ├── volunteer/page.tsx         # Engineering mentor onboarding & opportunities
-│   ├── layout.tsx                 # Root layout with Safeguarding banner & navigation
+│   ├── icon.tsx                   # Dynamic edge-generated PNG/SVG brand favicon
+│   ├── manifest.ts                # Web App Manifest for mobile PWA installability
+│   ├── robots.ts                  # Search engine crawler guardrails (protects admin/ngo/api)
+│   ├── sitemap.ts                 # Dynamic XML sitemap indexing all public initiatives
+│   ├── layout.tsx                 # Root layout with Safeguarding banner, metadataBase & SEO
 │   ├── error.tsx                  # Controlled service communication error boundary
 │   └── not-found.tsx              # Clean 404 ledger lookup page
 ├── components/                    # Reusable, accessible UI components (cards, badges, modals, timelines)
@@ -133,7 +146,9 @@ DesiLearCode Stack
 │   │   ├── 20260101000000_production_hardening.sql
 │   │   └── 20260101000001_project_subtables_rls.sql
 │   └── seed.sql                   # Realistic initial initiatives, needs, and hardware data
-└── tests/                         # Automated test suite (54/54 passing tests)
+├── tests/                         # Automated test suite (57/57 passing tests across 8 suites)
+├── vercel.json                    # Vercel deployment configuration & security headers
+└── vitest.config.ts               # Path aliases and test configuration
 ```
 
 ---
@@ -492,7 +507,7 @@ which safely records pledges without simulated payments.
 Run our complete quality suite locally before committing:
 
 ```bash
-# 1. Run full Vitest test suite (54 test cases across 7 files)
+# 1. Run full Vitest test suite (57 test cases across 8 files)
 npm test
 
 # 2. Strict TypeScript type check (0 errors)
@@ -501,7 +516,7 @@ npx tsc --noEmit
 # 3. Next.js ESLint validation (0 errors, 0 warnings)
 npm run lint
 
-# 4. Optimized production build (compiles all 39 static & dynamic routes)
+# 4. Optimized production build (compiles all 43 static & dynamic routes)
 npm run build
 ```
 
@@ -516,36 +531,50 @@ npm run build
   rules.
 - `dtos.test.ts`: Data transfer object sanitization.
 - `validation.test.ts`: Zod input schemas.
+- `seo_and_platform_enhancements.test.ts`: Search engine crawler policy (`robots.txt`),
+  PWA manifest attributes (`manifest.webmanifest`), and dynamic XML sitemap generation (`sitemap.xml`).
 
 ---
 
 ## 10. Deploying to Production (Vercel + Supabase)
 
-### Deploy in 3 Steps:
+The platform is configured for zero-configuration, production-grade deployment on **Vercel**:
 
-1. **Push to GitHub**: Ensure your code is pushed to your remote repository:
+### Live Production Deployment
+- **Production URL**: [https://desilearncode.vercel.app](https://desilearncode.vercel.app)
+- **Deployment Status**: Active, Edge-Cached, Serverless Functions Ready
+- **Security Profile**: Strict-Transport-Security (63072000), DENY Framing, no-sniff
+
+### Deploying via Vercel CLI (Instant Prebuilt):
+```bash
+# 1. Pull production environment variables
+npx vercel pull --yes --environment=production
+
+# 2. Build production artifacts locally
+npx vercel build --prod
+
+# 3. Deploy prebuilt bundle directly to production
+npx vercel deploy --prebuilt --prod
+```
+
+### Deploying via Git Integration (Continuous Delivery):
+1. **Push to GitHub**:
    ```bash
    git push origin main
    ```
-
 2. **Connect to Vercel**:
    - Open [Vercel Dashboard](https://vercel.com/new).
-   - Import your `DesiLearCode` repository.
-   - Framework Preset: **Next.js**.
-   - Build Command: `npm run build`.
-
-3. **Configure Environment Variables in Vercel**: In **Project Settings ➔
-   Environment Variables**, add:
+   - Import `https://github.com/Coderaryanyadav/DesiLearCode`.
+   - Preset: **Next.js**.
+3. **Configure Environment Variables**:
    ```env
    NEXT_PUBLIC_SUPABASE_URL = https://your-project.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJhbGciOi...
    SUPABASE_SERVICE_ROLE_KEY = eyJhbGciOi...
-   NEXT_PUBLIC_APP_URL = https://your-domain.vercel.app
+   NEXT_PUBLIC_APP_URL = https://desilearncode.vercel.app
    NEXT_PUBLIC_SAFEGUARDING_EMAIL = safeguarding@desilearncode.org
    ```
-
-4. **Deploy**: Click **Deploy**. Next.js will compile all 39 routes and deploy
-   globally with edge caching and zero warnings.
+4. **Deploy**: Every push to `main` automatically runs quality gates and deploys to `https://desilearncode.vercel.app`.
 
 ---
 

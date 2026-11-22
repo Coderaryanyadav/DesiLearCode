@@ -97,6 +97,13 @@ Insecure pseudo-random number generators (`Math.random()`) have been eliminated:
 - `generateReceiptNumber()`: Uses UTC timestamp and CSPRNG hex bytes to generate `DLC-REC-YYYYMMDD-XXXX`.
 - `generateSecureSlug()`: Formats URL-safe strings with CSPRNG hex suffixes.
 
+### 2.8. PWA, Discovery & Search Engine Crawling
+The presentation layer implements native Next.js 15 route handlers for zero-overhead discoverability and offline installability:
+- **`app/manifest.ts`**: Web App Manifest defining standalone mobile application capabilities, brand colors, shortcuts for donation, exploration, and mentorship.
+- **`app/robots.ts`**: Protects administrative endpoints (`/admin/*`, `/ngo/*`, `/dashboard/*`, `/api/*`) from search indexing while granting full public access to educational directories.
+- **`app/sitemap.ts`**: Dynamically generates XML sitemaps querying verified active initiatives and static core routes with adaptive priorities.
+- **`app/icon.tsx`**: Dynamic edge SVG/PNG favicon rendering via Next.js `ImageResponse`.
+
 ---
 
 ## 3. Database Security & Row Level Security (RLS)
@@ -113,6 +120,15 @@ Insecure pseudo-random number generators (`Math.random()`) have been eliminated:
 ## 4. Verification & Testing Standards
 
 All code modifications are verified against:
-1. **Automated Vitest Suite**: 38 tests spanning authorization, IDOR, device lifecycle, public DTO sanitization, and cryptographic identifiers.
+1. **Automated Vitest Suite**: 57 tests across 8 test suites spanning authorization, IDOR, device lifecycle, public DTO sanitization, cryptographic identifiers, and SEO platform discovery.
 2. **TypeScript 5.9 Compiler**: Strict type checking with 0 errors via `npx tsc --noEmit`.
-3. **Next.js Production Compilation**: Full static and dynamic page generation (39 routes) with zero build errors.
+3. **Next.js Production Compilation**: Full static and dynamic page generation (43 routes) with zero build errors.
+
+---
+
+## 5. Deployment Topology & Edge Routing
+
+- **Host**: Vercel Serverless & Edge Network
+- **Production URL**: `https://desilearncode.vercel.app`
+- **Routing**: Next.js App Router dynamic lambdas combined with edge middleware security headers.
+- **Caching**: Statically optimized public informational routes; on-demand revalidation for database mutations.

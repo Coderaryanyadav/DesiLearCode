@@ -3,7 +3,7 @@ import { z } from 'zod';
 function cleanUrl(val?: string): string | undefined {
   if (!val) return undefined;
   const trimmed = val.trim();
-  if (!trimmed) return undefined;
+  if (!trimmed || trimmed === '[SENSITIVE]' || trimmed.includes('[SENSITIVE]')) return undefined;
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     return trimmed;
   }
@@ -13,7 +13,7 @@ function cleanUrl(val?: string): string | undefined {
 function cleanEmail(val?: string): string | undefined {
   if (!val) return undefined;
   const trimmed = val.trim();
-  if (!trimmed) return undefined;
+  if (!trimmed || trimmed === '[SENSITIVE]' || trimmed.includes('[SENSITIVE]')) return undefined;
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
     return trimmed;
   }
