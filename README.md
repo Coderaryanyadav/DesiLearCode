@@ -269,21 +269,21 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 ### A. Public Visitor / Supporter
 
 - **Explore**: Browse verified initiatives at
-  [`/projects`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/projects/page.tsx)
+  [`/projects`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/projects/page.tsx)
   with real-time filters for urgency, category, and regional requirements.
 - **Track Hardware**: Enter any tracking code (`DLC-XXXX-XXXX`) at
-  [`/donate-device`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/donate-device/page.tsx)
+  [`/donate-device`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/donate-device/page.tsx)
   to inspect lifecycle history on an auditable timeline without revealing donor
   identity.
 - **Read Field Reports**: View quarterly verified classroom outcomes at
-  [`/impact`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/impact/page.tsx).
+  [`/impact`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/impact/page.tsx).
 
 ---
 
 ### B. Hardware / Device Donor
 
 1. **Intake Flow**: Navigate to
-   [`/donate-device`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/donate-device/page.tsx)
+   [`/donate-device`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/donate-device/page.tsx)
    and complete the 5-step diagnostic wizard:
    - _Step 1_: Device specifications (Laptop, Desktop, Tablet, Manufacturer,
      Model, Specs).
@@ -301,7 +301,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 3. **Public Ledger**:
    - The donor monitors refurbishment, drive sanitization, and lab installation
      via
-     [`toPublicDeviceTracking`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/lib/dtos/index.ts#L31).
+   [`toPublicDeviceTracking`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/lib/dtos/index.ts#L31).
 
 ---
 
@@ -312,7 +312,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 2. **Support Intent Recording**:
    - Select an amount (e.g. ₹2,500, ₹5,000, or custom).
    - Submit intent via
-     [`submitDonationIntent`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/actions/donations.ts#L10).
+     [`submitDonationIntent`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/actions/donations.ts#L10).
 3. **Pledge vs. Settled Distinction**:
    - The status is explicitly recorded as `PLEDGED (UNSETTLED INTENT)`.
    - **Crucial Rule**: The pledge does **NOT** increment
@@ -325,7 +325,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 ### D. Volunteer Mentor
 
 1. **Application**: Navigate to
-   [`/volunteer/apply`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/volunteer/apply/page.tsx).
+   [`/volunteer/apply`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/volunteer/apply/page.tsx).
 2. **Skills Taxonomy**: Select technical domains (Scratch, Python, Web
    Development, Offline Linux, Robotics).
 3. **Safeguarding Undertaking**: Mandatory child safeguarding code of conduct
@@ -351,7 +351,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
    - Create a project at `/ngo/projects/new`. Initial status is
      `pending_approval`.
    - Add itemized needs via
-     [`addProjectNeed`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/actions/projects.ts#L263)
+     [`addProjectNeed`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/actions/projects.ts#L263)
      (fulfillment starts at 0, client cannot tamper).
    - Post roadmap milestones and field updates (scanned automatically for child
      PII).
@@ -363,7 +363,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 ### F. Platform Safety Administrator
 
 1. **Command Center**: Accessible at
-   [`/admin`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/admin/page.tsx)
+   [`/admin`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/admin/page.tsx)
    for users with `role = 'admin'`.
 2. **Core Administrative Queues**:
    - **Organization Verification**: Review pending NGO applications and promote
@@ -372,12 +372,12 @@ DesiLearCode supports 6 distinct personas with specific workflows:
    - **Hardware Intake**: Process physical device receipts, assign lab
      refurbishment batches, and transition devices to `Ready` or `Assigned`.
    - **Impact Verification**: Review submitted field impact reports and execute
-     [`verifyImpactReport`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/actions/impact.ts#L80)
+     [`verifyImpactReport`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/actions/impact.ts#L80)
      so metrics flow into public telemetry.
    - **Safeguarding Escalations**: Inspect confidential whistleblower incident
      reports at `/admin/reports`.
    - **Immutable Audit Log**: Inspect the append-only ledger at
-     [`/admin/audit`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/app/admin/audit/page.tsx).
+     [`/admin/audit`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/admin/audit/page.tsx).
 
 ---
 

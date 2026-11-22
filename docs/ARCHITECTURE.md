@@ -99,10 +99,10 @@ Insecure pseudo-random number generators (`Math.random()`) have been eliminated:
 
 ### 2.8. PWA, Discovery & Search Engine Crawling
 The presentation layer implements native Next.js 15 route handlers for zero-overhead discoverability and offline installability:
-- **`app/manifest.ts`**: Web App Manifest defining standalone mobile application capabilities, brand colors, shortcuts for donation, exploration, and mentorship.
-- **`app/robots.ts`**: Protects administrative endpoints (`/admin/*`, `/ngo/*`, `/dashboard/*`, `/api/*`) from search indexing while granting full public access to educational directories.
-- **`app/sitemap.ts`**: Dynamically generates XML sitemaps querying verified active initiatives and static core routes with adaptive priorities.
-- **`app/icon.tsx`**: Dynamic edge SVG/PNG favicon rendering via Next.js `ImageResponse`.
+- **`src/app/manifest.ts`**: Web App Manifest defining standalone mobile application capabilities, brand colors, shortcuts for donation, exploration, and mentorship.
+- **`src/app/robots.ts`**: Protects administrative endpoints (`/admin/*`, `/ngo/*`, `/dashboard/*`, `/api/*`) from search indexing while granting full public access to educational directories.
+- **`src/app/sitemap.ts`**: Dynamically generates XML sitemaps querying verified active initiatives and static core routes with adaptive priorities.
+- **`src/app/icon.tsx`**: Dynamic edge SVG/PNG favicon rendering via Next.js `ImageResponse`.
 
 ---
 
