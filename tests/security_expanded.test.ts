@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { generateDeviceTrackingCode, generateDonationReceiptNumber, generateSecureSlugSuffix } from '../lib/crypto-id';
-import { checkRateLimit, resetRateLimit } from '../lib/rate-limit';
-import { paymentService } from '../lib/payments';
-import { getValidatedEnv, isSupabaseConfigured } from '../lib/env';
+import { generateDeviceTrackingCode, generateDonationReceiptNumber, generateSecureSlugSuffix } from '@/lib/crypto-id';
+import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
+import { paymentService } from '@/lib/payments';
+import { getValidatedEnv, isSupabaseConfigured } from '@/lib/env';
 
 describe('Expanded Security & Integrity Test Suite', () => {
   describe('Cryptographic Identifiers & Entropy', () => {

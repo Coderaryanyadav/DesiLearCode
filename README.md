@@ -114,12 +114,14 @@ DesiLearCode Stack
 ```
 .
 ├── .github/      # CI/CD verification workflows, issue & PR templates, community standards
-├── app/          # Next.js 15 App Router (dynamic server actions, layouts, routes, PWA)
-├── components/   # Reusable UI component library (cards, charts, modal dialogues, badges)
 ├── docs/         # Consolidated technical documentation, security matrices & audit reports
-├── lib/          # Core infrastructure (Supabase clients, DTO sanitizers, rate limiter, FSM)
-├── public/       # Static assets, logos, and web manifest metadata
+├── public/       # Static assets, brand logos, and PWA web manifest metadata
 ├── scripts/      # Database maintenance and administration utilities
+├── src/          # Consolidated application source code
+│   ├── app/          # Next.js 15 App Router (server actions, layouts, routes, PWA)
+│   ├── components/   # Reusable UI component library (cards, charts, modals, badges)
+│   ├── lib/          # Core infrastructure (Supabase clients, DTOs, rate limiter, FSM)
+│   └── middleware.ts # Edge route protection and session verification
 ├── supabase/     # PostgreSQL schema migrations and seed datasets
 └── tests/        # Vitest automated test suites (57/57 tests passing across 8 suites)
 ```

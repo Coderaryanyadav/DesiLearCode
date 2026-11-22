@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toPublicDeviceTracking, toPublicProject } from '../lib/dtos';
+import { toPublicDeviceTracking, toPublicProject } from '@/lib/dtos';
 
 describe('Public Data Transfer Objects (Zero-PII & Field Minimization)', () => {
   it('strips all donor PII and raw internal notes from public device tracking', () => {

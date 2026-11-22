@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { VALID_DEVICE_TRANSITIONS, isValidDeviceTransition } from '../lib/device-lifecycle';
-import { toPublicDeviceTracking } from '../lib/dtos';
-import { UnconfiguredPaymentProvider } from '../lib/payments';
-import { DeviceStatus, UserRole } from '../lib/types';
+import { VALID_DEVICE_TRANSITIONS, isValidDeviceTransition } from '@/lib/device-lifecycle';
+import { toPublicDeviceTracking } from '@/lib/dtos';
+import { UnconfiguredPaymentProvider } from '@/lib/payments';
+import { DeviceStatus, UserRole } from '@/lib/types';
 
 describe('1. Project Funding Separation (Pledge != Payment Success != Settled Funds)', () => {
   const paymentProvider = new UnconfiguredPaymentProvider();

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ProjectStatus, DeviceStatus, UserRole } from '../lib/types';
+import { ProjectStatus, DeviceStatus, UserRole } from '@/lib/types';
 
 describe('Lifecycle State Machine Transitions', () => {
   const allowedProjectTransitions: Record<ProjectStatus, ProjectStatus[]> = {

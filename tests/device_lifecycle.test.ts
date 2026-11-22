@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { isValidDeviceTransition, getPermittedNextStatuses } from '../lib/device-lifecycle';
-import { DeviceStatus } from '../lib/types';
+import { isValidDeviceTransition, getPermittedNextStatuses } from '@/lib/device-lifecycle';
+import { DeviceStatus } from '@/lib/types';
 
 describe('Device Lifecycle State Machine', () => {
   it('allows valid sequential forward progression', () => {

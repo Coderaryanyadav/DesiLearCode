@@ -5,7 +5,7 @@ import {
   VolunteerApplicationSchema, 
   DonationIntentSchema, 
   DeviceDonationSchema 
-} from '../lib/validations';
+} from '@/lib/validations';
 
 describe('Security & Child Safeguarding Policy Checks', () => {
   const piiRegex = /\b(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b|child named [A-Z][a-z]+|age \d+, attends [A-Za-z\s]+ school/i;

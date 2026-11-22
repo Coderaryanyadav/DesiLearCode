@@ -4,7 +4,7 @@ import {
   VolunteerApplicationSchema, 
   DonationIntentSchema, 
   ProjectCreationSchema 
-} from '../lib/validations';
+} from '@/lib/validations';
 
 describe('Validation Schemas & Safeguarding Guards', () => {
   it('validates a correct device donation assessment payload', () => {
