@@ -64,6 +64,7 @@ export const Navbar: React.FC = () => {
     { href: '/donate-device', label: 'Give' },
     { href: '/volunteer', label: 'Volunteer' },
     { href: '/impact', label: 'Impact' },
+    { href: '/about', label: 'About' },
     { href: '/how-it-works', label: 'How it works' },
   ];
 

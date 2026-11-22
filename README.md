@@ -10,37 +10,87 @@
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.5.25-black?logo=next.js)](https://nextjs.org)
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-5.9%20Strict-blue?logo=typescript)](https://www.typescriptlang.org)
 
-**Live Production URL**: [https://desilearncode.vercel.app](https://desilearncode.vercel.app)  
-**Vercel Project Dashboard**: [https://vercel.com/aryanjyadav-9862s-projects/desilearncode](https://vercel.com/aryanjyadav-9862s-projects/desilearncode)  
-**GitHub Repository**: [https://github.com/Coderaryanyadav/DesiLearCode](https://github.com/Coderaryanyadav/DesiLearCode)
+**Live Production URL**:
+[https://desilearncode.vercel.app](https://desilearncode.vercel.app)\
+**Vercel Project Dashboard**:
+[https://vercel.com/aryanjyadav-9862s-projects/desilearncode](https://vercel.com/aryanjyadav-9862s-projects/desilearncode)\
+**GitHub Repository**:
+[https://github.com/Coderaryanyadav/DesiLearCode](https://github.com/Coderaryanyadav/DesiLearCode)
+
+---
+
+## About DesiLearCode
+
+**DesiLearCode** is an open-source civic technology platform created to
+eliminate the digital divide across under-resourced communities in India. By
+bridging the gap between decommissioned hardware, technical mentors, and
+grassroots educational spaces, DesiLearCode turns retired IT equipment into
+sustainable learning labs.
+
+### Core Value Propositions:
+
+- **Zero-PII Child Safeguarding**: Minor identities, names, faces, grades, and
+  shelter GPS coordinates are strictly protected and never published.
+- **Hardware Chain of Custody**: Every donated device undergoes NIST SP
+  800-88-aligned data wiping, lightweight Linux OS installation, and real-time
+  public ledger tracking (`DLC-XXXX-XXXX`).
+- **Milestone-Gated Matching**: Donated resources are paired directly with
+  itemized project requirements (e.g., _15 Refurbished ThinkPads for Raspberry
+  Pi Lab_) rather than ambiguous cash pools.
+- **Audited Field Truth**: Impact numbers represent genuine,
+  administrator-audited field reports—no simulated metrics or inflated marketing
+  claims.
+
+### Repository Topics & Tags
+
+`stem-education` · `refurbished-laptops` · `device-donation` ·
+`volunteer-mentors` · `child-safeguarding` · `zero-trust` · `nist-sp-800-88` ·
+`nextjs-15` · `react-19` · `typescript` · `supabase` · `postgresql-rls` ·
+`tailwind-css` · `pwa` · `india`
+
+| Tag / Topic           | Domain & Purpose          | Technical / Practical Implementation                                                    |
+| :-------------------- | :------------------------ | :-------------------------------------------------------------------------------------- |
+| `stem-education`      | Education & Curriculum    | Structured coding curricula (Scratch, Python, Web) for underserved cohorts              |
+| `refurbished-laptops` | Circular Electronics      | Diagnostic intake, component testing, lightweight educational Linux OS                  |
+| `device-donation`     | Equipment Logistics       | 5-step diagnostic intake wizard & cryptographic tracking code issuance                  |
+| `volunteer-mentors`   | Engineering Mentorship    | Volunteer mentor matching for software engineers donating 2 hrs/week                    |
+| `child-safeguarding`  | Minor Digital Safety      | Zero-PII database architecture, automated regex PII text scanners, whistleblower triage |
+| `zero-trust`          | Data & Access Integrity   | PostgreSQL Row Level Security (RLS), append-only immutable audit ledger                 |
+| `nist-sp-800-88`      | Secure Data Sanitization  | Multi-pass storage drive sanitization before educational lab provisioning               |
+| `nextjs-15`           | Modern Web Framework      | React 19, App Router, Server Actions, PWA dynamic manifests, edge caching               |
+| `typescript`          | Type Safety               | Strict TypeScript 5.9 with zero compile errors across entire codebase                   |
+| `supabase`            | Database & Auth           | PostgreSQL 15+, HttpOnly SSR cookie exchange, 25+ granular RLS policies                 |
+| `pwa`                 | Discovery & Accessibility | Native web app manifest, dynamic XML sitemaps, robots.txt indexing                      |
+| `india`               | Regional Scope            | Regional routing across grassroots learning centers in Delhi, Bengaluru, Pune, etc.     |
 
 ---
 
 ## Table of Contents
 
-1. [Platform Philosophy & The Core Flow](#1-platform-philosophy--the-core-flow)
-2. [Architecture & Technology Stack](#2-architecture--technology-stack)
-3. [Quick Start: 5-Minute Local Setup](#3-quick-start-5-minute-local-setup)
-4. [Environment Variables Reference](#4-environment-variables-reference)
-5. [Database Setup, Migrations & Seed Data](#5-database-setup-migrations--seed-data)
-6. [Complete Role-by-Role User Journeys](#6-complete-role-by-role-user-journeys)
+1. [About DesiLearCode & Repository Tags](#about-desilearncode)
+2. [Platform Philosophy & The Core Flow](#1-platform-philosophy--the-core-flow)
+3. [Architecture & Technology Stack](#2-architecture--technology-stack)
+4. [Quick Start: 5-Minute Local Setup](#3-quick-start-5-minute-local-setup)
+5. [Environment Variables Reference](#4-environment-variables-reference)
+6. [Database Setup, Migrations & Seed Data](#5-database-setup-migrations--seed-data)
+7. [Complete Role-by-Role User Journeys](#6-complete-role-by-role-user-journeys)
    - [A. Public Visitor / Supporter](#a-public-visitor--supporter)
    - [B. Hardware / Device Donor](#b-hardware--device-donor)
    - [C. Financial Pledge Supporter](#c-financial-pledge-supporter)
    - [D. Volunteer Mentor](#d-volunteer-mentor)
    - [E. Grassroots NGO Partner](#e-grassroots-ngo-partner)
    - [F. Platform Safety Administrator](#f-platform-safety-administrator)
-7. [Security, Privacy & Data Integrity Principles](#7-security-privacy--data-integrity-principles)
+8. [Security, Privacy & Data Integrity Principles](#7-security-privacy--data-integrity-principles)
    - [Zero-PII Child Safeguarding](#zero-pii-child-safeguarding)
    - [Hardware State Machine & NIST Guidance](#hardware-state-machine--nist-guidance)
    - [Financial Decoupling: Pledge vs. Settled Funds](#financial-decoupling-pledge-vs-settled-funds)
    - [Deterministic Need Calculations](#deterministic-need-calculations)
    - [Tenant Isolation & Role Level Security (RLS)](#tenant-isolation--role-level-security-rls)
    - [Append-Only Audit Trails](#append-only-audit-trails)
-8. [Payment Gateway Integration Guide](#8-payment-gateway-integration-guide)
-9. [Verification, Testing & Quality Gates](#9-verification-testing--quality-gates)
-10. [Deploying to Production (Vercel + Supabase)](#10-deploying-to-production-vercel--supabase)
-11. [Troubleshooting & Common Questions](#11-troubleshooting--common-questions)
+9. [Payment Gateway Integration Guide](#8-payment-gateway-integration-guide)
+10. [Verification, Testing & Quality Gates](#9-verification-testing--quality-gates)
+11. [Deploying to Production (Vercel + Supabase)](#10-deploying-to-production-vercel--supabase)
+12. [Troubleshooting & Common Questions](#11-troubleshooting--common-questions)
 
 ---
 
@@ -185,12 +235,10 @@ Settings ➔ Environment Variables** for production:
 | `NEXT_PUBLIC_APP_URL`            | Optional  | `http://localhost:3000`            | Canonical URL of the platform. Automatically prepends `https://` if omitted. |
 | `NEXT_PUBLIC_SAFEGUARDING_EMAIL` | Optional  | `safeguarding@desilearncode.org`   | Dedicated email address displayed in safety and whistleblower notices.       |
 
-> **Pro-Tip on Build Resilience**: In
-> [`lib/env.ts`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/lib/env.ts),
-> our environment parser automatically sanitizes URLs (handling missing
-> `https://`), trims whitespace, and supplies safe fallbacks during static page
-> prerendering (`next build`) so builds never fail due to blank optional
-> variables.
+> **Pro-Tip on Build Resilience**: In [`src/lib/env.ts`](src/lib/env.ts), our
+> environment parser automatically sanitizes URLs (handling missing `https://`),
+> trims whitespace, and supplies safe fallbacks during static page prerendering
+> (`next build`) so builds never fail due to blank optional variables.
 
 ---
 
@@ -208,7 +256,7 @@ The database schema is managed through pure SQL migrations in
 #### File 1: Base Schema
 
 Open
-[`supabase/migrations/20240101000000_initial_schema.sql`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/supabase/migrations/20240101000000_initial_schema.sql),
+[`supabase/migrations/20240101000000_initial_schema.sql`](supabase/migrations/20240101000000_initial_schema.sql),
 paste into SQL Editor, and click **Run**.\
 _Sets up ENUMs, tables (`profiles`, `organizations`, `projects`,
 `project_needs`, `devices`, etc.), indexes, and triggers._
@@ -216,7 +264,7 @@ _Sets up ENUMs, tables (`profiles`, `organizations`, `projects`,
 #### File 2: Production Hardening
 
 Open
-[`supabase/migrations/20260101000000_production_hardening.sql`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/supabase/migrations/20260101000000_production_hardening.sql),
+[`supabase/migrations/20260101000000_production_hardening.sql`](supabase/migrations/20260101000000_production_hardening.sql),
 paste into SQL Editor, and click **Run**.\
 _Locks down `audit_logs` (revoking UPDATE/DELETE), restricts device submission
 states, hardens profile update policies to prevent role escalation, and enforces
@@ -225,16 +273,15 @@ confidential safeguarding._
 #### File 3: Subtables Tenant Isolation
 
 Open
-[`supabase/migrations/20260101000001_project_subtables_rls.sql`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/supabase/migrations/20260101000001_project_subtables_rls.sql),
+[`supabase/migrations/20260101000001_project_subtables_rls.sql`](supabase/migrations/20260101000001_project_subtables_rls.sql),
 paste into SQL Editor, and click **Run**.\
 _Applies explicit RLS policies for `project_milestones` and `project_updates`
 guaranteeing cross-tenant isolation between NGOs._
 
 #### File 4 (Optional): Seed Data for Development
 
-Open
-[`supabase/seed.sql`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/supabase/seed.sql),
-paste into SQL Editor, and click **Run**.\
+Open [`supabase/seed.sql`](supabase/seed.sql), paste into SQL Editor, and click
+**Run**.\
 _Populates realistic initiatives in Delhi, Bengaluru, and Pune, with realistic
 hardware allocations and itemized needs._
 
@@ -268,23 +315,24 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 
 ### A. Public Visitor / Supporter
 
+- **About & Architecture**: Review our mission, platform focus tags, and
+  operational principles at [`/about`](src/app/about/page.tsx).
 - **Explore**: Browse verified initiatives at
-  [`/projects`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/projects/page.tsx)
-  with real-time filters for urgency, category, and regional requirements.
+  [`/projects`](src/app/projects/page.tsx) with real-time filters for urgency,
+  category, and regional requirements.
 - **Track Hardware**: Enter any tracking code (`DLC-XXXX-XXXX`) at
-  [`/donate-device`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/donate-device/page.tsx)
-  to inspect lifecycle history on an auditable timeline without revealing donor
-  identity.
+  [`/donate-device`](src/app/donate-device/page.tsx) to inspect lifecycle
+  history on an auditable timeline without revealing donor identity.
 - **Read Field Reports**: View quarterly verified classroom outcomes at
-  [`/impact`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/impact/page.tsx).
+  [`/impact`](src/app/impact/page.tsx).
 
 ---
 
 ### B. Hardware / Device Donor
 
 1. **Intake Flow**: Navigate to
-   [`/donate-device`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/donate-device/page.tsx)
-   and complete the 5-step diagnostic wizard:
+   [`/donate-device`](src/app/donate-device/page.tsx) and complete the 5-step
+   diagnostic wizard:
    - _Step 1_: Device specifications (Laptop, Desktop, Tablet, Manufacturer,
      Model, Specs).
    - _Step 2_: Physical & electrical condition (Powers on, battery health,
@@ -300,8 +348,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
      to prevent donor manipulation.
 3. **Public Ledger**:
    - The donor monitors refurbishment, drive sanitization, and lab installation
-     via
-   [`toPublicDeviceTracking`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/lib/dtos/index.ts#L31).
+     via [`toPublicDeviceTracking`](src/lib/dtos/index.ts#L31).
 
 ---
 
@@ -312,7 +359,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 2. **Support Intent Recording**:
    - Select an amount (e.g. ₹2,500, ₹5,000, or custom).
    - Submit intent via
-     [`submitDonationIntent`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/actions/donations.ts#L10).
+     [`submitDonationIntent`](src/app/actions/donations.ts#L10).
 3. **Pledge vs. Settled Distinction**:
    - The status is explicitly recorded as `PLEDGED (UNSETTLED INTENT)`.
    - **Crucial Rule**: The pledge does **NOT** increment
@@ -325,7 +372,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 ### D. Volunteer Mentor
 
 1. **Application**: Navigate to
-   [`/volunteer/apply`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/volunteer/apply/page.tsx).
+   [`/volunteer/apply`](src/app/volunteer/apply/page.tsx).
 2. **Skills Taxonomy**: Select technical domains (Scratch, Python, Web
    Development, Offline Linux, Robotics).
 3. **Safeguarding Undertaking**: Mandatory child safeguarding code of conduct
@@ -350,8 +397,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 4. **Project Lifecycle**:
    - Create a project at `/ngo/projects/new`. Initial status is
      `pending_approval`.
-   - Add itemized needs via
-     [`addProjectNeed`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/actions/projects.ts#L263)
+   - Add itemized needs via [`addProjectNeed`](src/app/actions/projects.ts#L263)
      (fulfillment starts at 0, client cannot tamper).
    - Post roadmap milestones and field updates (scanned automatically for child
      PII).
@@ -362,9 +408,8 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 
 ### F. Platform Safety Administrator
 
-1. **Command Center**: Accessible at
-   [`/admin`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/admin/page.tsx)
-   for users with `role = 'admin'`.
+1. **Command Center**: Accessible at [`/admin`](src/app/admin/page.tsx) for
+   users with `role = 'admin'`.
 2. **Core Administrative Queues**:
    - **Organization Verification**: Review pending NGO applications and promote
      to verified status.
@@ -372,12 +417,12 @@ DesiLearCode supports 6 distinct personas with specific workflows:
    - **Hardware Intake**: Process physical device receipts, assign lab
      refurbishment batches, and transition devices to `Ready` or `Assigned`.
    - **Impact Verification**: Review submitted field impact reports and execute
-     [`verifyImpactReport`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/actions/impact.ts#L80)
-     so metrics flow into public telemetry.
+     [`verifyImpactReport`](src/app/actions/impact.ts#L80) so metrics flow into
+     public telemetry.
    - **Safeguarding Escalations**: Inspect confidential whistleblower incident
      reports at `/admin/reports`.
    - **Immutable Audit Log**: Inspect the append-only ledger at
-     [`/admin/audit`](file:///Users/aryan/Desktop/PROJECTS/Orphan/src/app/admin/audit/page.tsx).
+     [`/admin/audit`](src/app/admin/audit/page.tsx).
 
 ---
 
@@ -399,7 +444,7 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 ### Hardware State Machine & NIST Guidance
 
 - State transitions follow a strict directed graph in
-  [`lib/device-lifecycle.ts`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/lib/device-lifecycle.ts):
+  [`src/lib/device-lifecycle.ts`](src/lib/device-lifecycle.ts):
   ```
   Submitted ➔ Under Review ➔ Approved ➔ Pickup Scheduled ➔ Received
       ➔ Inspection ➔ Repair ➔ Ready ➔ Assigned ➔ Delivered ➔ In Use ➔ Retired
@@ -450,8 +495,8 @@ DesiLearCode supports 6 distinct personas with specific workflows:
 ## 8. Payment Gateway Integration Guide
 
 Currently, DesiLearCode uses
-[`UnconfiguredPaymentProvider`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/lib/payments/index.ts#L23),
-which safely records pledges without simulated payments.
+[`UnconfiguredPaymentProvider`](src/lib/payments/index.ts#L23), which safely
+records pledges without simulated payments.
 
 ### When you are ready to activate Razorpay:
 
@@ -464,16 +509,16 @@ which safely records pledges without simulated payments.
    RAZORPAY_WEBHOOK_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
    ```
 3. Implement `RazorpayPaymentProvider` adhering to the
-   [`PaymentProvider`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/lib/payments/types.ts#L61)
-   interface in `lib/payments/types.ts`:
+   [`PaymentProvider`](src/lib/payments/types.ts#L61) interface in
+   `src/lib/payments/types.ts`:
    - `createPayment(params)`: Calls `razorpay.orders.create()`.
    - `verifyPayment(params)`: Validates HMAC-SHA256 signature using
      `RAZORPAY_KEY_SECRET`.
    - `handleWebhook(event)`: Validates `x-razorpay-signature` and atomically
      transitions `donation_intents.status` to `'settled'`.
 4. Update the singleton in
-   [`lib/payments/index.ts`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/lib/payments/index.ts#L68)
-   to export your new live provider.
+   [`src/lib/payments/index.ts`](src/lib/payments/index.ts#L68) to export your
+   new live provider.
 
 ---
 
@@ -506,21 +551,27 @@ npm run build
   rules.
 - `dtos.test.ts`: Data transfer object sanitization.
 - `validation.test.ts`: Zod input schemas.
-- `seo_and_platform_enhancements.test.ts`: Search engine crawler policy (`robots.txt`),
-  PWA manifest attributes (`manifest.webmanifest`), and dynamic XML sitemap generation (`sitemap.xml`).
+- `seo_and_platform_enhancements.test.ts`: Search engine crawler policy
+  (`robots.txt`), PWA manifest attributes (`manifest.webmanifest`), and dynamic
+  XML sitemap generation (`sitemap.xml`).
 
 ---
 
 ## 10. Deploying to Production (Vercel + Supabase)
 
-The platform is configured for zero-configuration, production-grade deployment on **Vercel**:
+The platform is configured for zero-configuration, production-grade deployment
+on **Vercel**:
 
 ### Live Production Deployment
-- **Production URL**: [https://desilearncode.vercel.app](https://desilearncode.vercel.app)
+
+- **Production URL**:
+  [https://desilearncode.vercel.app](https://desilearncode.vercel.app)
 - **Deployment Status**: Active, Edge-Cached, Serverless Functions Ready
-- **Security Profile**: Strict-Transport-Security (63072000), DENY Framing, no-sniff
+- **Security Profile**: Strict-Transport-Security (63072000), DENY Framing,
+  no-sniff
 
 ### Deploying via Vercel CLI (Instant Prebuilt):
+
 ```bash
 # 1. Pull production environment variables
 npx vercel pull --yes --environment=production
@@ -533,6 +584,7 @@ npx vercel deploy --prebuilt --prod
 ```
 
 ### Deploying via Git Integration (Continuous Delivery):
+
 1. **Push to GitHub**:
    ```bash
    git push origin main
@@ -549,7 +601,8 @@ npx vercel deploy --prebuilt --prod
    NEXT_PUBLIC_APP_URL = https://desilearncode.vercel.app
    NEXT_PUBLIC_SAFEGUARDING_EMAIL = safeguarding@desilearncode.org
    ```
-4. **Deploy**: Every push to `main` automatically runs quality gates and deploys to `https://desilearncode.vercel.app`.
+4. **Deploy**: Every push to `main` automatically runs quality gates and deploys
+   to `https://desilearncode.vercel.app`.
 
 ---
 
@@ -559,10 +612,8 @@ npx vercel deploy --prebuilt --prod
 
 **A**: This occurs if `NEXT_PUBLIC_APP_URL` or `NEXT_PUBLIC_SAFEGUARDING_EMAIL`
 are set as blank strings in Vercel settings. We implemented auto-sanitization
-and build-time fallbacks in
-[`lib/env.ts`](file:///Users/aryanyadav/Desktop/PROJECTS/Orphan/lib/env.ts) to
-guarantee static prerendering never crashes even if optional variables are
-empty.
+and build-time fallbacks in [`src/lib/env.ts`](src/lib/env.ts) to guarantee
+static prerendering never crashes even if optional variables are empty.
 
 ### Q: Why does an initiative show 0 students reached even though target students is 60?
 

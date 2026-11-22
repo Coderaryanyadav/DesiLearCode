@@ -1,6 +1,34 @@
 {
   "name": "desilearncode",
   "version": "0.1.0",
+  "description": "Open technology and STEM education infrastructure connecting refurbished hardware, engineering mentors, and verified grassroots learning labs across India.",
+  "keywords": [
+    "education",
+    "stem",
+    "coding",
+    "refurbished-laptops",
+    "device-donation",
+    "volunteer-mentors",
+    "child-safeguarding",
+    "zero-trust",
+    "open-source",
+    "digital-divide",
+    "india",
+    "nextjs",
+    "supabase",
+    "typescript",
+    "tailwind-css"
+  ],
+  "author": "Aryan Yadav",
+  "license": "MIT",
+  "homepage": "https://desilearncode.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Coderaryanyadav/DesiLearCode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Coderaryanyadav/DesiLearCode/issues"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

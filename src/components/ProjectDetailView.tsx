@@ -72,6 +72,15 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ project })
             </span>
             <StatusBadge status={project.status} size="sm" />
             <VerificationBadge status={project.organizationVerified ? 'verified' : 'under_review'} size="sm" />
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-950/40 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800">
+              #{project.category}
+            </span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-surfaceSubtle text-muted border border-border">
+              #{project.region.split(',')[0].trim()}
+            </span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-surfaceSubtle text-muted border border-border">
+              #ZeroPII
+            </span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl lg:text-5xl font-display font-extrabold text-foreground tracking-tight leading-tight">
