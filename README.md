@@ -133,6 +133,16 @@ DesiLearCode Stack
 │   ├── error.tsx                  # Controlled service communication error boundary
 │   └── not-found.tsx              # Clean 404 ledger lookup page
 ├── components/                    # Reusable, accessible UI components (cards, badges, modals, timelines)
+├── docs/                          # Comprehensive technical documentation & audit library
+│   ├── ARCHITECTURE.md            # System architecture, RBAC, and subsystems
+│   ├── DEPLOYMENT.md              # Vercel deployment topology & operations guide
+│   ├── DESIGN_SYSTEM.md           # Tokens, typography & WCAG 2.2 AA guidelines
+│   ├── FINAL_REPOSITORY_AUDIT.md  # 54-point audit & verification evidence
+│   ├── PRODUCTION_READINESS.md    # 5-tier production launch gate checklist
+│   ├── PRODUCTION_LAUNCH_REQUIREMENTS.md # Statutory NGO compliance criteria
+│   ├── SECURITY_AUDIT.md          # Threat modeling & security assessment
+│   ├── SECURITY_MATRIX.md         # RBAC permission matrix & RLS policies
+│   └── UX_AUDIT.md                # Usability & mobile interaction review
 ├── lib/
 │   ├── crypto-id.ts               # CSPRNG tracking IDs (#DLC-XXXX-XXXX) and receipt numbers
 │   ├── device-lifecycle.ts        # Finite state machine (12 discrete device states)
