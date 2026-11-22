@@ -1,0 +1,31 @@
+name: Feature Proposal
+description: Suggest an enhancement or new capability for DesiLearCode
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for proposing an enhancement to the DesiLearCode platform.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a specific challenge or limitation?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: safeguarding-consideration
+    attributes:
+      label: Safeguarding & Privacy Impact
+      description: Does this feature involve minor beneficiaries, hardware intake, or volunteer data?
+      placeholder: Confirmed Zero-PII compliance. No student identities exposed.
+    validations:
+      required: true
