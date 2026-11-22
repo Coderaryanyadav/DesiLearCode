@@ -39,24 +39,37 @@ export async function getVerifiedImpactReports(): Promise<ImpactReport[]> {
 export async function getPlatformImpactMetrics() {
   const supabase = await createClient();
 
-  // Compute live aggregates directly from PostgreSQL tables
-  const { count: totalProjects } = await supabase.from('projects').select('*', { count: 'exact', head: true });
-  const { count: totalOrgs } = await supabase.from('organizations').select('*', { count: 'exact', head: true }).eq('verification_status', 'verified');
-  const { count: totalDevices } = await supabase.from('devices').select('*', { count: 'exact', head: true });
-  const { count: totalVolunteers } = await supabase.from('volunteers').select('*', { count: 'exact', head: true });
+  // Run all aggregate counts in parallel to eliminate waterfall delay
+  const [
+    projectsCountRes,
+    orgsCountRes,
+    devicesCountRes,
+    volunteersCountRes,
+    projectsDataRes,
+    verifiedReportsRes,
+  ] = await Promise.all([
+    supabase.from('projects').select('*', { count: 'exact', head: true }),
+    supabase.from('organizations').select('*', { count: 'exact', head: true }).eq('verification_status', 'verified'),
+    supabase.from('devices').select('*', { count: 'exact', head: true }),
+    supabase.from('volunteers').select('*', { count: 'exact', head: true }),
+    supabase.from('projects').select('target_students'),
+    supabase.from('impact_reports').select('students_trained, volunteer_hours, workshops_conducted, computers_provided').eq('verified_by_admin', true),
+  ]);
 
-  const { data: projectsData } = await supabase.from('projects').select('target_students');
-  const totalStudents = (projectsData || []).reduce((acc: number, curr: any) => acc + (Number(curr.target_students) || 0), 0);
+  const totalProjects = projectsCountRes.count;
+  const totalOrgs = orgsCountRes.count;
+  const totalDevices = devicesCountRes.count;
+  const totalVolunteers = volunteersCountRes.count;
 
-  // Compute verified aggregates from admin-verified impact reports
-  const { data: verifiedReports } = await supabase
-    .from('impact_reports')
-    .select('students_trained, volunteer_hours, workshops_conducted, computers_provided')
-    .eq('verified_by_admin', true);
+  const totalStudents = (projectsDataRes.data || []).reduce(
+    (acc: number, curr: any) => acc + (Number(curr.target_students) || 0),
+    0
+  );
 
-  const verifiedStudents = (verifiedReports || []).reduce((acc: number, curr: any) => acc + (Number(curr.students_trained) || 0), 0);
-  const verifiedVolunteerHours = (verifiedReports || []).reduce((acc: number, curr: any) => acc + (Number(curr.volunteer_hours) || 0), 0);
-  const verifiedWorkshops = (verifiedReports || []).reduce((acc: number, curr: any) => acc + (Number(curr.workshops_conducted) || 0), 0);
+  const verifiedReports = verifiedReportsRes.data || [];
+  const verifiedStudents = verifiedReports.reduce((acc: number, curr: any) => acc + (Number(curr.students_trained) || 0), 0);
+  const verifiedVolunteerHours = verifiedReports.reduce((acc: number, curr: any) => acc + (Number(curr.volunteer_hours) || 0), 0);
+  const verifiedWorkshops = verifiedReports.reduce((acc: number, curr: any) => acc + (Number(curr.workshops_conducted) || 0), 0);
 
   return {
     verifiedOrgsCount: totalOrgs || 0,

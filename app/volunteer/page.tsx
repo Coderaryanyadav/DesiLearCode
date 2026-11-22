@@ -15,6 +15,8 @@ import {
   Cpu
 } from 'lucide-react';
 
+export const revalidate = 60;
+
 export const metadata = {
   title: 'Engineering & STEM Mentorship — DesiLearCode',
   description: 'Volunteer technical skills to teach programming, computational logic, and digital literacy to student cohorts in verified learning centers.',

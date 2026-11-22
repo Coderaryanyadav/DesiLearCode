@@ -104,6 +104,7 @@ export const Navbar: React.FC = () => {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                       isActive 
                         ? 'text-foreground bg-surfaceSubtle font-semibold' 
@@ -212,6 +213,7 @@ export const Navbar: React.FC = () => {
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch={true}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center justify-between px-4 py-3.5 rounded-lg text-base font-medium transition-colors ${
                       isActive 

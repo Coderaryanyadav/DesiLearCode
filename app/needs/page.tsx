@@ -3,6 +3,8 @@ import { getOpenNeeds } from '@/lib/db/needs';
 import { getPublicProjects } from '@/lib/db/projects';
 import { NeedsList } from '@/components/NeedsList';
 
+export const revalidate = 60;
+
 export const metadata = {
   title: 'Hardware & Educational Inventory Needs — DesiLearCode',
   description: 'Itemized computing equipment, laptop allocations, and STEM mentorship requirements requested by verified learning centers.',

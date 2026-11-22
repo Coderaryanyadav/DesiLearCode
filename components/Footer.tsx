@@ -46,16 +46,16 @@ export const Footer: React.FC = () => {
               <h4 className="text-xs font-bold uppercase text-foreground tracking-wider font-mono">Programs</h4>
               <ul className="space-y-2.5">
                 <li>
-                  <Link href="/projects" className="hover:text-foreground transition-colors inline-block py-0.5">Explore Projects</Link>
+                  <Link href="/projects" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">Explore Projects</Link>
                 </li>
                 <li>
-                  <Link href="/donate-device" className="hover:text-foreground transition-colors inline-block py-0.5">Donate a Device</Link>
+                  <Link href="/donate-device" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">Donate a Device</Link>
                 </li>
                 <li>
-                  <Link href="/volunteer" className="hover:text-foreground transition-colors inline-block py-0.5">Volunteer as Mentor</Link>
+                  <Link href="/volunteer" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">Volunteer as Mentor</Link>
                 </li>
                 <li>
-                  <Link href="/how-it-works" className="hover:text-foreground transition-colors inline-block py-0.5">How It Works</Link>
+                  <Link href="/how-it-works" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">How It Works</Link>
                 </li>
               </ul>
             </div>
@@ -65,16 +65,16 @@ export const Footer: React.FC = () => {
               <h4 className="text-xs font-bold uppercase text-foreground tracking-wider font-mono">Trust & Impact</h4>
               <ul className="space-y-2.5">
                 <li>
-                  <Link href="/impact" className="hover:text-foreground transition-colors inline-block py-0.5">Where Contributions Go</Link>
+                  <Link href="/impact" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">Where Contributions Go</Link>
                 </li>
                 <li>
-                  <Link href="/organizations" className="hover:text-foreground transition-colors inline-block py-0.5">Partner Directory</Link>
+                  <Link href="/organizations" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">Partner Directory</Link>
                 </li>
                 <li>
-                  <Link href="/safeguarding" className="hover:text-foreground transition-colors inline-block py-0.5">Safeguarding Policy</Link>
+                  <Link href="/safeguarding" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">Safeguarding Policy</Link>
                 </li>
                 <li>
-                  <Link href="/about" className="hover:text-foreground transition-colors inline-block py-0.5">About Us</Link>
+                  <Link href="/about" prefetch={true} className="hover:text-foreground transition-colors inline-block py-0.5">About Us</Link>
                 </li>
               </ul>
             </div>

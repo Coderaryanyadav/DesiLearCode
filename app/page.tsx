@@ -3,6 +3,8 @@ import { getPublicProjects } from '@/lib/db/projects';
 import { getPlatformImpactMetrics } from '@/lib/db/impact';
 import { HomeView } from '@/components/HomeView';
 
+export const revalidate = 60;
+
 export const metadata = {
   title: 'DesiLearCode — Technology. Education. Opportunity.',
   description: 'A transparent, privacy-first platform connecting donors, mentors, and verified child-care organizations to provide technology access and coding education.',

@@ -4,6 +4,8 @@ import { OrganizationsList } from '@/components/OrganizationsList';
 import { SafeguardingBanner } from '@/components/SafeguardingBanner';
 import { FileCheck, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
+export const revalidate = 60;
+
 export const metadata = {
   title: 'Verified Non-Profit Partners — DesiLearCode',
   description: 'Explore verified NGOs and child-care institutions providing technology access and digital education.',

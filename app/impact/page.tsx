@@ -12,6 +12,8 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
+export const revalidate = 60;
+
 export const metadata = {
   title: 'Where Contributions Go — DesiLearCode',
   description: 'Verified platform metrics, equipment distributions and learning lab audit records across partner centers in India.',

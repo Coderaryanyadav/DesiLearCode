@@ -118,6 +118,43 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.02em;
 }
 
+/* Smooth skeleton shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 228, 233, 0.4) 0%,
+    rgba(240, 241, 244, 0.9) 50%,
+    rgba(226, 228, 233, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(33, 38, 45, 0.4) 0%,
+    rgba(48, 54, 61, 0.9) 50%,
+    rgba(33, 38, 45, 0.4) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+/* Touch responsiveness optimization */
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
 /* Accessibility: respect user preference for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {

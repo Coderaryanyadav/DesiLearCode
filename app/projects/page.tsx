@@ -2,6 +2,8 @@ import React from 'react';
 import { getPublicProjects } from '@/lib/db/projects';
 import { ProjectsList } from '@/components/ProjectsList';
 
+export const revalidate = 60;
+
 export const metadata = {
   title: 'Open Initiatives & Computer Labs — DesiLearCode',
   description: 'Explore verified learning initiatives providing computer labs, coding education, hardware donations, and mentorship across India.',
